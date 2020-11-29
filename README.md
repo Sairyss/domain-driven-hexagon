@@ -74,36 +74,6 @@ Read more about modular programming benefits:
 
 - [Modular programming: Beyond the spaghetti mess](https://www.tiny.cloud/blog/modular-programming-principle/).
 
-## Folder/File Structure
-
-So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
-
-A lot of people tend to do the same thing as before: create a separate folders for services, controllers etc and keep all the use-cases there. This is the same approach that makes navigation harder.
-
-Using this approach, every time something in service changes, we might have to go to another folder to change controllers, and then go to dtos folder to change the corresponding dto etc.
-
-It would be more logical to separate every module by components and have all the related files close together. Now if a use-case changes, those changes are usually made in a single use-case component, not everywhere across the module.
-
-This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside of that component) are stored close together, in a single use-case folder.
-
-And shared files (like domain objects, repositories etc) are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier.
-
-> The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
-
-Keep in mind that this project's folder/file structure is an example and might not work for everyone. Main recommendations here are:
-
-- Separate you application into modules;
-- Keep files that change together close to each other (Common Closure Principle);
-- Group files by their behavior that changes together, not by type of functionality that file provides;
-- Keep files that are reused by multiple components apart;
-- Respect boundaries in your code, keeping files together doesn't mean lower layers can import upper layers;
-- Try to avoid a lot of nested folders;
-- [Move files around until it feels right](https://dev.to/dance2die/move-files-around-until-it-feels-right-2lek).
-
-There are different approaches to file/folder structuring, like explicitly separating each layer into a corresponding folder. This defines boundaries more clearly but is harder to navigate. Choose what suits better for the project/personal preference.
-
-Files in this project are named according to [Angular Style Guides](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
-
 # Application Core
 
 This is the core of the system which is built using [DDD building blocks](https://dzone.com/articles/ddd-part-ii-ddd-building-blocks).
@@ -662,6 +632,36 @@ Example files: // TODO
 
 - Spec file for a use case in isolation: [TODO]();
 - e2e testing a use case from end-user standpoint (with all the infrastructure up, like API routes, databases etc): [TODO]().
+
+## Folder/File Structure
+
+So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
+
+A lot of people tend to do the same thing as before: create a separate folders for services, controllers etc and keep all the use-cases there. This is the same approach that makes navigation harder.
+
+Using this approach, every time something in service changes, we might have to go to another folder to change controllers, and then go to dtos folder to change the corresponding dto etc.
+
+It would be more logical to separate every module by components and have all the related files close together. Now if a use-case changes, those changes are usually made in a single use-case component, not everywhere across the module.
+
+This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside of that component) are stored close together, in a single use-case folder.
+
+And shared files (like domain objects, repositories etc) are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier.
+
+> The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
+
+Keep in mind that this project's folder/file structure is an example and might not work for everyone. Main recommendations here are:
+
+- Separate you application into modules;
+- Keep files that change together close to each other (Common Closure Principle);
+- Group files by their behavior that changes together, not by type of functionality that file provides;
+- Keep files that are reused by multiple components apart;
+- Respect boundaries in your code, keeping files together doesn't mean lower layers can import upper layers;
+- Try to avoid a lot of nested folders;
+- [Move files around until it feels right](https://dev.to/dance2die/move-files-around-until-it-feels-right-2lek).
+
+There are different approaches to file/folder structuring, like explicitly separating each layer into a corresponding folder. This defines boundaries more clearly but is harder to navigate. Choose what suits better for the project/personal preference.
+
+Files in this project are named according to [Angular Style Guides](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
 
 # Tools
 
