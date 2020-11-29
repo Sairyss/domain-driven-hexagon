@@ -1,0 +1,13 @@
+{
+  "rootDir": "./src/",
+  "coverageDirectory": "../artifacts/coverage",
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleNameMapper": {
+    "@app/(.*)$": "<rootDir>app/modules/$1"
+  },
+  "testRegex": ".spec.ts$",
+  "transform": {
+    ".+\\.(t|j)s$": "ts-jest"
+  },
+  "testEnvironment": "node"
+}
