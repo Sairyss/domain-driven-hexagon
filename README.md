@@ -633,7 +633,7 @@ Example files: // TODO
 - Spec file for a use case in isolation: [TODO]();
 - e2e testing a use case from end-user standpoint (with all the infrastructure up, like API routes, databases etc): [TODO]().
 
-## Folder/File Structure
+# Folder/File Structure
 
 So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
