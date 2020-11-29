@@ -205,7 +205,7 @@ Ports (for Driven Adapters) are interfaces that define contracts which must be i
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
 - Mock implementations can be passed to ports while testing. Mocking makes your tests faster and independent from the environment.
 
-Example file: [find-user-by-email.port.ts](src/modules/user/use-cases/find-user-by-email/find-user-by-email.port.ts)
+Example file: [event-emitter.port.ts](src/application/ports/event-emitter.port.ts)
 
 ---
 
