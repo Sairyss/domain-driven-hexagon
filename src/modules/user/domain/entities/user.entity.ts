@@ -16,6 +16,7 @@ export interface UpdateUserAddressProps {
 export class UserEntity extends Entity<UserProps> {
   constructor(props: UserProps) {
     super(props);
+    UserEntity.validate(props); // validating at construction
     this._email = props.email;
     this._address = props.address;
   }
@@ -40,5 +41,10 @@ export class UserEntity extends Entity<UserProps> {
 
   someBusinessLogic(): void {
     // TODO: add example business logic
+  }
+
+  static validate(props: UserProps): void {
+    // TODO: example
+    // entity business rules validation to protect it's invariant
   }
 }
