@@ -1,8 +1,6 @@
 export interface Logger {
-  // TODO: fix logger port
-  log(message: string, context?: string): void;
-  error(message: string, trace?: string, context?: string): void;
-  warn(message: string, context?: string): void;
-  debug?(message: string, context?: string): void;
-  verbose?(message: string, context?: string): void;
+  log(message: string, ...meta: unknown[]): void;
+  error(message: string, trace?: unknown, ...meta: unknown[]): void;
+  warn(message: string, ...meta: unknown[]): void;
+  debug?(message: string, ...meta: unknown[]): void;
 }
