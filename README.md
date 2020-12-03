@@ -451,7 +451,7 @@ Output data returned to a user. May consist of `Response` object and a correspon
 
 - When returning a `Response` prefer _whitelisting_ properties over _blacklisting_. This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
 - Set optional properties to `null` instead of `undefined` to maintain consistency.
-- Interfaces for response objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating submodule for sharing interfaces.
+- Interfaces for `Request`/`Response` objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating submodule for sharing interfaces.
 - `Request`/`Response` DTO classes may be a good place to use validation and sanitization decorators like [class-validator](https://www.npmjs.com/package/class-validator) and [class-sanitizer](https://www.npmjs.com/package/class-sanitizer) (make sure that all validation errors are gathered first and only then return them to the user, this is called [Notification pattern](https://martinfowler.com/eaaDev/Notification.html). Class-validator does this by default).
 - `Request`/`Response` DTO classes may also be a good place to use Swagger/OpenAPI library decorators that [NestJS provides](https://docs.nestjs.com/openapi/types-and-parameters).
 
@@ -693,6 +693,17 @@ Main advantages of automatic code generation are:
 **Note**:
 
 - To really understand and work with generated templates you need to understand what is being generated and why, so full understanding of an architecture and patterns used is required.
+
+## Conventional commits
+
+Conventional commits add some useful prefixes to your commit messages, for example:
+
+- `feat: added ability to delete user's profile`
+
+Read more:
+
+- [conventionalcommits.org](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
+- [Github Gist](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716)
 
 ---
 
