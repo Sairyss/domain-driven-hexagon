@@ -1,5 +1,5 @@
-import { ValueObject } from 'src/domain/base-classes/value-object.base';
-import { DomainValidationException } from 'src/infrastructure/exceptions/domain-validation.exception';
+import { ValueObject } from 'src/core/base-classes/value-object.base';
+import { DomainValidationException } from '@exceptions';
 
 export class Email extends ValueObject {
   constructor(value: string) {

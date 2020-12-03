@@ -1,5 +1,5 @@
-import { EventEmitterPort } from 'src/application/ports/event-emitter.port';
-import { UserEvents } from 'src/application/events/events';
+import { EventEmitterPort } from 'src/core/ports/event-emitter.port';
+import { UserEvents } from 'src/core/events/events';
 import { UserRepositoryPort } from '@modules/user/database/user.repository.interface';
 
 export class DeleteUserService {

@@ -9,10 +9,12 @@ import {
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ConflictException } from '../exceptions/conflict.exception';
-import { ExceptionBase } from '../exceptions/exception.base';
-import { InputValidationException } from '../exceptions/input-validation.exception';
-import { NotFoundException } from '../exceptions/not-found.exception';
+import {
+  ExceptionBase,
+  ConflictException,
+  NotFoundException,
+  InputValidationException,
+} from '@exceptions';
 
 export class ExceptionInterceptor implements NestInterceptor {
   intercept(

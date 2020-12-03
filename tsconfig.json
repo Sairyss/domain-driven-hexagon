@@ -14,7 +14,8 @@
     "incremental": true,
     "paths": {
       "@modules/*": ["src/modules/*"],
-      "@config/*": ["src/infrastructure/configs/*"]
+      "@config/*": ["src/infrastructure/configs/*"],
+      "@exceptions": ["./src/core/exceptions"]
     }
   }
 }

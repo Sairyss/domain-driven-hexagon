@@ -1,4 +1,4 @@
-import { RepositoryPort } from 'src/application/ports/generic.ports';
+import { RepositoryPort } from 'src/core/ports/generic.ports';
 import { UserEntity } from '../domain/entities/user.entity';
 
 /* Repository port belongs to application's core, but since it usually

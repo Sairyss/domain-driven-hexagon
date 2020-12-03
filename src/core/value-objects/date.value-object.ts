@@ -1,4 +1,4 @@
-import { DomainValidationException } from 'src/infrastructure/exceptions/domain-validation.exception';
+import { DomainValidationException } from '@exceptions';
 import { ValueObject } from '../base-classes/value-object.base';
 
 export class DateVO extends ValueObject {

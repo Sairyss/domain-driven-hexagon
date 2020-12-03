@@ -1,7 +1,9 @@
-import { ValueObject } from 'src/domain/base-classes/value-object.base';
-import { Guard } from 'src/domain/guard';
-import { ArgumentOutOfRangeException } from 'src/infrastructure/exceptions/argument-out-of-range.exception';
-import { DomainValidationException } from 'src/infrastructure/exceptions/domain-validation.exception';
+import { ValueObject } from 'src/core/base-classes/value-object.base';
+import { Guard } from 'src/core/guard';
+import {
+  ArgumentOutOfRangeException,
+  DomainValidationException,
+} from '@exceptions';
 
 export interface AddressProps {
   country: string;

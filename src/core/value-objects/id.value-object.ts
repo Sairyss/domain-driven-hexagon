@@ -1,4 +1,4 @@
-import { ArgumentOutOfRangeException } from 'src/infrastructure/exceptions/argument-out-of-range.exception';
+import { ArgumentOutOfRangeException } from '@exceptions';
 import { ValueObject } from '../base-classes/value-object.base';
 import { Guard } from '../guard';
 

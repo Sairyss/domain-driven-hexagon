@@ -1,8 +1,8 @@
-import { ID } from 'src/domain/value-objects/id.value-object';
-import { EventEmitterPort } from 'src/application/ports/event-emitter.port';
-import { UserEvents } from 'src/application/events/events';
+import { ID } from 'src/core/value-objects/id.value-object';
+import { EventEmitterPort } from 'src/core/ports/event-emitter.port';
+import { UserEvents } from 'src/core/events/events';
 import { UserRepositoryPort } from '@modules/user/database/user.repository.interface';
-import { ConflictException } from 'src/infrastructure/exceptions/conflict.exception';
+import { ConflictException } from '@exceptions';
 import { CreateUserCommand } from './create-user.command';
 import { UserEntity } from '../../domain/entities/user.entity';
 

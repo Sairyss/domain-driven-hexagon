@@ -1,4 +1,4 @@
-import { Entity, EntityProps } from 'src/domain/base-classes/entity.base';
+import { Entity, EntityProps } from 'src/core/base-classes/entity.base';
 import { Address } from '../value-objects/address.value-object';
 import { Email } from '../value-objects/email.value-object';
 

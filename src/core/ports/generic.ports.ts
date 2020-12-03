@@ -1,4 +1,4 @@
-import { ID } from 'src/domain/value-objects/id.value-object';
+import { ID } from 'src/core/value-objects/id.value-object';
 
 /*  Most of repos will probably need generic 
     save/find/delete operations, so it's easier

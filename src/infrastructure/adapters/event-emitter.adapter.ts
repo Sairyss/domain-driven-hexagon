@@ -1,5 +1,5 @@
 import { NestEventEmitter } from 'nest-event';
-import { EventEmitterPort } from '../../application/ports/event-emitter.port';
+import { EventEmitterPort } from 'src/core/ports/event-emitter.port';
 
 export class EventEmitterAdapter extends NestEventEmitter
   implements EventEmitterPort {}

@@ -1,6 +1,6 @@
-import { RepositoryPort } from 'src/application/ports/generic.ports';
-import { ID } from 'src/domain/value-objects/id.value-object';
-import { NotFoundException } from 'src/infrastructure/exceptions/not-found.exception';
+import { RepositoryPort } from 'src/core/ports/generic.ports';
+import { ID } from 'src/core/value-objects/id.value-object';
+import { NotFoundException } from '@exceptions';
 import { Repository } from 'typeorm';
 import { OrmEntityBase } from './orm-entity.base';
 

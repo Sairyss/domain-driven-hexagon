@@ -1,6 +1,6 @@
-import { EntityProps } from 'src/domain/base-classes/entity.base';
-import { DateVO } from 'src/domain/value-objects/date.value-object';
-import { ID } from 'src/domain/value-objects/id.value-object';
+import { EntityProps } from 'src/core/base-classes/entity.base';
+import { DateVO } from 'src/core/value-objects/date.value-object';
+import { ID } from 'src/core/value-objects/id.value-object';
 import {
   CreateDateColumn,
   PrimaryGeneratedColumn,

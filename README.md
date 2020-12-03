@@ -205,7 +205,7 @@ Ports (for Driven Adapters) are interfaces that define contracts which must be i
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
 - Mock implementations can be passed to ports while testing. Mocking makes your tests faster and independent from the environment.
 
-Example file: [event-emitter.port.ts](src/application/ports/event-emitter.port.ts)
+Example file: [event-emitter.port.ts](src/core/ports/event-emitter.port.ts)
 
 ---
 
@@ -338,7 +338,7 @@ Lets distinguish two types of protection from illegal states: at **compile time*
 
 Types give useful semantic information to a developer. Good code should be easy to use correctly, and hard to use incorrectly. Types system can be a good help for that. It can prevent some nasty errors at a compile time, so IDE will show type errors right away.
 
-The simplest example may be using enums instead of constants, for example: [events.ts](src/application/events/events.ts). This file has enums of events that can occur in a program. Now, event emitter port [event-emitter.port.ts](src/application/ports/event-emitter.port.ts) uses that events type to prevent illegal types pass. If you try to pass anything that is not intended it will show type error.
+The simplest example may be using enums instead of constants, for example: [events.ts](src/core/events/events.ts). This file has enums of events that can occur in a program. Now, event emitter port [event-emitter.port.ts](src/core/ports/event-emitter.port.ts) uses that events type to prevent illegal types pass. If you try to pass anything that is not intended it will show type error.
 
 More importantly, this approach can be used to make business logic safer.
 
@@ -379,7 +379,7 @@ Validating will inform immediately when `Value Object` is created with corrupted
 
 To avoid repeating same validation code between different domain objects consider using [guards](https://medium.com/better-programming/refactoring-guard-clauses-2ceeaa1a9da).
 
-Example file: [guard.ts](src/domain/guard.ts)
+Example file: [guard.ts](src/core/guard.ts)
 
 **Keep in mind** that not all validations can be done in a single `Value Object`, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may invole another field, or even a different entity. Handle those cases accordingly.
 
@@ -599,8 +599,8 @@ By default, Error objects seralize to JSON with output like this:
 
 Consider serializing errors by creating a `toJSON()` method so it can be easily sent to other processes as a plain object.
 
-- Exception abstract base class example: [exception.base.ts](/src/infrastructure/exceptions/exception.base.ts)
-- Domain Validation Exception class example: [domain-validation.exception.ts](src/infrastructure/exceptions/domain-validation.exception.ts)
+- Exception abstract base class example: [exception.base.ts](src/core/exceptions/exception.base.ts)
+- Domain Validation Exception class example: [domain-validation.exception.ts](src/core/exceptions/domain-validation.exception.ts)
 
 Read more: [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
 

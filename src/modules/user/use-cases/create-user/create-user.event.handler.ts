@@ -1,5 +1,5 @@
 import { On } from 'nest-event';
-import { UserEvents } from 'src/application/events/events';
+import { UserEvents } from 'src/core/events/events';
 import { UserEntity } from '../../domain/entities/user.entity';
 
 export class CreateUserEventHandler {
