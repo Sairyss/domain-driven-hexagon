@@ -1,16 +1,14 @@
 import { typeormConfig } from './ormconfig';
 
-const databaseDir = 'src/shared/infrastructure/database';
-
 const database = {
   ...typeormConfig,
   entities: ['src/**/*.orm-entity.ts'],
   migrationsTableName: 'migrations',
-  migrations: [`${databaseDir}/migrations/*.ts`],
-  seeds: [`${databaseDir}/seeders/**/*.seeder.ts`],
-  factories: [`${databaseDir}/factories/**/*.ts`],
+  migrations: ['src/**/migrations/*.ts'],
+  seeds: ['src/**/seeders/**/*.seeder.ts'],
+  factories: ['src/**/factories/**/*.ts'],
   cli: {
-    migrationsDir: `${databaseDir}/migrations`,
+    migrationsDir: `src/infrastructure/database/migrations`,
   },
 };
 
