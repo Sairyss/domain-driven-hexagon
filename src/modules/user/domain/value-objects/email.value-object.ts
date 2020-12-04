@@ -1,5 +1,5 @@
 import { ValueObject } from 'src/core/base-classes/value-object.base';
-import { DomainValidationException } from '@exceptions';
+import { ValidationException } from '@exceptions';
 
 export class Email extends ValueObject {
   constructor(value: string) {
@@ -22,7 +22,7 @@ export class Email extends ValueObject {
     const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
     if (!regex.test(email)) {
-      throw new DomainValidationException('Email has incorrect format');
+      throw new ValidationException('Email has incorrect format');
     }
   }
 

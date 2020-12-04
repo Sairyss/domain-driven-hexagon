@@ -1,4 +1,4 @@
-import { DomainValidationException } from '@exceptions';
+import { ValidationException } from '@exceptions';
 import { ValueObject } from '../base-classes/value-object.base';
 
 export class DateVO extends ValueObject {
@@ -11,7 +11,7 @@ export class DateVO extends ValueObject {
 
   static validate(date: Date): void {
     if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
-      throw new DomainValidationException('Incorrect date');
+      throw new ValidationException('Incorrect date');
     }
   }
 }

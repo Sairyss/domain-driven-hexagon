@@ -1,11 +1,7 @@
 import { EntityProps } from 'src/core/base-classes/entity.base';
 import { DateVO } from 'src/core/value-objects/date.value-object';
 import { ID } from 'src/core/value-objects/id.value-object';
-import {
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { CreateDateColumn, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 export abstract class OrmEntityBase<Entity extends EntityProps> {
   constructor(entity: Entity) {
@@ -22,11 +18,14 @@ export abstract class OrmEntityBase<Entity extends EntityProps> {
 
   abstract toDomain(): Entity;
 
-  @PrimaryGeneratedColumn('uuid')
+  /* id cannot be updated to avoid problems with external
+   references to it from other tables */
+  @PrimaryColumn({ update: false })
   id?: string;
 
   @CreateDateColumn({
     type: 'timestamptz',
+    update: false,
   })
   createdAt?: Date;
 

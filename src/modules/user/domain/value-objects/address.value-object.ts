@@ -1,9 +1,6 @@
 import { ValueObject } from 'src/core/base-classes/value-object.base';
 import { Guard } from 'src/core/guard';
-import {
-  ArgumentOutOfRangeException,
-  DomainValidationException,
-} from '@exceptions';
+import { ArgumentOutOfRangeException, ValidationException } from '@exceptions';
 
 export interface AddressProps {
   country: string;
@@ -28,7 +25,7 @@ export class Address extends ValueObject {
 
   static validate(props: AddressProps): void {
     if (Guard.isEmpty(props)) {
-      throw new DomainValidationException('Address object is empty');
+      throw new ValidationException('Address object is empty');
     }
     if (Guard.lengthIsBetween(props.country, 2, 50)) {
       throw new ArgumentOutOfRangeException('country');

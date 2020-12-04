@@ -1,12 +1,16 @@
-import { ArgumentOutOfRangeException } from '@exceptions';
+import { ValidationException } from '@exceptions';
+import { v4 as uuidv4, validate } from 'uuid';
 import { ValueObject } from '../base-classes/value-object.base';
-import { Guard } from '../guard';
 
 export class ID extends ValueObject {
-  constructor(value: string) {
+  constructor(value?: string) {
     super();
-    ID.validate(value);
-    this._value = value;
+    if (value) {
+      ID.validate(value);
+      this._value = value;
+    } else {
+      this._value = uuidv4();
+    }
   }
 
   private readonly _value: string;
@@ -16,8 +20,8 @@ export class ID extends ValueObject {
   }
 
   static validate(value: string): void {
-    if (Guard.lengthIsBetween(value, 1, 36)) {
-      throw new ArgumentOutOfRangeException('id');
+    if (!validate(value)) {
+      throw new ValidationException('Incorrect ID format');
     }
   }
 }

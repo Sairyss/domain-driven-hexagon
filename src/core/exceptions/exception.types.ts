@@ -1,5 +1,5 @@
 export enum Exceptions {
-  domainValidationException = 'DomainValidationException',
+  validationException = 'ValidationException',
   inputValidationException = 'InputValidationException',
   notFoundException = 'NotFoundException',
   businessRuleValidationException = 'BusinessRuleValidationException',

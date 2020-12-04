@@ -87,8 +87,8 @@ Core layers shouldn't depend on frameworks or access external resources. Any ext
 Main recommendations to keep in mind is that libraries imported in application's core/domain **shouldn't** expose:
 
 - Functionality to access any out-of-precess resources (http calls, database access etc);
-- Functionality that brings randomness (generating random IDs, timestamps etc) since this makes tests unpredictable;
 - Functionality not relevant to domain (frameworks, technology details like ORMs etc).
+- Functionality that brings randomness (generating random IDs, timestamps etc) since this makes tests unpredictable (though in TypeScript world it is not that big of a deal since this can be mocked by a test library without using DI);
 
 Offload as much of irrelevant responsibilities as possible from the core.
 
@@ -568,7 +568,7 @@ When using microservices, all exceptions can be packed as a submodule and reused
 For example:
 
 - When validation error is thrown by validating user input, it means that input is incorrect and something like `InputValidationException` type may be thrown containing all the incorrect fields and later converted into `400 Bad Request Exception` for the user in exception interceptor.
-- When validation exception happens on a new `Value Object` creation that means a programmer did a mistake by assigning an incorrect value to a constructor, so a different type of error should be thrown here, something like `DomainValidationException` which is later converted into `500 Internal Server Error` for the user.
+- When validation exception happens on a new `Value Object` creation that means a programmer did a mistake by assigning an incorrect value to a constructor, so a different type of error should be thrown here, something like `ValidationException` which is later converted into `500 Internal Server Error` for the user.
 
 Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended. No details should be returned to the user in case of programmer errors since those details may contain some sensitive information about the program, those details should only be shown in logs for a programmer to see so he can fix them.
 
@@ -600,7 +600,7 @@ By default, Error objects seralize to JSON with output like this:
 Consider serializing errors by creating a `toJSON()` method so it can be easily sent to other processes as a plain object.
 
 - Exception abstract base class example: [exception.base.ts](src/core/exceptions/exception.base.ts)
-- Domain Validation Exception class example: [domain-validation.exception.ts](src/core/exceptions/domain-validation.exception.ts)
+- Validation Exception class example: [validation.exception.ts](src/core/exceptions/validation.exception.ts)
 
 Read more: [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
 

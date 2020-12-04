@@ -9,7 +9,7 @@ export interface EntityProps {
 
 export abstract class Entity<Props extends EntityProps> {
   constructor(props: Props) {
-    this._id = props.id;
+    this._id = props.id ? props.id : new ID();
     this._createdAt = props.createdAt;
     this._updatedAt = props.updatedAt;
   }
