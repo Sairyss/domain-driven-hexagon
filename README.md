@@ -577,7 +577,9 @@ Application should be protected not only from incorrect user input but from a pr
 
 ## Exception details
 
-There are times when there is a need to return to client or log into console some extra info about the error (like all the incorrect fields provided when validation exception happens). For this purpose something like `details` array may be a good option. In this project `details` is an array of `key: string` and `value: string` pairs. An example of validation `details` may be something like this:
+There are times when there is a need to return some extra info about the error to a client, or log it into console for debugging purposes (like all the incorrect fields provided when validation exception happens, this is [Notification pattern](https://martinfowler.com/eaaDev/Notification.html) mentioned earlier).
+
+For this purpose something like `details` array may be a good option. In this project `details` is an array of `key: string` and `value: string` pairs. An example of validation `details` may be something like this:
 
 ```typescript
 details: [
