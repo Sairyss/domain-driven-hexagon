@@ -39,7 +39,7 @@ export class Guard {
       typeof value === 'number'
         ? Number(value).toString().length
         : value.length;
-    if (valueLength < min && valueLength > max) {
+    if (valueLength >= min && valueLength <= max) {
       return true;
     }
     return false;

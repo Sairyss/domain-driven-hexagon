@@ -1,8 +1,8 @@
 import { Exceptions } from './exception.types';
 
 export interface ExceptionDetails {
-  key: string;
-  message: string;
+  key?: string;
+  value: string;
 }
 
 export interface SerializedExceptionInterface {

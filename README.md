@@ -577,18 +577,18 @@ Application should be protected not only from incorrect user input but from a pr
 
 ## Exception details
 
-There are times when there is a need to return some extra info about the error (like all the incorrect fields provided when validation exception happens). For this purpose something like `details` array may be a good option. In this project `details` is an array of `key: string` and `message: string` pairs. An example of validation `details` may be something like this:
+There are times when there is a need to return to client or log into console some extra info about the error (like all the incorrect fields provided when validation exception happens). For this purpose something like `details` array may be a good option. In this project `details` is an array of `key: string` and `value: string` pairs. An example of validation `details` may be something like this:
 
 ```typescript
 details: [
-  { key: 'email', message: 'Incorrect format provided' },
-  { key: 'password', message: 'Must be at least 8 characters long' },
+  { key: 'email', value: 'Incorrect format provided' },
+  { key: 'password', value: 'Must be at least 8 characters long' },
 ];
 ```
 
-- Why not just an object like `{ email: "Incorrect email provided" }`? This is because objects like this create inconsistency. Clients will never know what fields are returned from exceptions. Also an array is easier to map.
-- Why include `key` and not just an array of strings? Because there may be a need to asociate an error with something. For example, frontend page may have an "email" field in a form and will need to show an error right below that field, without a `key` it would be harder.
-- `Details` array may have any other structure, just keep in mind that it should be consistent and easy to use.
+- `Details` array may have any other structure, just keep in mind it should have a consistent type across all exceptions, for example: `{ email: 'Incorrect email' }` - inconsistent, key/value pairs - consistent.
+
+Example file with validation details: [address.value-object.ts](src/modules/user/domain/value-objects/address.value-object.ts) (check `validate` method).
 
 ## Error Serialization
 

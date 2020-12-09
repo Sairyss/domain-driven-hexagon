@@ -11,7 +11,9 @@ export class DateVO extends ValueObject {
 
   static validate(date: Date): void {
     if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
-      throw new ValidationException('Incorrect date');
+      throw new ValidationException('Incorrect date', [
+        { value: JSON.stringify(date) },
+      ]);
     }
   }
 }

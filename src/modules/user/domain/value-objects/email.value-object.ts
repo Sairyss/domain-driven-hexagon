@@ -20,7 +20,9 @@ export class Email extends ValueObject {
 
   static validate(email: string): void {
     if (!email.includes('@')) {
-      throw new ValidationException('Email has incorrect format');
+      throw new ValidationException('Email has incorrect format', [
+        { value: email }, // including value for debugging purposes
+      ]);
     }
   }
 
