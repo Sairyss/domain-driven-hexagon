@@ -410,6 +410,10 @@ So, what exactly should `Value Object` validate?
 - [Article by Mark Seemann](https://blog.ploeh.dk/2010/07/12/DomainObjectsandIDataErrorInfo/)
 - [Value Objects Like a Pro](https://medium.com/@nicolopigna/value-objects-like-a-pro-f1bfc1548c72)
 
+## Other domain topics
+
+- [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
+
 ---
 
 # Interface Adapters
@@ -546,8 +550,8 @@ Other infrastructure related things:
 
 - Framework related files;
 - Application logger implemention;
-- Periodic cron jobs or tasks ([NestJS Schedule](https://docs.nestjs.com/techniques/task-scheduling));
-- Internal events handlers for infrastructure operations ([Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html), [Nest-event](https://www.npmjs.com/package/nest-event));
+- Periodic cron jobs or tasks launchers ([NestJS Schedule](https://docs.nestjs.com/techniques/task-scheduling));
+- Internal events handlers for infrastructure operations ([Nest-event](https://www.npmjs.com/package/nest-event));
 - Other technology related files.
 
 ---
