@@ -391,7 +391,7 @@ There are a lot of debates on how data sanity should be validated. There are a f
 - only in domain's `Value Objects`, maybe also exposing `validate` method to be able to gather errors outside of domain
 - in both: outside of domain and inside domain.
 
-After some research it seems that third option may be the most optimal. Outside validation may do full sanity checks using some well tested validation framework, and validation inside domain may be some simple sanity validations like matching regex and checking if value is not empty.
+After some research it seems that third option may be the most optimal. Outside validation may do full sanity checks using some well tested validation framework, and validation inside domain may be some simple sanity validations like checking if value is not empty, checking value length, test against regex etc. **Note**: be careful when replicating regex validations, only use custom regex patterns for some very simple rules and let validation library do it's job on more difficult ones.
 
 So, what exactly should `Value Object` validate?
 

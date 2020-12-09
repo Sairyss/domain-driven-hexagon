@@ -19,9 +19,7 @@ export class Email extends ValueObject {
   }
 
   static validate(email: string): void {
-    const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
-    if (!regex.test(email)) {
+    if (!email.includes('@')) {
       throw new ValidationException('Email has incorrect format');
     }
   }
