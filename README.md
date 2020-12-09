@@ -391,7 +391,9 @@ There are a lot of debates on how data sanity should be validated. There are a f
 - only in domain's `Value Objects`, maybe also exposing `validate` method to be able to gather errors outside of domain
 - in both: outside of domain and inside domain.
 
-After some research it seems that third option may be the most optimal. Outside validation may do full sanity checks using some well tested validation framework, and validation inside domain may be some simple sanity validations like checking if value is not empty, checking value length, test against regex etc. **Note**: be careful when replicating regex validations, only use custom regex patterns for some very simple rules and let validation library do it's job on more difficult ones.
+After some research it seems that third option may be the most optimal. Outside validation may do full sanity checks using some well tested validation framework, and validation inside domain may be some simple sanity validations like checking if value is not empty, checking value length, test against regex etc.
+
+**Note**: be careful when replicating regex validations, only use custom regex patterns for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems.
 
 So, what exactly should `Value Object` validate?
 
@@ -399,7 +401,7 @@ So, what exactly should `Value Object` validate?
 - Checking if value is not empty/null/undefined is important;
 - Basic sanity validations. For example, it makes no sense for a Phone number to be one digit long, so it can be validated like this: `if (phone.toString().length >= 7 && phone.toString().length <= 10)`, or check if string at least resembles a correct format, like `email.includes('@')`. Even if it duplicates validation in upper layers, it still can be re-validated in a `Value Object` since it's a simple one-liner and doesn't require much effort to make. It won't be as good as validation framework, but it will be _**good enough**_ to add extra security and avoid a whole class of possible errors, like preventing programmer creating invalid objects by accident: `new Email(someString)` or `new PhoneNumber(1.1)`;
 - If some value is already validated somewhere in upper layers by validation library and it's implementation in `Value Object` would be too complex, its probably not worth it to replicate this validation here (unless some important business rule depends on this validation); Though, it can be replicated for extra security, it's a matter of preference.
-- Why writing own validations here instead of using validation library? It's to avoid domain depending on a validation library. It may be a good fit to use `class-validator` decorators in a `NestJS` app, but when changing frameworks this validator may not be a great fit anymore. Generally it is not a good practice for domain layer to depend on libraries, but some exceptions can be made if needed.
+- Why writing own validations in `Value Objects` instead of using validation library? It's to avoid domain depending on a validation library. It may be a good fit to use `class-validator` decorators in a `NestJS` app, but when changing frameworks this validator may not be a great fit anymore. Generally, it is not a good practice for domain layer to depend on libraries, but some exceptions can be made if needed.
   </details>
 
 **Recommended to read**:
