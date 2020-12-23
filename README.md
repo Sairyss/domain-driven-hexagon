@@ -452,7 +452,7 @@ Examples:
 
 ### Response DTOs
 
-Output data returned to a user. May consist of `Response` object and a corresponding interface. `Response` class can be used to map returned data, and interface may be shared between processes that receive that response.
+Output data returned to a user. May consist of `Response` object and a corresponding interface. `Response` class can have a corresponding mapper to map data to it's format (or in some cases the DTO class itself can do this for simplicity), and interface may be shared between processes that receive that response.
 
 ### Additional recommendations:
 
