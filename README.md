@@ -452,14 +452,15 @@ Examples:
 
 ### Response DTOs
 
-Output data returned to a user. May consist of `Response` object and a corresponding interface. `Response` class can have a corresponding mapper to map data to it's format (or in some cases the DTO class itself can do this for simplicity), and interface may be shared between processes that receive that response.
+Output data returned to a user. May consist of a `Request`/`Response` class, interface and/or mapper.
 
 ### Additional recommendations:
 
-- When returning a `Response` prefer _whitelisting_ properties over _blacklisting_. This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
+- When returning a `Response` prefer _whitelisting_ properties over _blacklisting_ using mapper (or right in the `Response` class in some cases). This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
 - Interfaces for `Request`/`Response` objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating git submodule or a separate package for sharing interfaces.
 - `Request`/`Response` DTO classes may be a good place to use validation and sanitization decorators like [class-validator](https://www.npmjs.com/package/class-validator) and [class-sanitizer](https://www.npmjs.com/package/class-sanitizer) (make sure that all validation errors are gathered first and only then return them to the user, this is called [Notification pattern](https://martinfowler.com/eaaDev/Notification.html). Class-validator does this by default).
 - `Request`/`Response` DTO classes may also be a good place to use Swagger/OpenAPI library decorators that [NestJS provides](https://docs.nestjs.com/openapi/types-and-parameters).
+- If class decorators for validation/swagger are not used, creating a class may be omitted and interface/mapper should be enough.
 
 Examples:
 
