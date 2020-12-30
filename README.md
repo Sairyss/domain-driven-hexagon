@@ -385,15 +385,22 @@ Example file: [guard.ts](src/core/guard.ts)
 
 <details>
 <summary>Note about validation</summary>
-There are a lot of debates on how data sanity should be validated. There are a few options:
+There are a lot of debates on how data sanity should be validated (don't confuse with business rules, everything below is only about data sanity). There are a few options:
 
 - only outside, before data enters the domain (like validation decorators in DTOs)
-- only in domain's `Value Objects`, maybe also exposing `validate` method to be able to gather errors outside of domain
+- only in domain's `Value Objects`, maybe also exposing `validate` method to be able to gather and return errors (notification pattern) outside of domain
 - in both: outside of domain and inside domain.
 
-After some research it seems that third option may be the most optimal. Outside validation may do full sanity checks using some well tested validation framework, and validation inside domain may be some simple sanity validations like checking if value is not empty, checking value length, test against regex etc.
+Which approach to choose is a tradeoff.
 
-**Note**: be careful when replicating regex validations, only use custom regex patterns for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems.
+- Doing validation only outside makes maintaining easier at a cost of some security;
+- Doing full sanity validations only inside `Value Objects` makes code more secure but may cause domain to be dependent on a validation library;
+- Validation in both cases can be a compromise.
+
+In example code that is presented here validation is done in both outside layers and domain layer.
+Outside validation may do full sanity checks using some well tested validation framework, and validation inside domain may be some simple sanity validations that don't require a validation library: like checking if value is not empty, checking value length, test against regex etc.
+
+**Note**: be careful when replicating regexp validations, only use custom regexp patterns for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems For example, value accepted by a validation library may throw an error in a `Value Object` because custom regexp is not good enough (validating email is more complex then just copy - pasting a regular expression from google).
 
 So, what exactly should `Value Object` validate?
 
@@ -401,12 +408,13 @@ So, what exactly should `Value Object` validate?
 - Checking if value is not empty/null/undefined is important;
 - Basic sanity validations. For example, it makes no sense for a Phone number to be one digit long, so it can be validated like this: `if (phone.toString().length >= 7 && phone.toString().length <= 10)`, or check if string at least resembles a correct format, like `email.includes('@')`. Even if it duplicates validation in upper layers, it still can be re-validated in a `Value Object` since it's a simple one-liner and doesn't require much effort to make. It won't be as good as validation framework, but it will be _**good enough**_ to add extra security and avoid a whole class of possible errors, like preventing programmer creating invalid objects by accident: `new Email(someString)` or `new PhoneNumber(1.1)`;
 - If some value is already validated somewhere in upper layers by validation library and it's implementation in `Value Object` would be too complex, its probably not worth it to replicate this validation here (unless some important business rule depends on this validation); Though, it can be replicated for extra security, it's a matter of preference.
-- Why writing own validations in `Value Objects` instead of using validation library? It's to avoid domain depending on a validation library. It may be a good fit to use `class-validator` decorators in a `NestJS` app, but when changing frameworks this validator may not be a great fit anymore. Generally, it is not a good practice for domain layer to depend on libraries, but some exceptions can be made if needed.
+- Why writing own validations in `Value Objects` instead of using validation library? It's to avoid domain depending on a validation library. It may be a good fit to use `class-validator` decorators in a `NestJS` app, but when changing frameworks this validator may not be a great fit anymore. Generally, it is not a good practice for domain layer to depend on libraries, but exceptions can be made if needed.
   </details>
 
 **Recommended to read**:
 
 - [Making illegal states unrepresentable](https://v5.chriskrycho.com/journal/making-illegal-states-unrepresentable-in-ts/)
+- [Domain Primitives: what they are and how you can use them to make more secure software](https://freecontent.manning.com/domain-primitives-what-they-are-and-how-you-can-use-them-to-make-more-secure-software/)
 - [Article by Mark Seemann](https://blog.ploeh.dk/2010/07/12/DomainObjectsandIDataErrorInfo/)
 - [Value Objects Like a Pro](https://medium.com/@nicolopigna/value-objects-like-a-pro-f1bfc1548c72)
 
@@ -506,9 +514,12 @@ Using a single entity for domain logic and database concerns leads to a database
 
 Since domain `Entities` have their data modeled so that it best accomodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` are used that have shape that is better represented in a particular database that is used.
 
-For simplicity `ORM Entities` may also contain mapping methods to map from domain to persistence and back. Though a separate `Mapper` class can be created if preferred.
+`ORM Entities` should also have a corresponding mapper to map from domain to persistence and back.
 
-Example: [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts)
+Example files:
+
+- [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts)
+- [user.orm-mapper.ts]() // TODO
 
 Read more:
 
