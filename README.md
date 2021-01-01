@@ -653,6 +653,27 @@ Example files: // TODO
 - Spec file for a use case in isolation: [TODO]();
 - e2e testing a use case from end-user standpoint (with all the infrastructure up, like API routes, databases etc): [TODO]().
 
+# Decorators
+
+Consider using decorators to add useful functionality to your language. Here are some examples for TypeScript:
+
+### "Final" decorator
+
+In TypeScript, unlike other languages, there is no default way to make a class `final`. But there is a way around it using a custom decorator.
+
+Example file: [final.decorator.ts](src/core/decorators/final.decorator.ts)
+
+Read more:
+
+- [When to declare classes final](https://ocramius.github.io/blog/when-to-declare-classes-final/)
+- [Final classes by default, why?](https://matthiasnoback.nl/2018/09/final-classes-by-default-why/)
+
+### "Frozen" decorator
+
+Some properties on a class or its prototype can be changed from outside without any error, which may cause bugs. This can be prevented using a custom class decorator.
+
+Example file: [frozen.decorator.ts](src/core/decorators/frozen.decorator.ts)
+
 # Folder/File Structure
 
 So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
