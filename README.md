@@ -223,7 +223,7 @@ Domain business logic goes here. Avoid having business logic in your services wh
 
 Entities must have an identity. We determine equality between two entities by comparing their identificators (usually its `id` field).
 
-> Domain entities should always be valid entities. There are a certain number of invariants for an object that should always be true. For example, an order item object always has to have a quantity that must be must be a positive integer, plus an article name and price. Therefore, invariants enforcement is the responsibility of the domain entities (especially of the aggregate root) and an entity object should not be able to exist without being valid.
+> Domain entities should always be valid entities. There are a certain number of invariants for an object that should always be true. For example, an order item object always has to have a quantity that must be a positive integer, plus an article name and price. Therefore, invariants enforcement is the responsibility of the domain entities (especially of the aggregate root) and an entity object should not be able to exist without being valid.
 
 - Entities know nothing about other layers;
 - Domain entities data should be modelled to accomodate business logic, not some database schema;
