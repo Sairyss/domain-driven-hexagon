@@ -655,7 +655,9 @@ Example files: // TODO
 
 # Decorators
 
-Consider using decorators to add useful functionality to your language. Here are some examples for TypeScript:
+Decorators can add some useful functionality that may improve application architecture.
+
+It's even possible to bring some functionality from other languages that is not available by default. Here are some examples for TypeScript:
 
 ### "Final" decorator
 
