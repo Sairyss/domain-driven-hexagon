@@ -271,7 +271,7 @@ Eric Evans, Domain-Driven Design:
 
 ## Value objects
 
-Another important concept is `Value Objects` from DDD.
+Another important concept is `Value Objects`.
 Unlike entities, `Value Objects` have no identity. We determine their equality through their structrual property.
 
 Imagine you have a `User` entity which needs to have an `address` of a user. Usually an address is simply a complex value that has no identity in the domain and is composed of multiple other values, like `country`, `street`, `postalCode` etc; so it can be modeled and treated as a `Value Object` with it's own business logic.
@@ -415,10 +415,9 @@ So, what exactly should `Value Object` validate?
 
 - [Making illegal states unrepresentable](https://v5.chriskrycho.com/journal/making-illegal-states-unrepresentable-in-ts/)
 - [Domain Primitives: what they are and how you can use them to make more secure software](https://freecontent.manning.com/domain-primitives-what-they-are-and-how-you-can-use-them-to-make-more-secure-software/)
-- [Article by Mark Seemann](https://blog.ploeh.dk/2010/07/12/DomainObjectsandIDataErrorInfo/)
 - [Value Objects Like a Pro](https://medium.com/@nicolopigna/value-objects-like-a-pro-f1bfc1548c72)
 
-## Other domain topics
+## Other DDD topics
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 
