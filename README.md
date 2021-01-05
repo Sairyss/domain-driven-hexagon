@@ -121,7 +121,7 @@ These services orchestrate the steps required to fulfill the commands imposed by
 - Application services declare dependencies on infrastructural services required to execute domain logic (by using ports).
 - Are used in order to fetch domain `Entities` (or anything else) from database/outside world through ports;
 - Execute other out-of-process communications through `Ports` (like event emits, sending emails etc);
-- In case of interacting with one Entity/[Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html), executes its methods directly;
+- In case of interacting with one Entity/Aggretate, executes its methods directly;
 - In case of working with multiple Entities/Aggregates, uses a `Domain Service` to orchestrate them;
 - Are basically a `Command`/`Query` handlers;
 - Should not depend on other application services since it may cause problems (like cyclic dependencies);
@@ -221,13 +221,17 @@ Entities are the core of the domain. They encapsulate Enterprise wide business r
 
 Domain business logic goes here. Avoid having business logic in your services when possible, this leads to [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) (domain services are exception for business logic that can't be put in a single entity).
 
-Entities must have an identity. We determine equality between two entities by comparing their identificators (usually its `id` field).
-
 > Domain entities should always be valid entities. There are a certain number of invariants for an object that should always be true. For example, an order item object always has to have a quantity that must be a positive integer, plus an article name and price. Therefore, invariants enforcement is the responsibility of the domain entities (especially of the aggregate root) and an entity object should not be able to exist without being valid.
 
-- Entities know nothing about other layers;
-- Domain entities data should be modelled to accomodate business logic, not some database schema;
-- Entities must protect their invariants, try to avoid public setters and update state using methods;
+Entities:
+
+- Have an identity that defines it and makes it distinguishable from others. It's identity is consistent during its life cycle.
+- Equality between two entities is determined by comparing their identificators (usually its `id` field).
+- Can contain other objects, such as other entities or value objects.
+- Responsible for the coordination of operations on the objects it owns.
+- Know nothing about other layers.
+- Domain entities data should be modelled to accomodate business logic, not some database schema.
+- Entities must protect their invariants, try to avoid public setters and update state using methods.
 - Validate Entities and other domain objects on creation and throw an error on first failure. [Fail Fast](https://en.wikipedia.org/wiki/Fail-fast).
 
 Example files:
@@ -242,11 +246,9 @@ Read more: [Domain Entity pattern](https://badia-kharroubi.gitbooks.io/microserv
 
 [Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html) is a cluster of domain objects that can be treated as a single unit. It encapsulates entities and value objects which conceptually belong together. It also contains a set of operations which those domain objects can be operated on.
 
-Aggregates help to simplify the domain model by gathering multiple domain objects under a single abstraction.
-
-Aggregates should not be influenced by data model. Associations between domain objects are not the same as database relationships.
-
-Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
+- Aggregates help to simplify the domain model by gathering multiple domain objects under a single abstraction.
+- Aggregates should not be influenced by data model. Associations between domain objects are not the same as database relationships.
+- Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
 
 Example files: // TODO
 
@@ -271,10 +273,20 @@ Eric Evans, Domain-Driven Design:
 
 ## Value objects
 
-Another important concept is `Value Objects`.
-Unlike entities, `Value Objects` have no identity. We determine their equality through their structrual property.
+Some Attributes and behaviors can be moved out of the entity itself and put into `Value Objects`.
+
+Value Objects:
+
+- Have no identity. Equality is determined through structrual property.
+- Are immutable.
+- Can be used as an attribute of `entities` and other `value objects`.
+- Explicitly defines and enforces important constraints (invariants).
+
+Value object shouldn’t be just a convenient grouping of attributes but should form a well-defined concept in the domain model. This is true even if it contains only one attribute. When modeled as a conceptual whole, it carries meaning when passed around, and it can uphold its constraints.
 
 Imagine you have a `User` entity which needs to have an `address` of a user. Usually an address is simply a complex value that has no identity in the domain and is composed of multiple other values, like `country`, `street`, `postalCode` etc; so it can be modeled and treated as a `Value Object` with it's own business logic.
+
+`Value object` isn’t just a data structure that holds values. It can also encapsulate logic associated with the concept it represents.
 
 Equality of `Value Objects` can be checked using `equals` method:
 
@@ -292,7 +304,7 @@ Read more about Value Objects:
 - [Value Objects to the rescue](https://medium.com/swlh/value-objects-to-the-rescue-28c563ad97c6).
 - [Value Object pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/value-object-pattern.html)
 
-## Validation of Domain Objects
+## Enforcing invariants of Domain Objects
 
 ### Replacing primitives with Value Objects
 
@@ -314,8 +326,6 @@ email: Email;
 Now the only way to make an `email` is to create a new instance of `Email` class first, this ensures it will be validated on creation and a wrong value won't get into `Entities`.
 
 It also makes code easier to understand since it's using [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) instead of just `string`.
-
-To avoid having duplicate `Value Objects` for primitives, some generic ones can be created if needed, like `ShortString`, `LongString`, `SmallNumber`, `BigNumber` etc.
 
 Example files:
 
@@ -385,7 +395,7 @@ Example file: [guard.ts](src/core/guard.ts)
 
 <details>
 <summary>Note about validation</summary>
-There are a lot of debates on how data sanity should be validated (don't confuse with business rules, everything below is only about data sanity). There are a few options:
+There are a lot of debates on how data <b>sanity</b> should be validated (don't confuse with business rules, everything below is only about data sanity). There are a few options:
 
 - only outside, before data enters the domain (like validation decorators in DTOs)
 - only in domain's `Value Objects`, maybe also exposing `validate` method to be able to gather and return errors (notification pattern) outside of domain
@@ -393,22 +403,22 @@ There are a lot of debates on how data sanity should be validated (don't confuse
 
 Which approach to choose is a tradeoff.
 
-- Doing validation only outside makes maintaining easier at a cost of some security;
-- Doing full sanity validations only inside `Value Objects` makes code more secure but may cause domain to be dependent on a validation library;
-- Validation in both cases can be a compromise.
+- Doing sanity validation only outside makes maintaining easier at a cost of security;
+- Doing full sanity validations only inside `Value Objects` makes code more secure but may cause domain to be dependent on a validation framework;
+- Validation in both places can be a compromise.
 
 In example code that is presented here validation is done in both outside layers and domain layer.
-Outside validation may do full sanity checks using some well tested validation framework, and validation inside domain may be some simple sanity validations that don't require a validation library: like checking if value is not empty, checking value length, test against regex etc.
+Outside validation may do full sanity checks using some well tested validation framework (like `class-validator` decorators in DTOs), and validation inside domain may be some simple sanity validations that don't require a validation library: like checking if value is not empty, checking value length, test against regex etc.
 
-**Note**: be careful when replicating regexp validations, only use custom regexp patterns for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems For example, value accepted by a validation library may throw an error in a `Value Object` because custom regexp is not good enough (validating email is more complex then just copy - pasting a regular expression from google).
+**Note**: be careful with regexp validations, only use custom regexp patterns for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems. For example, value can be accepted by a validation framework, but `Value Object` may throw an error because custom regexp is not good enough (validating email is more complex then just copy - pasting a regular expression found in google. Though, it can be validated by a simple rule that is true all the time and won't cause any conflicts, like every email must contain an `@`).
 
 So, what exactly should `Value Object` validate?
 
 - First of all, business rules.
 - Checking if value is not empty/null/undefined is important;
-- Basic sanity validations. For example, it makes no sense for a Phone number to be one digit long, so it can be validated like this: `if (phone.toString().length >= 7 && phone.toString().length <= 10)`, or check if string at least resembles a correct format, like `email.includes('@')`. Even if it duplicates validation in upper layers, it still can be re-validated in a `Value Object` since it's a simple one-liner and doesn't require much effort to make. It won't be as good as validation framework, but it will be _**good enough**_ to add extra security and avoid a whole class of possible errors, like preventing programmer creating invalid objects by accident: `new Email(someString)` or `new PhoneNumber(1.1)`;
+- Basic sanity validations. For example, it makes no sense for a phone number to be one digit long, or an age of a person to be negative or too big number. so it can be validated like this: `if (age >= 18 && age <= 99)`. Even if it duplicates validation in upper layers, it still can be re-validated in a `Value Object` since it's a simple one-liner and doesn't require much effort to make. For more complex cases custom validation like this won't be as good as validation framework, but it will be _**good enough**_ to add extra security and avoid a whole class of possible errors, like preventing programmer creating invalid objects by accident: `new Age(-1)`;
 - If some value is already validated somewhere in upper layers by validation library and it's implementation in `Value Object` would be too complex, its probably not worth it to replicate this validation here (unless some important business rule depends on this validation); Though, it can be replicated for extra security, it's a matter of preference.
-- Why writing own validations in `Value Objects` instead of using validation library? It's to avoid domain depending on a validation library. It may be a good fit to use `class-validator` decorators in a `NestJS` app, but when changing frameworks this validator may not be a great fit anymore. Generally, it is not a good practice for domain layer to depend on libraries, but exceptions can be made if needed.
+- Why writing own validations in `Value Objects` instead of using validation framework? It's to avoid domain depending on this framework. It may be a good fit to use `class-validator` decorators in a `NestJS` app, but when changing frameworks this validator may not be a great fit anymore. Generally, it is not a good practice for domain layer to depend on frameworks or libraries, but exceptions can be made if needed.
   </details>
 
 **Recommended to read**:
@@ -493,7 +503,9 @@ This folder contains all database related files:
 
 ## Repositories
 
-Repositories are classes or components that encapsulate the logic required to access data sources. They centralize common data access functionality, providing better maintainability and decoupling the infrastructure or technology used to access databases from the domain model layer.
+Repositories centralize common data access functionality. They encapsulate the logic required to access that data. Entities/aggregates can be put into a repository and then retrieved at a later time without domain even knowing where data is saved, in a database, or a file, or some other source.
+
+We use repositories to decouple the infrastructure or technology used to access databases from the domain model layer.
 
 Martin Fowler describes a repository as follows:
 
@@ -501,7 +513,7 @@ Martin Fowler describes a repository as follows:
 
 The data flow here looks something like this: repository receives a domain `Entity` from application service, maps it to database schema/ORM format, does required operations and maps it back to domain `Entity` and returns it back to service.
 
-**Keep in mind** that application's core is not allowed to depend on repositories directly, instead it depends on abstractions (ports/interfaces).
+**Keep in mind** that application's core is not allowed to depend on repositories directly, instead it depends on abstractions (ports/interfaces). This makes data retrieval technology-agnostic.
 
 ### Examples
 
