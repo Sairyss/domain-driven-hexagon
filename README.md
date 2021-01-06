@@ -616,7 +616,10 @@ Consider serializing errors by creating a `toJSON()` method so it can be easily 
 - Exception abstract base class example: [exception.base.ts](src/core/exceptions/exception.base.ts)
 - Validation Exception class example: [validation.exception.ts](src/core/exceptions/validation.exception.ts)
 
-Read more: [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
+Read more:
+
+- [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
+- [Secure by design chapter 9: Handling failures securely](https://livebook.manning.com/book/secure-by-design/chapter-9/)
 
 ---
 
