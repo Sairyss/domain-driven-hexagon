@@ -596,27 +596,10 @@ When using microservices, all exceptions can be packed as a submodule and reused
 
 For example:
 
-- When validation error is thrown by validating user input, it means that input is incorrect and something like `InputValidationException` type may be thrown containing all the incorrect fields and later converted into `400 Bad Request Exception` for the user in exception interceptor.
-- When validation exception happens on a new `Value Object` creation that means a programmer did a mistake by assigning an incorrect value to a constructor, so a different type of error should be thrown here, something like `ValidationException` which is later converted into `500 Internal Server Error` for the user.
+- When validation error is thrown by validating user input, it means that this input is incorrect and a `400 Bad Request Exception` should be returned with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this project's code examples it's done automatically in DTOs by `class-validator` library.
+- When validation exception happens on a new `Value Object` creation that usually means a programmer did a mistake by assigning an incorrect value to a constructor, so a different type of error should be thrown here which later should be converted into `500 Internal Server Error`, in this case without adding additional info since it may cause a leak of some sensitive data.
 
-Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended. No details should be returned to the user in case of programmer errors since those details may contain some sensitive information about the program, those details should only be shown in logs for a programmer to see so he can fix them.
-
-## Exception details
-
-There are times when there is a need to return some extra info about the error to a client, or log it into console for debugging purposes (like all the incorrect fields provided when validation exception happens, this is [Notification pattern](https://martinfowler.com/eaaDev/Notification.html) mentioned earlier).
-
-For this purpose something like `details` array may be a good option. In this project `details` is an array of `key: string` and `value: string` pairs. An example of validation `details` may be something like this:
-
-```typescript
-details: [
-  { key: 'email', value: 'Incorrect format provided' },
-  { key: 'password', value: 'Must be at least 8 characters long' },
-];
-```
-
-- `Details` array may have any other structure, just keep in mind it should have a consistent type across all exceptions, for example: `{ email: 'Incorrect email' }` - inconsistent, key/value pairs - consistent.
-
-Example file with validation details: [address.value-object.ts](src/modules/user/domain/value-objects/address.value-object.ts) (check `validate` method).
+Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended. No details should be returned to the user in case of programmer errors since those details may contain some sensitive information about the program.
 
 ## Error Serialization
 

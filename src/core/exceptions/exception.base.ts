@@ -1,23 +1,14 @@
 import { Exceptions } from './exception.types';
 
-export interface ExceptionDetails {
-  key?: string;
-  value: string;
-}
-
 export interface SerializedExceptionInterface {
   error: {
     name: string;
     message: string;
-    details: ExceptionDetails[];
   };
 }
 
 export abstract class ExceptionBase extends Error {
-  constructor(
-    readonly message: string,
-    readonly details: ExceptionDetails[] = [],
-  ) {
+  constructor(readonly message: string) {
     super(message);
   }
 
@@ -28,7 +19,6 @@ export abstract class ExceptionBase extends Error {
       error: {
         name: this.name,
         message: this.message,
-        details: this.details,
       },
     };
   }

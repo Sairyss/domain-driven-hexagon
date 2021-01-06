@@ -1,10 +1,6 @@
 import { ValueObject } from 'src/core/base-classes/value-object.base';
 import { Guard } from 'src/core/guard';
-import {
-  ArgumentOutOfRangeException,
-  ExceptionDetails,
-  ValidationException,
-} from '@exceptions';
+import { ArgumentOutOfRangeException, ValidationException } from '@exceptions';
 
 export interface AddressProps {
   country: string;
@@ -31,19 +27,15 @@ export class Address extends ValueObject {
     if (Guard.isEmpty(props)) {
       throw new ValidationException('Address object is empty');
     }
-    // collecting range validation details before throwing
-    const outOfRangeDetails: ExceptionDetails[] = [];
+
     if (!Guard.lengthIsBetween(props.country, 2, 50)) {
-      outOfRangeDetails.push({ key: 'country', value: props.country });
+      throw new ArgumentOutOfRangeException('country');
     }
     if (!Guard.lengthIsBetween(props.street, 2, 50)) {
-      outOfRangeDetails.push({ key: 'street', value: props.street });
+      throw new ArgumentOutOfRangeException('street');
     }
     if (!Guard.lengthIsBetween(props.postalCode, 2, 10)) {
-      outOfRangeDetails.push({ key: 'postalCode', value: props.postalCode });
-    }
-    if (outOfRangeDetails.length) {
-      throw new ArgumentOutOfRangeException('address', outOfRangeDetails);
+      throw new ArgumentOutOfRangeException('postalCode');
     }
   }
 }

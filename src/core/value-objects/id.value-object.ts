@@ -21,7 +21,7 @@ export class ID extends ValueObject {
 
   static validate(value: string): void {
     if (!validate(value)) {
-      throw new ValidationException('Incorrect ID format', [{ value }]);
+      throw new ValidationException('Incorrect ID format');
     }
   }
 }
