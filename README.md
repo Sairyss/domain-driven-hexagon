@@ -2,9 +2,9 @@ _**This repo is work in progress**_
 
 # Clean Hexagon
 
-Main empasis of this project is to provide a guide on how to design complex applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
+Main emphasis of this project is to provide a guide on how to design complex applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
-**Everything below should be seen as a recomendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed.
+**Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed.
 
 This project uses [TypeScript](https://www.typescriptlang.org/) language, [NestJS](https://docs.nestjs.com/) framework and [Typeorm](https://www.npmjs.com/package/typeorm) for the database access.
 Keep in mind that code examples are adapted to TypeScript and mentioned above frameworks so may not fit well for other languages.
@@ -52,7 +52,7 @@ Before we begin, here are the PROS and CONS of using this approach:
 
 In short, data flow looks like this (from left to right):
 
-- Request/CLI commmand/event is sent to the controller using plain DTO;
+- Request/CLI command/event is sent to the controller using plain DTO;
 - Controller parses this DTO, converts it to a Command/Query and passes it to a Application service;
 - Application service handles this Command/Query; it executes business logic using domain services and/or entities and uses the infrastructure layer through ports;
 - Infrastructure layer maps data to format that it needs, uses repositories to fetch/persist data and adapters to send events or do other I/O communications, maps data back to domain format and returns it back to Application service;
@@ -78,7 +78,7 @@ Read more about modular programming benefits:
 
 This is the core of the system which is built using [DDD building blocks](https://dzone.com/articles/ddd-part-ii-ddd-building-blocks).
 
-**Dependencies point inwards**. Outter layers can depend on inner layers, but inner layers never depend on outter layers.
+**Dependencies point inwards**. Outer layers can depend on inner layers, but inner layers never depend on outer layers.
 
 Core layers shouldn't depend on frameworks or access external resources. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)).
 
@@ -133,7 +133,7 @@ These services orchestrate the steps required to fulfill the commands imposed by
 - Application services declare dependencies on infrastructural services required to execute domain logic (by using ports).
 - Are used in order to fetch domain `Entities` (or anything else) from database/outside world through ports;
 - Execute other out-of-process communications through `Ports` (like event emits, sending emails etc);
-- In case of interacting with one Entity/Aggretate, executes its methods directly;
+- In case of interacting with one Entity/Aggregate, executes its methods directly;
 - In case of working with multiple Entities/Aggregates, uses a `Domain Service` to orchestrate them;
 - Are basically a `Command`/`Query` handlers;
 - Should not depend on other application services since it may cause problems (like cyclic dependencies);
@@ -242,7 +242,7 @@ Entities:
 - Can contain other objects, such as other entities or value objects.
 - Responsible for the coordination of operations on the objects it owns.
 - Know nothing about other layers.
-- Domain entities data should be modelled to accomodate business logic, not some database schema.
+- Domain entities data should be modelled to accommodate business logic, not some database schema.
 - Entities must protect their invariants, try to avoid public setters and update state using methods.
 - Validate Entities and other domain objects on creation and throw an error on first failure. [Fail Fast](https://en.wikipedia.org/wiki/Fail-fast).
 
@@ -289,7 +289,7 @@ Some Attributes and behaviors can be moved out of the entity itself and put into
 
 Value Objects:
 
-- Have no identity. Equality is determined through structrual property.
+- Have no identity. Equality is determined through structural property.
 - Are immutable.
 - Can be used as an attribute of `entities` and other `value objects`.
 - Explicitly defines and enforces important constraints (invariants).
@@ -389,7 +389,7 @@ Things that can't be validated at compile time (like user input) are validated a
 
 Domain objects have to protect their invariants. Having some validation rules here will protect their state from corruption.
 
-`Value Object` represent a typed value in domain. The goal here is to incapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context. This will make application more resilient to errors and will protect it from a whole class of bugs.
+`Value Object` represent a typed value in domain. The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context. This will make application more resilient to errors and will protect it from a whole class of bugs.
 
 There are a lot of cases when invalid data may end up in a domain. For example, if data comes from database, from external API, or if it's just a programmer error.
 
@@ -403,7 +403,7 @@ To avoid repeating same validation code between different domain objects conside
 
 Example file: [guard.ts](src/core/guard.ts)
 
-**Keep in mind** that not all validations can be done in a single `Value Object`, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may invole another field, or even a different entity. Handle those cases accordingly.
+**Keep in mind** that not all validations can be done in a single `Value Object`, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may involve another field, or even a different entity. Handle those cases accordingly.
 
 <details>
 <summary>Note about validation</summary>
@@ -535,7 +535,7 @@ This project contains abstract repository class that allows to make basic CRUD o
 
 Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world those two should be separated. If ORM frameworks are used, `ORM Entities` can be created to represent domain entities in a database.
 
-Since domain `Entities` have their data modeled so that it best accomodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` are used that have shape that is better represented in a particular database that is used.
+Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` are used that have shape that is better represented in a particular database that is used.
 
 `ORM Entities` should also have a corresponding mapper to map from domain to persistence and back.
 
@@ -583,7 +583,7 @@ Adapters should have:
 Other infrastructure related things:
 
 - Framework related files;
-- Application logger implemention;
+- Application logger implementation;
 - Periodic cron jobs or tasks launchers ([NestJS Schedule](https://docs.nestjs.com/techniques/task-scheduling));
 - Internal events handlers for infrastructure operations ([Nest-event](https://www.npmjs.com/package/nest-event));
 - Other technology related files.
@@ -615,7 +615,7 @@ Application should be protected not only from incorrect user input but from a pr
 
 ## Error Serialization
 
-By default, Error objects seralize to JSON with output like this:
+By default, Error objects serialize to JSON with output like this:
 
 ```typescript
 {
