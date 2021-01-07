@@ -82,7 +82,9 @@ This is the core of the system which is built using [DDD building blocks](https:
 
 Core layers shouldn't depend on frameworks or access external resources. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)).
 
-**Note**: Whether or not to use libraries in a core/domain is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like number converting libraries etc). Read more: [referencing external libs](https://khorikov.org/posts/2019-08-07-referencing-external-libs/).
+## Using libraries inside application's core and domain layers
+
+Whether or not to use libraries in a core/domain is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like number converting libraries etc). Read more: [referencing external libs](https://khorikov.org/posts/2019-08-07-referencing-external-libs/).
 
 Main recommendations to keep in mind is that libraries imported in application's core/domain **shouldn't** expose:
 
@@ -100,7 +102,7 @@ Read more:
 
 - [Anti-corruption Layer — An effective Shield](https://medium.com/@malotor/anticorruption-layer-a-effective-shield-caa4d5ba548c)
 
-Application's Core consists of:
+## Application's Core consists of:
 
 ### Domain layer:
 
@@ -113,6 +115,8 @@ Application's Core consists of:
 - Application Services
 - Commands and Queries
 - Ports
+
+This is just a short list the main things that may reside in here. More building blocks may be added if needed.
 
 ---
 
