@@ -320,7 +320,7 @@ Read more about Value Objects:
 
 ### Replacing primitives with Value Objects
 
-Most of the codebases operate on primitive types – `strings`, `numbers` etc. In the Domain Model, this level of abstraction is definitely too low.
+Most of the code bases operate on primitive types – `strings`, `numbers` etc. In the Domain Model, this level of abstraction is definitely too low.
 
 Significant business concepts should be expressed using specific types and classes. `Value Objects` can be used instead primitives to avoid [primitives obsession](https://refactoring.guru/smells/primitive-obsession).
 So, for example, `email` of type `string`:
@@ -600,7 +600,7 @@ Keep in mind that your application's `core` shouldn't throw HTTP exceptions or s
 
 Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts)
 
-Adding a `name` string with type name for every exception is a good practice, since when that exception is tranferred to another process `instanceof` check cannot be made anymore so a `name` string is used instead. Store exception `name` enum types in a separate file so they can be reused on a receiving side.
+Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be made anymore so a `name` string is used instead. Store exception `name` enum types in a separate file so they can be reused on a receiving side.
 
 When using microservices, all exceptions can be packed as a submodule and reused in each microservice for consistency.
 
