@@ -4,6 +4,7 @@ export interface SerializedExceptionInterface {
   error: {
     name: string;
     message: string;
+    stack?: string;
   };
 }
 
@@ -19,6 +20,7 @@ export abstract class ExceptionBase extends Error {
       error: {
         name: this.name,
         message: this.message,
+        stack: this.stack,
       },
     };
   }
