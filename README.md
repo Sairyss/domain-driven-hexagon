@@ -94,7 +94,7 @@ Main recommendations to keep in mind is that libraries imported in application's
 
 Also if a library changes often or has a lot of dependencies of its own it shouldn't be used in domain layer.
 
-To use above described libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) of [facade](https://refactoring.guru/design-patterns/facade) patterns.
+To use such libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) or [facade](https://refactoring.guru/design-patterns/facade) patterns.
 
 Offload as much of irrelevant responsibilities as possible from the core and especially from domain layer.
 
