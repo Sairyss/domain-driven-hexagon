@@ -90,7 +90,15 @@ Main recommendations to keep in mind is that libraries imported in application's
 - Functionality not relevant to domain (frameworks, technology details like ORMs etc).
 - Functionality that brings randomness (generating random IDs, timestamps etc) since this makes tests unpredictable (though in TypeScript world it is not that big of a deal since this can be mocked by a test library without using DI);
 
+Also if a library changes often or has a lot of dependencies of its own it shouldn't be used in domain layer.
+
+To use above described libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) of [facade](https://refactoring.guru/design-patterns/facade) patterns.
+
 Offload as much of irrelevant responsibilities as possible from the core.
+
+Read more:
+
+- [Anti-corruption Layer — An effective Shield](https://medium.com/@malotor/anticorruption-layer-a-effective-shield-caa4d5ba548c)
 
 Application's Core consists of:
 
