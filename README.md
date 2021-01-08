@@ -337,7 +337,13 @@ email: Email;
 
 Now the only way to make an `email` is to create a new instance of `Email` class first, this ensures it will be validated on creation and a wrong value won't get into `Entities`.
 
-It also makes code easier to understand since it's using [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) instead of just `string`.
+Creating an object for every primitive value may be cumbersome, but it somewhat forces a developer to study domain more in details instead of just throwing a primitive type without even thinking what that value represents in domain.
+
+Using `Value Objects`:
+
+- Makes code easier to understand by using [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) instead of just `string`.
+- Leads to a better design.
+- Improves security by ensuring invariants of every property.
 
 Example files:
 
