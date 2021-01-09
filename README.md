@@ -339,7 +339,9 @@ Now the only way to make an `email` is to create a new instance of `Email` class
 
 Creating an object for every primitive value may be cumbersome, but it somewhat forces a developer to study domain more in details instead of just throwing a primitive type without even thinking what that value represents in domain.
 
-Using `Value Objects`:
+Using `Value Objects` for primitive types is also called a `domain primitive`. The concept and naming are proposed in the book ["Secure by Design"](https://www.manning.com/books/secure-by-design).
+
+Using `Value Objects` instead of primitives:
 
 - Makes code easier to understand by using [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) instead of just `string`.
 - Leads to a better design.
@@ -395,11 +397,11 @@ Things that can't be validated at compile time (like user input) are validated a
 
 Domain objects have to protect their invariants. Having some validation rules here will protect their state from corruption.
 
-`Value Object` represent a typed value in domain. The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context. This will make application more resilient to errors and will protect it from a whole class of bugs.
+`Value Object` can represent a typed value in domain. The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context. This will make application more resilient to errors and will protect it from a whole class of bugs.
 
 There are a lot of cases when invalid data may end up in a domain. For example, if data comes from external API, database, or if it's just a programmer error.
 
-- External APIs may have errors and return corrupted data;
+- External APIs may return corrupted data;
 - Database may return incorrect data when someone modifies it manually (especially when there are some admin panels that allow to do that);
 - Programmer may create objects with incorrect input by accident: `new Email(someRandomString)`.
 
@@ -413,12 +415,13 @@ Read more: [Refactoring: Guard Clauses](https://medium.com/better-programming/re
 
 Another solution would be using an external validation library, but it is not a good practice to tie domain to external libraries and is not usually recommended. Custom validation probably won't be as good as validation library, but it can be **good enough** to protect from a lot of potential errors and avoid tying domain to external libraries.
 
-Although exceptions can be made if needed, especially for very specific validation libraries that validate only one thing (like specific IDs, for example bitcoin wallet address). Tying only one or just few `Value Objects` to such a specific library won't cause any harm.
+Although exceptions can be made if needed, especially for very specific validation libraries that validate only one thing (like specific IDs, for example bitcoin wallet address). Tying only one or just few `Value Objects` to such a specific library won't cause any harm. Unlike general purpose validation libraries which will be tied to domain everywhere and it will be troublesome to change it in every `Value Object` in case when old library is no longer maintained, contains critical bugs or is compromised by hackers etc.
 
-Though, it is perfectly fine to do full sanity checks using validation framework or library **outside** of domain (for example `class-validator` decorators in `DTOs`), and do only some basic checks inside of `Value Objects` (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense.
+Though, it is perfectly fine to do full sanity checks using validation framework or library **outside** of domain (for example `class-validator` decorators in `DTOs`), and do only some basic checks inside of `Value Objects` (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
 
 <details>
 <summary>Note about using regexp</summary>
+
 Be careful with custom regexp validations for things like validating `email`, only use custom regexp for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems in case your regexp is not good enough.
 
 Also, keep in mind that custom regexp that does same type of validation that is already done by validation library outside of domain may create conflicts between your regexp and the one used by a validation library.
@@ -429,6 +432,8 @@ For example, value can be accepted as valid by a validation library, but `Value 
 
 </details>
 
+Either to use external library/framework for validation inside domain or not is a tradeoff, analyze all the pros and cons and choose what is more appropriate for current application.
+
 **Keep in mind** that not all validations can be done in a single `Value Object`, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may involve another field, or even a different entity. Handle those cases accordingly.
 
 **Recommended to read**:
@@ -437,6 +442,8 @@ For example, value can be accepted as valid by a validation library, but `Value 
 - [Domain Primitives: what they are and how you can use them to make more secure software](https://freecontent.manning.com/domain-primitives-what-they-are-and-how-you-can-use-them-to-make-more-secure-software/)
 - ["Secure by Design" Chapter 5: Domain Primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/) (a full chapter of the article above)
 - [Value Objects Like a Pro](https://medium.com/@nicolopigna/value-objects-like-a-pro-f1bfc1548c72)
+
+---
 
 ## Other DDD topics
 
