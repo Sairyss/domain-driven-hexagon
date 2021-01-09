@@ -397,47 +397,39 @@ Domain objects have to protect their invariants. Having some validation rules he
 
 `Value Object` represent a typed value in domain. The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context. This will make application more resilient to errors and will protect it from a whole class of bugs.
 
-There are a lot of cases when invalid data may end up in a domain. For example, if data comes from database, from external API, or if it's just a programmer error.
+There are a lot of cases when invalid data may end up in a domain. For example, if data comes from external API, database, or if it's just a programmer error.
 
-- Database may return incorrect data when someone modifies it manually (especially when there are some admin panels that allow to do that);
 - External APIs may have errors and return corrupted data;
+- Database may return incorrect data when someone modifies it manually (especially when there are some admin panels that allow to do that);
 - Programmer may create objects with incorrect input by accident: `new Email(someRandomString)`.
 
-Validating will inform immediately when `Value Object` is created with corrupted data. Data should not be trusted, either it comes from a database or it's a user input. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
+Validating will inform immediately when `Value Object` is created with corrupted data or if some data violates a business rule. Data should not be trusted, either it comes from a database or it's a user input. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
 
-To avoid repeating same validation code between different domain objects consider using [guards](https://medium.com/better-programming/refactoring-guard-clauses-2ceeaa1a9da).
+For validation like checking for nulls, empty arrays, input length etc. a library of [guards](<https://en.wikipedia.org/wiki/Guard_(computer_science)>) can be created.
 
 Example file: [guard.ts](src/core/guard.ts)
 
-**Keep in mind** that not all validations can be done in a single `Value Object`, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may involve another field, or even a different entity. Handle those cases accordingly.
+Read more: [Refactoring: Guard Clauses](https://medium.com/better-programming/refactoring-guard-clauses-2ceeaa1a9da)
+
+Another solution would be using an external validation library, but it is not a good practice to tie domain to external libraries and is not usually recommended. Custom validation probably won't be as good as validation library, but it can be **good enough** to protect from a lot of potential errors and avoid tying domain to external libraries.
+
+Although exceptions can be made if needed, especially for very specific validation libraries that validate only one thing (like specific IDs, for example bitcoin wallet address). Tying only one or just few `Value Objects` to such a specific library won't cause any harm.
+
+Though, it is perfectly fine to do full sanity checks using validation framework or library **outside** of domain (for example `class-validator` decorators in `DTOs`), and do only some basic checks inside of `Value Objects` (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense.
 
 <details>
-<summary>Note about validation</summary>
-There are a lot of debates on how data <b>sanity</b> should be validated (don't confuse with business rules, everything below is only about data sanity). There are a few options:
+<summary>Note about using regexp</summary>
+Be careful with custom regexp validations for things like validating `email`, only use custom regexp for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems in case your regexp is not good enough.
 
-- only outside, before data enters the domain (like validation decorators in DTOs)
-- only in domain's `Value Objects`, maybe also exposing `validate` method to be able to gather and return errors (notification pattern) outside of domain
-- in both: outside of domain and inside domain.
+Also, keep in mind that custom regexp that does same type of validation that is already done by validation library outside of domain may create conflicts between your regexp and the one used by a validation library.
 
-Which approach to choose is a tradeoff.
+For example, value can be accepted as valid by a validation library, but `Value Object` may throw an error because custom regexp is not good enough (validating `email` is more complex then just copy - pasting a regular expression found in google. Though, it can be validated by a simple rule that is true all the time and won't cause any conflicts, like every `email` must contain an `@`). Try finding and validating only patterns that won't cause conflicts.
 
-- Doing sanity validation only outside makes maintaining easier at a cost of security;
-- Doing full sanity validations only inside `Value Objects` makes code more secure but may cause domain to be dependent on a validation framework;
-- Validation in both places can be a compromise.
+---
 
-In example code that is presented here validation is done in both outside layers and domain layer.
-Outside validation may do full sanity checks using some well tested validation framework (like `class-validator` decorators in DTOs), and validation inside domain may be some simple sanity validations that don't require a validation library: like checking if value is not empty, checking value length, test against regex etc.
+</details>
 
-**Note**: be careful with regexp validations, only use custom regexp patterns for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems. For example, value can be accepted by a validation framework, but `Value Object` may throw an error because custom regexp is not good enough (validating email is more complex then just copy - pasting a regular expression found in google. Though, it can be validated by a simple rule that is true all the time and won't cause any conflicts, like every email must contain an `@`).
-
-So, what exactly should `Value Object` validate?
-
-- First of all, business rules.
-- Checking if value is not empty/null/undefined is important;
-- Basic sanity validations. For example, it makes no sense for a phone number to be one digit long, or an age of a person to be negative or too big number. so it can be validated like this: `if (age >= 18 && age <= 99)`. Even if it duplicates validation in upper layers, it still can be re-validated in a `Value Object` since it's a simple one-liner and doesn't require much effort to make. For more complex cases custom validation like this won't be as good as validation framework, but it will be _**good enough**_ to add extra security and avoid a whole class of possible errors, like preventing programmer creating invalid objects by accident: `new Age(-1)`;
-- If some value is already validated somewhere in upper layers by validation library and it's implementation in `Value Object` would be too complex, its probably not worth it to replicate this validation here (unless some important business rule depends on this validation); Though, it can be replicated for extra security, it's a matter of preference.
-- Why writing own validations in `Value Objects` instead of using validation framework? It's to avoid domain depending on this framework. It may be a good fit to use `class-validator` decorators in a `NestJS` app, but when changing frameworks this validator may not be a great fit anymore. Generally, it is not a good practice for domain layer to depend on frameworks or libraries, but exceptions can be made if needed.
-  </details>
+**Keep in mind** that not all validations can be done in a single `Value Object`, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may involve another field, or even a different entity. Handle those cases accordingly.
 
 **Recommended to read**:
 
