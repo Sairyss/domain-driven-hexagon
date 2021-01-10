@@ -397,15 +397,17 @@ Things that can't be validated at compile time (like user input) are validated a
 
 Domain objects have to protect their invariants. Having some validation rules here will protect their state from corruption.
 
-`Value Object` can represent a typed value in domain. The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context. This will make application more resilient to errors and will protect it from a whole class of bugs.
+`Value Object` can represent a typed value in domain. The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context.
 
-There are a lot of cases when invalid data may end up in a domain. For example, if data comes from external API, database, or if it's just a programmer error.
+If every argument and return value of a method is valid by definition, you’ll have input and output validation in every single method in your codebase without any extra effort. This will make application more resilient to errors and will protect it from a whole class of bugs and security vulnerabilities caused by invalid input data.
+
+Data should not be trusted. There are a lot of cases when invalid data may end up in a domain. For example, if data comes from external API, database, or if it's just a programmer error.
 
 - External APIs may return corrupted data;
 - Database may return incorrect data when someone modifies it manually (especially when there are some admin panels that allow to do that);
 - Programmer may create objects with incorrect input by accident: `new Email(someRandomString)`.
 
-Validating will inform immediately when `Value Object` is created with corrupted data or if some data violates a business rule. Data should not be trusted, either it comes from a database or it's a user input. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
+Enforcing self-validation will inform immediately when `Value Object` is created with corrupted data. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
 
 For validation like checking for nulls, empty arrays, input length etc. a library of [guards](<https://en.wikipedia.org/wiki/Guard_(computer_science)>) can be created.
 
