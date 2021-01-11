@@ -3,7 +3,7 @@ import { ValueObject } from '../base-classes/value-object.base';
 
 export class DateVO extends ValueObject {
   constructor(value: Date) {
-    super();
+    super(value);
     this.value = new Date(value);
   }
 

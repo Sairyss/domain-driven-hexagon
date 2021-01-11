@@ -1,9 +1,10 @@
 import { ValueObject } from 'src/core/base-classes/value-object.base';
-import { ValidationException } from '@exceptions';
+import { ArgumentOutOfRangeException, ValidationException } from '@exceptions';
+import { Guard } from 'src/core/guard';
 
 export class Email extends ValueObject {
   constructor(value: string) {
-    super();
+    super(value);
     const email = Email.format(value);
     // validating in a constructor ensures that only valid objects are created. This protects object's invariant and prevents it to be in invalid state.
     Email.validate(email);
@@ -27,6 +28,9 @@ export class Email extends ValueObject {
   }
 
   static validate(email: string): void {
+    if (!Guard.lengthIsBetween(email, 5, 320)) {
+      throw new ArgumentOutOfRangeException('Email');
+    }
     if (!email.includes('@')) {
       throw new ValidationException('Email has incorrect format');
     }
