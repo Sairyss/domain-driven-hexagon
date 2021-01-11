@@ -422,7 +422,7 @@ There are some general recommendations for validation order. Cheap operations li
 - _Syntax - Is the format right?_ Check if data format is right. Sometimes checking syntax is as simple as using a regexp, or it may be more complex like parsing a XML or JSON.
 - _Semantics - Does the data make sense?_ Check data in connection with the rest of the system (like database, other processes etc). For example, checking in a database if ID of item exists.
 
-Read more about validation types described above: ["Secure by Design" Chapter 4.3](https://livebook.manning.com/book/secure-by-design/chapter-4/109)
+Read more about validation types described above: ["Secure by Design" Chapter 4.3: Validation](https://livebook.manning.com/book/secure-by-design/chapter-4/109)
 
 For validation like checking for nulls, empty arrays, input length etc. a library of [guards](<https://en.wikipedia.org/wiki/Guard_(computer_science)>) can be created.
 
@@ -654,7 +654,7 @@ Consider serializing errors by creating a `toJSON()` method so it can be easily 
 Read more:
 
 - [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
-- [Secure by design chapter 9: Handling failures securely](https://livebook.manning.com/book/secure-by-design/chapter-9/)
+- ["Secure by design" Chapter 9: Handling failures securely](https://livebook.manning.com/book/secure-by-design/chapter-9/)
 
 ---
 
