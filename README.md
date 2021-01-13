@@ -621,15 +621,15 @@ Other infrastructure related things:
 
 ## Exception types
 
-Consider making different exception types for different situations. For example, an `ValidationException`, `NotFoundException` etc.
+Consider making different exception types for different situations. For example: `ValidationException`, `BusinessRuleException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
 
-Keep in mind that your application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know anything about where it is used, since `core` can be used by anything: HTTP, Microservice, CLI etc. To return proper HTTP code back to user an `instanceof` check can be used in exception interceptor and appropriate HTTP exception can be returned depending on exception type.
+Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know anything about where it is used, since it can be used by anything: HTTP, Microservice, CLI etc. To return proper HTTP code back to user an `instanceof` check can be performed in exception interceptor and appropriate HTTP exception can be returned depending on exception type.
 
 Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts)
 
 Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be made anymore so a `name` string is used instead. Store exception `name` enum types in a separate file so they can be reused on a receiving side.
 
-When using microservices, all exceptions can be packed as a submodule and reused in each microservice for consistency.
+When using microservices, all exception types can be packed into a library and reused in each microservice for consistency.
 
 ### Differentiate between programmer errors and user input errors
 
@@ -642,7 +642,7 @@ Application should be protected not only from incorrect user input but from a pr
 
 ## Error Serialization
 
-By default, Error objects serialize to JSON with output like this:
+By default, in NodeJS Error objects serialize to JSON with output like this:
 
 ```typescript
 {
