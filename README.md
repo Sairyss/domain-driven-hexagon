@@ -6,10 +6,11 @@ Main emphasis of this project is to provide a guide on how to design complex app
 
 **Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed.
 
-This project uses [TypeScript](https://www.typescriptlang.org/) language, [NestJS](https://docs.nestjs.com/) framework and [Typeorm](https://www.npmjs.com/package/typeorm) for the database access.
-Keep in mind that code examples are adapted to TypeScript and mentioned above frameworks so may not fit well for other languages.
+This project's code examples are written using [TypeScript](https://www.typescriptlang.org/) language, [NestJS](https://docs.nestjs.com/) framework and [Typeorm](https://www.npmjs.com/package/typeorm) for the database access.
 
 Though patterns and principles presented here are **framework/language agnostic**, so above technologies can be easily replaced with any alternative. No matter what language or framework is used, any application can benefit from principles described below.
+
+**Note**: code examples are adapted to TypeScript and mentioned above frameworks so may not fit well for other languages. Also remember that code examples presented here are just examples and must be changed according to project's needs or personal preference.
 
 # Architecture
 
@@ -621,7 +622,7 @@ Other infrastructure related things:
 
 ## Exception types
 
-Consider making different exception types for different situations. For example: `ValidationException`, `BusinessRuleException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
+Consider extending `Error` object to make custom exception types for different situations. For example: `DomainException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
 
 Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know anything about where it is used, since it can be used by anything: HTTP, Microservice, CLI etc. To return proper HTTP code back to user an `instanceof` check can be performed in exception interceptor and appropriate HTTP exception can be returned depending on exception type.
 
@@ -640,7 +641,7 @@ For example:
 
 Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended. No details should be returned to the user in case of programmer errors since those details may contain some sensitive information about the program.
 
-## Error Serialization
+### Error Serialization
 
 By default, in NodeJS Error objects serialize to JSON with output like this:
 
@@ -651,6 +652,12 @@ By default, in NodeJS Error objects serialize to JSON with output like this:
 ```
 
 Consider serializing errors by creating a `toJSON()` method so it can be easily sent to other processes as a plain object.
+
+### Error metadata
+
+Consider adding optional `metadata` object to exceptions and pass some useful technical information about the error when throwing. This will make debugging easier.
+
+**Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone numbers etc) since this information may leak into log files. Aim adding only technical information.
 
 - Exception abstract base class example: [exception.base.ts](src/core/exceptions/exception.base.ts)
 - Validation Exception class example: [validation.exception.ts](src/core/exceptions/validation.exception.ts)
@@ -689,15 +696,13 @@ Example files: // TODO
 - Spec file for a use case in isolation: [TODO]();
 - e2e testing a use case from end-user standpoint (with all the infrastructure up, like API routes, databases etc): [TODO]().
 
-# Decorators
+# Other recommendations and good practices
 
-Decorators can add some useful functionality that may improve application architecture.
+## Prevent massive inheritance chains
 
-It's even possible to bring some functionality from other languages that is not available by default. Here are some examples for TypeScript:
+This can be achieved by making class `final`.
 
-### "Final" decorator
-
-In TypeScript, unlike other languages, there is no default way to make a class `final`. But there is a way around it using a custom decorator.
+**Note**: in TypeScript, unlike other languages, there is no default way to make class `final`. But there is a way around it using a custom decorator.
 
 Example file: [final.decorator.ts](src/core/decorators/final.decorator.ts)
 
@@ -706,13 +711,7 @@ Read more:
 - [When to declare classes final](https://ocramius.github.io/blog/when-to-declare-classes-final/)
 - [Final classes by default, why?](https://matthiasnoback.nl/2018/09/final-classes-by-default-why/)
 
-### "Frozen" decorator
-
-Some properties on a class or its prototype can be changed from outside without any error, which may cause bugs. This can be prevented using a custom class decorator.
-
-Example file: [frozen.decorator.ts](src/core/decorators/frozen.decorator.ts)
-
-# Folder/File Structure
+## Folder/File Structure
 
 So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
