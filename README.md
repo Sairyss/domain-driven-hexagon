@@ -37,6 +37,7 @@ Before we begin, here are the PROS and CONS of using this approach:
 
 - Independent of external frameworks, technologies, databases, etc. Frameworks and external resources can be plugged/unplugged with much less effort.
 - Easily testable and scalable.
+- More secure. Some security principles are baked in design itself.
 - The solution can be worked on and maintained by different teams, without stepping on each other's toes.
 - Easier to add new features. As the system grows over time, the difficulty in adding new features remains constant and relatively small.
 - If the solution is properly broken apart along [bounded context](https://martinfowler.com/bliki/BoundedContext.html) lines, it becomes easy to convert pieces of it into microservices if needed.
@@ -655,7 +656,7 @@ Consider serializing errors by creating a `toJSON()` method so it can be easily 
 
 ### Error metadata
 
-Consider adding optional `metadata` object to exceptions and pass some useful technical information about the error when throwing. This will make debugging easier.
+Consider adding optional `metadata` object to exceptions (if language doesn't support anything similar by default) and pass some useful technical information about the error when throwing. This will make debugging easier.
 
 **Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone numbers etc) since this information may leak into log files. Aim adding only technical information.
 
