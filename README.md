@@ -18,7 +18,7 @@ Mainly based on:
 
 - [Domain-Driven Design (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design)
 - [Hexagonal (Ports and Adapters) Architecture ](https://blog.octo.com/en/hexagonal-architecture-three-principles-and-an-implementation-example/)
-- [Secure by Design](https://www.securedbydesign.com/)
+- [Secure by Design](https://www.manning.com/books/secure-by-design)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Onion Architecture](https://herbertograca.com/2017/09/21/onion-architecture/)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
