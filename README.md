@@ -1,6 +1,6 @@
 _**This repo is work in progress**_
 
-# Clean Hexagon
+# Domain-Driven Hexagon
 
 Main emphasis of this project is to provide a guide on how to design complex applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
@@ -18,18 +18,14 @@ Mainly based on:
 
 - [Domain-Driven Design (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design)
 - [Hexagonal (Ports and Adapters) Architecture ](https://blog.octo.com/en/hexagonal-architecture-three-principles-and-an-implementation-example/)
+- [Secure by Design](https://www.securedbydesign.com/)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Onion Architecture](https://herbertograca.com/2017/09/21/onion-architecture/)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
 
-Clean, Hexagonal and Onion architectures are not incompatible as some people think and are not competing with each other to see which one is better. All of them provide useful patterns that can be used in combination to achieve a better result.
+And many other sources (more links below in every chapter).
 
-- DDD principles are all about building application domain;
-- Hexagonal Architecture is all about how application domain interacts with the rest of the world using Ports and Adapters;
-- Onion architecture proposed separation of concerns by dividing application in layers;
-- And Clean architecture is somewhat a combination of the above.
-
-This architectures are very similar and pretty much compatible.
+Those architectures and principles provide useful patterns that can be used in combination to achieve a better result.
 
 Before we begin, here are the PROS and CONS of using this approach:
 
@@ -46,11 +42,11 @@ Before we begin, here are the PROS and CONS of using this approach:
 
 - This is a sophisticated architecture which requires a firm understanding of quality software principles, such as SOLID, Clean/Hexagonal Architecture, Domain-Driven Design, etc. Any team implementing such a solution will almost certainly require an expert to drive the solution and keep it from evolving the wrong way and accumulating technical debt.
 
-- This approach is not recommended for small applications. There is added up-front complexity to support the architecture, such as more boilerplate code, abstractions, etc. thus this architecture is generally ill-suited to simple CRUD applications and could over-complicate such solutions.
+- This approach is not recommended for small applications. There is added up-front complexity to support the architecture, such as more boilerplate code, abstractions, data mapping etc. thus this architecture is generally ill-suited to simple CRUD applications and could over-complicate such solutions.
 
 # Diagram
 
-![Clean Hexagon](assets/images/CleanHexagon.png)
+![Domain-Driven Hexagon](assets/images/DomainDrivenHexagon.png)
 
 In short, data flow looks like this (from left to right):
 
@@ -58,7 +54,7 @@ In short, data flow looks like this (from left to right):
 - Controller parses this DTO, converts it to a Command/Query and passes it to a Application service;
 - Application service handles this Command/Query; it executes business logic using domain services and/or entities and uses the infrastructure layer through ports;
 - Infrastructure layer maps data to format that it needs, uses repositories to fetch/persist data and adapters to send events or do other I/O communications, maps data back to domain format and returns it back to Application service;
-- After application service fishes doing it's job, it returns data/confirmation back to Controllers;
+- After application service finishes doing it's job, it returns data/confirmation back to Controllers;
 - Controllers return data back to the user (if application has presenters, presenters are returned instead).
 
 More in details on each step below.
@@ -90,19 +86,22 @@ Whether or not to use libraries in a core/domain is a subject of a lot of debate
 
 Main recommendations to keep in mind is that libraries imported in application's core/domain **shouldn't** expose:
 
-- Functionality to access any out-of-precess resources (http calls, database access etc);
+- Functionality to access any out-of-process resources (http calls, database access etc);
 - Functionality not relevant to domain (frameworks, technology details like ORMs etc).
 - Functionality that brings randomness (generating random IDs, timestamps etc) since this makes tests unpredictable (though in TypeScript world it is not that big of a deal since this can be mocked by a test library without using DI);
-
-Also if a library changes often or has a lot of dependencies of its own it shouldn't be used in domain layer.
+- If a library changes often or has a lot of dependencies of its own it most likely shouldn't be used in domain layer.
 
 To use such libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) or [facade](https://refactoring.guru/design-patterns/facade) patterns.
-
-Offload as much of irrelevant responsibilities as possible from the core and especially from domain layer.
 
 Read more:
 
 - [Anti-corruption Layer — An effective Shield](https://medium.com/@malotor/anticorruption-layer-a-effective-shield-caa4d5ba548c)
+
+Be careful with general purpose libraries/frameworks that may scatter across many domain objects. It will be hard to replace those libraries if needed.
+
+Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects then a general purpose library that is everywhere.
+
+Offload as much of irrelevant responsibilities as possible from the core and especially from domain layer.
 
 ## Application's Core consists of:
 
