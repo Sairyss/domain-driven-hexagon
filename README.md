@@ -340,7 +340,9 @@ email: Email;
 
 Now the only way to make an `email` is to create a new instance of `Email` class first, this ensures it will be validated on creation and a wrong value won't get into `Entities`.
 
-Creating an object for every primitive value may be cumbersome, but it somewhat forces a developer to study domain more in details instead of just throwing a primitive type without even thinking what that value represents in domain.
+Also an important behavior of the domain primitive is encapsulated in one place. By having the domain primitive own and control domain operations, you reduce the risk of bugs caused by lack of detailed domain knowledge of the concepts involved in the operation.
+
+Creating an object for primitive values may be cumbersome, but it somewhat forces a developer to study domain more in details instead of just throwing a primitive type without even thinking what that value represents in domain.
 
 Using `Value Objects` for primitive types is also called a `domain primitive`. The concept and naming are proposed in the book ["Secure by Design"](https://www.manning.com/books/secure-by-design).
 
@@ -350,14 +352,23 @@ Using `Value Objects` instead of primitives:
 - Leads to a better design.
 - Improves security by ensuring invariants of every property.
 
+**Note**: Though _primitive obsession_ is a code smell, but on the other side, some people consider making a class for every primitive may be an overengineering. There are people who advocate for and against it. In any case, if creating a class for every primitive is not preferred, here are some basic recommendations:
+
+Create a class for a primitive when:
+
+- It has some specific rules or behavior in it. If not, a primitive type can be used.
+- It is used in many places across the module/application.
+- It has some specific validation logic. To avoid repeating this validation in many places, it can be encapsulated in one place.
+- An alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases).
+
 Example files:
 
 - [email.value-object.ts](src/modules/user/domain/value-objects/email.value-object.ts)
 
 Recommended to read:
 
-- [Developing the ubiquitous language](https://medium.com/@felipefreitasbatista/developing-the-ubiquitous-language-1382b720bb8c)
 - [Primitive Obsession — A Code Smell that Hurts People the Most](https://medium.com/the-sixt-india-blog/primitive-obsession-code-smell-that-hurt-people-the-most-5cbdd70496e9)
+- [Developing the ubiquitous language](https://medium.com/@felipefreitasbatista/developing-the-ubiquitous-language-1382b720bb8c)
 
 **Use Value Objects and Types system to make illegal states unrepresentable in your program.**
 
