@@ -372,6 +372,8 @@ Recommended to read:
 
 **Use Value Objects and Types system to make illegal states unrepresentable in your program.**
 
+Nonetheless, some people recommend using objects for **every** value:
+
 Quote from [John A De Goes](https://twitter.com/jdegoes):
 
 > Making illegal states unrepresentable is all about statically proving that all runtime values (without exception) correspond to valid objects in the business domain. The effect of this technique on eliminating meaningless runtime states is astounding and cannot be overstated.
