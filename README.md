@@ -352,7 +352,13 @@ Using `Value Objects` instead of primitives:
 - Leads to a better design.
 - Improves security by ensuring invariants of every property.
 
-**Note**: Though _primitive obsession_ is a code smell, but on the other side, some people consider making a class for every primitive may be an overengineering. There are people who advocate for and against it. In any case, if creating a class for every primitive is not preferred, here are some basic recommendations:
+**Downsides**: Though _primitive obsession_ is a code smell, but on the other side, some people consider making a class for every primitive may be an overengineering. There are people who advocate for and against it. Some downsides would be:
+
+- **A lot** of extra classes added to the project.
+- More boilerplate and more code writing.
+- More moving parts means program is harder to maintain.
+
+In any case, if creating a class for every primitive is not preferred, here are some basic recommendations:
 
 Create a class for a primitive when:
 
@@ -370,7 +376,7 @@ Recommended to read:
 - [Primitive Obsession — A Code Smell that Hurts People the Most](https://medium.com/the-sixt-india-blog/primitive-obsession-code-smell-that-hurt-people-the-most-5cbdd70496e9)
 - [Developing the ubiquitous language](https://medium.com/@felipefreitasbatista/developing-the-ubiquitous-language-1382b720bb8c)
 
-**Use Value Objects and Types system to make illegal states unrepresentable in your program.**
+**Use Value Objects/Domain Primitives and Types system to make illegal states unrepresentable in your program.**
 
 Nonetheless, some people recommend using objects for **every** value:
 
