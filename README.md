@@ -349,23 +349,10 @@ Using `Value Objects` for primitive types is also called a `domain primitive`. T
 Using `Value Objects` instead of primitives:
 
 - Makes code easier to understand by using [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) instead of just `string`.
-- Leads to a better design.
 - Improves security by ensuring invariants of every property.
+- Encapsulates specific business rules associated with a value.
 
-**Downsides**: Though _primitive obsession_ is a code smell, but on the other side, some people consider making a class for every primitive may be an overengineering. There are people who advocate for and against it. Some downsides would be:
-
-- **A lot** of extra classes added to the project.
-- More boilerplate and more code writing.
-- More moving parts means program is harder to maintain.
-
-In any case, if creating a class for every primitive is not preferred, here are some basic recommendations:
-
-Create a class for a primitive when:
-
-- It has some specific rules or behavior in it. If not, a primitive type can be used.
-- It is used in many places across the module/application.
-- It has some specific validation logic. To avoid repeating this validation in many places, it can be encapsulated in one place.
-- An alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases).
+**Note**: Though _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be an overengineering. There are people who advocate for and against it. If creating a class for every primitive is not preferred, create classes just for those primitives that have specific rules or behavior. Also an alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases).
 
 Example files:
 
@@ -458,7 +445,7 @@ Another solution would be using an external validation library, but it is not a 
 
 Although exceptions can be made if needed, especially for very specific validation libraries that validate only one thing (like specific IDs, for example bitcoin wallet address). Tying only one or just few `Value Objects` to such a specific library won't cause any harm. Unlike general purpose validation libraries which will be tied to domain everywhere and it will be troublesome to change it in every `Value Object` in case when old library is no longer maintained, contains critical bugs or is compromised by hackers etc.
 
-Though, it is perfectly fine to do full sanity checks using validation framework or library **outside** of domain (for example `class-validator` decorators in `DTOs`), and do only some basic checks inside of `Value Objects` (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
+Though, it is perfectly fine to do full sanity checks using validation framework or library **outside** of domain (for example [class-validator](https://www.npmjs.com/package/class-validator) decorators in `DTOs`), and do only some basic checks inside of `Value Objects` (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
 
 <details>
 <summary>Note about using regexp</summary>
