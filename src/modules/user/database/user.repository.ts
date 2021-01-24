@@ -1,26 +1,38 @@
-import { RepositoryBase } from 'src/infrastructure/database/base-classes/repository.base';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from 'src/modules/user/domain/entities/user.entity';
+import {
+  UserEntity,
+  UserProps,
+} from 'src/modules/user/domain/entities/user.entity';
 import { NotFoundException } from '@exceptions';
-import { OrmEntityBase } from 'src/infrastructure/database/base-classes/orm-entity.base';
+import {
+  TypeormRepositoryBase,
+  WhereCondition,
+} from 'src/infrastructure/database/base-classes/typeorm.repository.base';
+import { BaseEntityProps } from 'src/core/base-classes/entity.base';
+import { DeepPartial } from 'src/core/types';
+import { QueryParams } from 'src/core/ports/repository.ports';
 import { UserOrmEntity } from './user.orm-entity';
 import { UserRepositoryPort } from './user.repository.interface';
+import { UserOrmMapper } from './user.orm-mapper';
 
 @Injectable()
-export class UserRepository extends RepositoryBase<UserEntity>
+export class UserRepository
+  extends TypeormRepositoryBase<UserEntity, UserProps, UserOrmEntity>
   implements UserRepositoryPort {
+  protected relations: string[] = [];
+
   constructor(
     @InjectRepository(UserOrmEntity)
     private readonly userRepository: Repository<UserOrmEntity>,
   ) {
-    super(userRepository, UserOrmEntity);
+    super(userRepository, new UserOrmMapper(UserEntity, UserOrmEntity));
   }
 
   private async findOneByEmail(
     email: string,
-  ): Promise<OrmEntityBase<UserEntity> | undefined> {
+  ): Promise<UserOrmEntity | undefined> {
     const user = await this.userRepository.findOne({
       where: { email },
     });
@@ -33,7 +45,7 @@ export class UserRepository extends RepositoryBase<UserEntity>
     if (!user) {
       throw new NotFoundException();
     }
-    return user.toDomain();
+    return this.mapper.toDomainEntity(user);
   }
 
   async exists(email: string): Promise<boolean> {
@@ -42,5 +54,16 @@ export class UserRepository extends RepositoryBase<UserEntity>
       return true;
     }
     return false;
+  }
+
+  // Used to construct a query
+  protected prepareQuery(
+    params: DeepPartial<BaseEntityProps & UserProps>,
+  ): WhereCondition<UserOrmEntity> {
+    const where: QueryParams<UserOrmEntity> = {};
+    if (params.id) {
+      where.id = params.id.value;
+    }
+    return where;
   }
 }

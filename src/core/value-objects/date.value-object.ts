@@ -1,17 +1,19 @@
-import { ValidationException } from '@exceptions';
+import { ArgumentInvalidException } from '../exceptions';
 import { ValueObject } from '../base-classes/value-object.base';
 
-export class DateVO extends ValueObject {
-  constructor(value: Date) {
-    super(value);
-    this.value = new Date(value);
+export class DateVO extends ValueObject<Date> {
+  constructor(value: Date | string | number) {
+    const date = new Date(value);
+    super(date);
   }
 
-  readonly value: Date;
+  public get value(): Date {
+    return this.props;
+  }
 
-  static validate(date: Date): void {
+  protected validate(date: Date): void {
     if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
-      throw new ValidationException('Incorrect date');
+      throw new ArgumentInvalidException('Incorrect date');
     }
   }
 }

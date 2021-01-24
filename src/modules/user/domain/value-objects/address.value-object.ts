@@ -8,22 +8,20 @@ export interface AddressProps {
   street: string;
 }
 
-export class Address extends ValueObject {
-  constructor(props: AddressProps) {
-    super(props);
-    Address.validate(props);
-    this.country = props.country;
-    this.postalCode = props.postalCode;
-    this.street = props.street;
+export class Address extends ValueObject<AddressProps> {
+  get country(): string {
+    return this.props.country;
   }
 
-  readonly country: string;
+  get postalCode(): string {
+    return this.props.postalCode;
+  }
 
-  readonly postalCode: string;
+  get street(): string {
+    return this.props.street;
+  }
 
-  readonly street: string;
-
-  static validate(props: AddressProps): void {
+  protected validate(props: AddressProps): void {
     if (!Guard.lengthIsBetween(props.country, 2, 50)) {
       throw new ArgumentOutOfRangeException('country');
     }

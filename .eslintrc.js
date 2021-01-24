@@ -25,18 +25,8 @@ module.exports = {
     // errors
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-misused-new': 'error',
-
-    //warnings
-    // '@typescript-eslint/no-unused-vars': 'warn',
-    // '@typescript-eslint/consistent-type-assertions': 'warn',
-    // '@typescript-eslint/explicit-function-return-type': 'warn',
-    // '@typescript-eslint/no-empty-function': 'warn',
-    // '@typescript-eslint/no-empty-interface': 'warn',
-    // '@typescript-eslint/no-misused-promises': 'warn',
-    // '@typescript-eslint/no-unnecessary-type-arguments': 'warn',
-    // '@typescript-eslint/no-useless-constructor': 'warn',
-    // '@typescript-eslint/require-await': 'warn',
-    // '@typescript-eslint/restrict-plus-operands': 'warn',
+    '@typescript-eslint/explicit-module-boundary-types': 'error',
+    '@typescript-eslint/no-non-null-assertion': 'error',
 
     // off
     'import/extensions': 'off',
@@ -63,6 +53,10 @@ module.exports = {
         selector: 'WithStatement',
         message:
           '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
+      },
+      {
+        selector: "MethodDefinition[kind='set']",
+        message: 'Property setters are not allowed',
       },
     ],
   },

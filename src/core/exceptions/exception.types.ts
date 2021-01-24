@@ -1,8 +1,8 @@
 export enum Exceptions {
-  validationException = 'ValidationException',
-  inputValidationException = 'InputValidationException',
-  notFoundException = 'NotFoundException',
-  businessRuleValidationException = 'BusinessRuleValidationException',
-  argumentOutOfRangeException = 'ArgumentOutOfRangeException',
-  conflictException = 'ConflictException',
+  argumentInvalid = 'ArgumentInvalidException',
+  argumentOutOfRange = 'ArgumentOutOfRangeException',
+  argumentNotProvided = 'ArgumentNotProvidedException',
+  notFound = 'NotFoundException',
+  domainException = 'DomainException',
+  conflict = 'ConflictException',
 }

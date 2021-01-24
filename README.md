@@ -565,7 +565,7 @@ The data flow here looks something like this: repository receives a domain `Enti
 
 ### Examples
 
-This project contains abstract repository class that allows to make basic CRUD operations: [repository.base.ts](src/infrastructure/database/base-classes/repository.base.ts). This base class is then extended by a specific repository, and all specific operations that an entity may need is implemented in that specific repo: [user.repository.ts](src/modules/user/database/user.repository.ts).
+This project contains abstract repository class that allows to make basic CRUD operations: [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts). This base class is then extended by a specific repository, and all specific operations that an entity may need is implemented in that specific repo: [user.repository.ts](src/modules/user/database/user.repository.ts).
 
 ## ORM Entities
 
@@ -578,7 +578,7 @@ Since domain `Entities` have their data modeled so that it best accommodates dom
 Example files:
 
 - [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts)
-- [user.orm-mapper.ts]() // TODO
+- [user.orm-mapper.ts](src/modules/user/database/user.orm-mapper.ts)
 
 Read more:
 
@@ -668,7 +668,8 @@ Consider adding optional `metadata` object to exceptions (if language doesn't su
 **Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone numbers etc) since this information may leak into log files. Aim adding only technical information.
 
 - Exception abstract base class example: [exception.base.ts](src/core/exceptions/exception.base.ts)
-- Validation Exception class example: [validation.exception.ts](src/core/exceptions/validation.exception.ts)
+- Domain Exception class example: [domain.exception.ts](src/core/exceptions/domain.exception.ts)
+- Check `src/core/exceptions` folder to see more examples (some of them are exceptions from other languages like C# or Java)
 
 Read more:
 
