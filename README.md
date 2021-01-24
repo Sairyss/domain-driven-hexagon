@@ -57,7 +57,7 @@ In short, data flow looks like this (from left to right):
 - After application service finishes doing it's job, it returns data/confirmation back to Controllers;
 - Controllers return data back to the user (if application has presenters, presenters are returned instead).
 
-**Keep in mind** that different projects can have more or less steps/layers/building blocks then described here. Add more if application requires it, and skip some if application is not that complex.
+**Keep in mind** that different projects can have more or less steps/layers/building blocks then described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
 
 More in details on each step below.
 
