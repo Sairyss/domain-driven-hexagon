@@ -51,11 +51,13 @@ Before we begin, here are the PROS and CONS of using this approach:
 In short, data flow looks like this (from left to right):
 
 - Request/CLI command/event is sent to the controller using plain DTO;
-- Controller parses this DTO, converts it to a Command/Query and passes it to a Application service;
+- Controller parses this DTO, maps it to a Command/Query object format and passes it to a Application service;
 - Application service handles this Command/Query; it executes business logic using domain services and/or entities and uses the infrastructure layer through ports;
 - Infrastructure layer maps data to format that it needs, uses repositories to fetch/persist data and adapters to send events or do other I/O communications, maps data back to domain format and returns it back to Application service;
 - After application service finishes doing it's job, it returns data/confirmation back to Controllers;
 - Controllers return data back to the user (if application has presenters, presenters are returned instead).
+
+**Keep in mind** that different projects can have more or less steps/layers/building blocks then described here. Add more if application requires it, and skip some if application is not that complex.
 
 More in details on each step below.
 
