@@ -325,16 +325,16 @@ Read more about Value Objects:
 
 ### Replacing primitives with Value Objects
 
-Most of the code bases operate on primitive types – `strings`, `numbers` etc. In the Domain Model, this level of abstraction is definitely too low.
+Most of the code bases operate on primitive types – `strings`, `numbers` etc. In the Domain Model, this level of abstraction may be too low.
 
-Significant business concepts should be expressed using specific types and classes. `Value Objects` can be used instead primitives to avoid [primitives obsession](https://refactoring.guru/smells/primitive-obsession).
+Significant business concepts can be expressed using specific types and classes. `Value Objects` can be used instead primitives to avoid [primitives obsession](https://refactoring.guru/smells/primitive-obsession).
 So, for example, `email` of type `string`:
 
 ```typescript
 email: string;
 ```
 
-can be represented as a `Value Object` instead:
+could be represented as a `Value Object` instead:
 
 ```typescript
 email: Email;
