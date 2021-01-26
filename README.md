@@ -219,10 +219,13 @@ Read more about CQS:
 
 Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather then business logic. Ports act like abstractions for technology details that business logic does not care about.
 
+- Ports are basically just interfaces that define what has to be done and don't care about how it is done.
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
 - Mock implementations can be passed to ports while testing. Mocking makes your tests faster and independent from the environment.
 
-Example file: [event-emitter.port.ts](src/core/ports/event-emitter.port.ts)
+**Note**: since most port's implementations are injected and executed in application service, Application Layer can be a good place to keep those ports. But there are times when Domain Layer's business logic depends on executing some external resource, in that case those ports can be put in a Domain Layer.
+
+Example file: [repository.ports.ts](src/core/ports/repository.ports.ts)
 
 ---
 
