@@ -480,9 +480,31 @@ Either to use external library/framework for validation inside domain or not is 
 
 ---
 
-## Other DDD topics
+## Domain Events
+
+Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of.
+
+For example, if a user buys something, you may want to:
+
+- Send confirmation email to that user;
+- Send notification to corporate slack channel;
+- Notify shipping department;
+- Perform other side effects that are not concern of an original buy operation domain.
+
+Typical approach that is used involves executing all this logic in a service that performs a buy operation.
+
+But a better approach would be dispatching a Domain Event. You may perform any side effect operations just by subscribing to a Domain Event and creating as many event handlers as needed, without glueing any unrelated code to original domain that sends an event.
+
+Domain Events can be implemented using [Observer Pattern](https://refactoring.guru/design-patterns/observer).
+
+Example files:
+
+- // TODO
+
+Read more:
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
+- [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
 ---
 
