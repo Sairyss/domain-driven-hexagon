@@ -292,7 +292,7 @@ For example, if a user buys something, you may want to:
 - Notify shipping department;
 - Perform other side effects that are not concern of an original buy operation domain.
 
-Typical approach that is used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
+Typical approach that is usually used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
 
 A better approach would be publishing a `Domain Event`. Any side effect operations can be performed just by subscribing to a concrete `Domain Event` and creating as many event handlers as needed, without glueing any unrelated code to original domain's service that sends an event.
 
