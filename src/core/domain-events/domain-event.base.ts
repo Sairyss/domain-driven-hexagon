@@ -4,5 +4,5 @@ import { ID } from '../value-objects/id.value-object';
 export abstract class DomainEvent {
   public abstract readonly aggregateId: ID;
 
-  public readonly dateOccurred = new DateVO(Date.now());
+  public readonly dateOccurred = DateVO.now();
 }

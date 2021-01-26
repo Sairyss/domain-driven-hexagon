@@ -16,9 +16,8 @@ export abstract class Entity<EntityProps> {
   constructor(props: EntityProps) {
     this.validateProps(props);
     this._id = ID.generate();
-    const now = Date.now();
-    this._createdAt = new DateVO(now);
-    this._updatedAt = new DateVO(now);
+    this._createdAt = DateVO.now();
+    this._updatedAt = DateVO.now();
     this.props = props;
   }
 

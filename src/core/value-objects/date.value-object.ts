@@ -11,6 +11,10 @@ export class DateVO extends ValueObject<Date> {
     return this.props;
   }
 
+  public static now(): DateVO {
+    return new DateVO(Date.now());
+  }
+
   protected validate(date: Date): void {
     if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
       throw new ArgumentInvalidException('Incorrect date');
