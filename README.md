@@ -516,7 +516,7 @@ Either to use external library/framework for validation inside domain or not is 
 
 Interface adapters (also called driving/primary adapters) are user-facing interfaces that take input data from the user and repackage it in a form that is convenient for the use cases(services) and entities. Then they take the output from those use cases and entities and repackage it in a form that is convenient for displaying it back for the user. User can be either a person using an application or another server.
 
-Contains `Controllers` and `Request`/`Response` DTOs
+Contains `Controllers` and `Request`/`Response` DTOs (can also contain `Views`, like backend-generated HTML templates, if required).
 
 ## Controllers
 
