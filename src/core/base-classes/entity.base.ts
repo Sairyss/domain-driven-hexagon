@@ -3,6 +3,7 @@ import {
   ArgumentInvalidException,
 } from '../exceptions';
 import { Guard } from '../guard';
+import { convertPropsToObject } from '../utils';
 import { DateVO } from '../value-objects/date.value-object';
 import { ID } from '../value-objects/id.value-object';
 
@@ -60,6 +61,10 @@ export abstract class Entity<EntityProps> {
     return this._updatedAt;
   }
 
+  /**
+   *  Check if two entities are the same Entity. Checks using ID field.
+   * @param object Entity
+   */
   equals(object?: Entity<EntityProps>): boolean {
     if (object === null || object === undefined) {
       return false;
@@ -69,14 +74,29 @@ export abstract class Entity<EntityProps> {
       return true;
     }
 
-    if (!this.isEntity(object)) {
+    if (!Entity.isEntity(object)) {
       return false;
     }
 
     return this.id ? this.id.equals(object.id) : false;
   }
 
-  private isEntity(entity: unknown): entity is Entity<EntityProps> {
+  /**
+   * Convert to plain object. Mostly for debugging and testing purposes.
+   */
+  public toObject(): unknown {
+    const propsCopy = convertPropsToObject(this.props);
+
+    const result = {
+      id: this._id.value,
+      createdAt: this._createdAt.value,
+      updatedAt: this._updatedAt.value,
+      ...propsCopy,
+    };
+    return Object.freeze(result);
+  }
+
+  static isEntity(entity: unknown): entity is Entity<unknown> {
     return entity instanceof Entity;
   }
 
