@@ -7,13 +7,13 @@ import { TypeormEntityBase } from './typeorm.entity.base';
 
 export type OrmEntityProps<OrmEntity> = Omit<
   OrmEntity,
-  'id' | 'createdAt' | 'updatedAt'
+  'id' | 'createdAt' | 'updatedAt' | 'publishAggregateEvents'
 >;
 
 export abstract class OrmMapper<Entity extends BaseEntityProps, OrmEntity> {
   constructor(
-    private entityConstructor: new (props: any) => Entity,
-    private ormEntityConstructor: new (props: any) => OrmEntity,
+    private entityConstructor: new (...args: any[]) => Entity,
+    private ormEntityConstructor: new (...args: any[]) => OrmEntity,
   ) {}
 
   protected abstract toDomainProps(ormEntity: OrmEntity): unknown;

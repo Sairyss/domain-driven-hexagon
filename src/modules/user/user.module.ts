@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { eventEmitterProvider } from 'src/infrastructure/providers/event-emitter.provider';
 import { UserOrmEntity } from './database/user.orm-entity';
 import { UserRepository } from './database/user.repository';
 import { CreateUserEventHandler } from './use-cases/create-user/create-user.event.handler';
@@ -20,7 +19,6 @@ import { createUserProvider, removeUserProvider } from './user.providers';
     UserRepository,
     createUserProvider,
     removeUserProvider,
-    eventEmitterProvider,
     CreateUserEventHandler,
   ],
 })

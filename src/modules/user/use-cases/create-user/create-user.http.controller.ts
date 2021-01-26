@@ -1,6 +1,5 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { IdResponseDTO } from 'src/interface-adapters/dtos/id.response.dto';
-import { CreateUser } from 'src/interface-adapters/interfaces/user/create.user.interface';
 import { routes } from '@config/app.routes';
 
 import { createUserSymbol } from '@modules/user/user.providers';

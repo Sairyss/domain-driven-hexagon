@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   CallHandler,
   ExecutionContext,
   NestInterceptor,
@@ -13,7 +12,6 @@ import {
   ExceptionBase,
   ConflictException,
   NotFoundException,
-  InputValidationException,
 } from '@exceptions';
 
 export class ExceptionInterceptor implements NestInterceptor {
@@ -23,9 +21,6 @@ export class ExceptionInterceptor implements NestInterceptor {
   ): Observable<ExceptionBase> {
     return next.handle().pipe(
       catchError(err => {
-        if (err instanceof InputValidationException) {
-          throw new BadRequestException(err, err.message);
-        }
         if (err instanceof NotFoundException) {
           throw new NestNotFoundException(err, err.message);
         }

@@ -5,7 +5,6 @@ import { NestEventModule } from 'nest-event';
 import { UserRepository } from '@modules/user/database/user.repository';
 import { UserOrmEntity } from '@modules/user/database/user.orm-entity';
 import { typeormConfig } from './infrastructure/configs/ormconfig';
-import { eventEmitterProvider } from './infrastructure/providers/event-emitter.provider';
 
 @Module({
   imports: [
@@ -15,6 +14,6 @@ import { eventEmitterProvider } from './infrastructure/providers/event-emitter.p
     UserModule,
   ],
   controllers: [],
-  providers: [eventEmitterProvider, UserRepository],
+  providers: [UserRepository],
 })
 export class AppModule {}

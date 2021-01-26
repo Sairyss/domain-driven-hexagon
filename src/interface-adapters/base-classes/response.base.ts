@@ -1,9 +1,9 @@
-import { EntityProps } from 'src/core/base-classes/entity.base';
+import { BaseEntityProps } from 'src/core/base-classes/entity.base';
 import { ApiProperty } from '@nestjs/swagger';
 import { IdResponseDTO } from '../dtos/id.response.dto';
 
 export class ResponseBase extends IdResponseDTO {
-  constructor(entity: EntityProps) {
+  constructor(entity: BaseEntityProps) {
     super(entity.id?.value as string);
     this.createdAt = (entity.createdAt?.value as Date).toISOString();
     this.updatedAt = (entity.updatedAt?.value as Date).toISOString();
