@@ -268,7 +268,9 @@ Read more: [Domain Entity pattern](https://badia-kharroubi.gitbooks.io/microserv
 
 - Aggregates help to simplify the domain model by gathering multiple domain objects under a single abstraction.
 - Aggregates should not be influenced by data model. Associations between domain objects are not the same as database relationships.
+- Aggregate root is just an entity that contains other entities/value objects and all logic to operate them.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
+- Saving an aggregate must be a [transactional operation](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved or nothing.
 
 Example files: // TODO
 
