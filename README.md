@@ -491,11 +491,11 @@ For example, if a user buys something, you may want to:
 - Notify shipping department;
 - Perform other side effects that are not concern of an original buy operation domain.
 
-Typical approach that is used involves executing all this logic in a service that performs a buy operation.
+Typical approach that is used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
 
-But a better approach would be dispatching a Domain Event. You may perform any side effect operations just by subscribing to a Domain Event and creating as many event handlers as needed, without glueing any unrelated code to original domain that sends an event.
+A better approach would be dispatching a Domain Event. You may perform any side effect operations just by subscribing to a Domain Event and creating as many event handlers as needed, without glueing any unrelated code to original domain that sends an event.
 
-Domain Events can be implemented using [Observer Pattern](https://refactoring.guru/design-patterns/observer).
+Domain Events can be implemented using [Observer](https://refactoring.guru/design-patterns/observer) or [Mediator](https://refactoring.guru/design-patterns/mediator) patterns.
 
 Example files:
 
