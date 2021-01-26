@@ -271,12 +271,44 @@ Read more: [Domain Entity pattern](https://badia-kharroubi.gitbooks.io/microserv
 - Aggregate root is just an entity that contains other entities/value objects and all logic to operate them.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
 - Saving an aggregate must be a [transactional operation](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved or nothing.
+- Aggregates can publish `Domain Events` (more on that below).
 
-Example files: // TODO
+Example files: [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts)
 
 Read more:
 
 - [Understanding Aggregates in Domain-Driven Design](https://dzone.com/articles/domain-driven-design-aggregate)
+
+---
+
+## Domain Events
+
+Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of.
+
+For example, if a user buys something, you may want to:
+
+- Send confirmation email to that user;
+- Send notification to corporate slack channel;
+- Notify shipping department;
+- Perform other side effects that are not concern of an original buy operation domain.
+
+Typical approach that is used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
+
+A better approach would be publishing a `Domain Event`. Any side effect operations can be performed just by subscribing to a concrete `Domain Event` and creating as many event handlers as needed, without glueing any unrelated code to original domain's service that sends an event.
+
+Domain Events can be implemented using [Observer](https://refactoring.guru/design-patterns/observer) and [Mediator](https://refactoring.guru/design-patterns/mediator) patterns.
+
+Examples:
+
+- [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
+- [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
+- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Event Handler that executes side-effects when user is created.
+- [typeorm.entity.base.ts](src/infrastructure/database/base-classes/typeorm.entity.base.ts) - check `publishAggregateEvents()` method. Events only get published right before insert/update/delete (or after, if preferred).
+
+To have a better understanding on domain events and code implementations above, read this:
+
+- [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
+- [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
 ---
 
@@ -384,11 +416,9 @@ Lets distinguish two types of protection from illegal states: at **compile time*
 
 Types give useful semantic information to a developer. Good code should be easy to use correctly, and hard to use incorrectly. Types system can be a good help for that. It can prevent some nasty errors at a compile time, so IDE will show type errors right away.
 
-The simplest example may be using enums instead of constants, for example: [events.ts](src/core/events/events.ts). This file has enums of events that can occur in a program. Now, event emitter port [event-emitter.port.ts](src/core/ports/event-emitter.port.ts) uses that events type to prevent illegal types pass. If you try to pass anything that is not intended it will show type error.
+The simplest example may be using enums instead of constants, and use those enums as input type for something. When passing anything that is not intended IDE will show a type error.
 
-More importantly, this approach can be used to make business logic safer.
-
-For example, imagine that business logic requires to have contact info of a person by either having `email`, or `phone`, or both. Both `email` and `phone` could be represented as optional, for example:
+Or, for example, imagine that business logic requires to have contact info of a person by either having `email`, or `phone`, or both. Both `email` and `phone` could be represented as optional, for example:
 
 ```typescript
 interface ContactInfo {
@@ -406,6 +436,8 @@ type ContactInfo = Email | Phone | [Email, Phone];
 ```
 
 Now only either `Email`, or `Phone`, or both must be provided. If nothing is provided IDE will show a type error right away. This is a business rule validation used at **compile time**.
+
+This approach can be used to make business logic safer and get an error as fast as possible (at compile time).
 
 ### At runtime
 
@@ -477,34 +509,6 @@ Either to use external library/framework for validation inside domain or not is 
 - [Domain Primitives: what they are and how you can use them to make more secure software](https://freecontent.manning.com/domain-primitives-what-they-are-and-how-you-can-use-them-to-make-more-secure-software/)
 - ["Secure by Design" Chapter 5: Domain Primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/) (a full chapter of the article above)
 - [Value Objects Like a Pro](https://medium.com/@nicolopigna/value-objects-like-a-pro-f1bfc1548c72)
-
----
-
-## Domain Events
-
-Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of.
-
-For example, if a user buys something, you may want to:
-
-- Send confirmation email to that user;
-- Send notification to corporate slack channel;
-- Notify shipping department;
-- Perform other side effects that are not concern of an original buy operation domain.
-
-Typical approach that is used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
-
-A better approach would be dispatching a Domain Event. You may perform any side effect operations just by subscribing to a Domain Event and creating as many event handlers as needed, without glueing any unrelated code to original domain that sends an event.
-
-Domain Events can be implemented using [Observer](https://refactoring.guru/design-patterns/observer) or [Mediator](https://refactoring.guru/design-patterns/mediator) patterns.
-
-Example files:
-
-- // TODO
-
-Read more:
-
-- [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
-- [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
 ---
 
