@@ -775,7 +775,13 @@ Keep in mind that this project's folder/file structure is an example and might n
 
 There are different approaches to file/folder structuring, like explicitly separating each layer into a corresponding folder. This defines boundaries more clearly but is harder to navigate. Choose what suits better for the project/personal preference.
 
-Files in this project are named according to [Angular Style Guides](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
+## File names
+
+Consider giving a descriptive type names to files after a dot "`.`", like `*.service.ts` or `*.entity.ts`. This makes it easier to differentiate what files does what and makes it easier to find those files using [fuzzy search](https://en.wikipedia.org/wiki/Approximate_string_matching).
+
+Read more:
+
+- [Angular Style Guides: Separate file names with dots and dashes](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
 
 # Tools
 
