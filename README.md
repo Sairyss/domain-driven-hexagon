@@ -550,6 +550,11 @@ Examples:
 
 Output data returned to a user. May consist of a `Request`/`Response` class, interface and/or mapper.
 
+Examples:
+
+- [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts)
+- [user.interface.ts](src/interface-adapters/interfaces/user/user.interface.ts)
+
 ### Additional recommendations:
 
 - When returning a `Response` prefer _whitelisting_ properties over _blacklisting_ using mapper (or right in the `Response` class in some cases). This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
@@ -557,11 +562,6 @@ Output data returned to a user. May consist of a `Request`/`Response` class, int
 - `Request`/`Response` DTO classes may be a good place to use validation and sanitization decorators like [class-validator](https://www.npmjs.com/package/class-validator) and [class-sanitizer](https://www.npmjs.com/package/class-sanitizer) (make sure that all validation errors are gathered first and only then return them to the user, this is called [Notification pattern](https://martinfowler.com/eaaDev/Notification.html). Class-validator does this by default).
 - `Request`/`Response` DTO classes may also be a good place to use Swagger/OpenAPI library decorators that [NestJS provides](https://docs.nestjs.com/openapi/types-and-parameters).
 - If class decorators for validation/swagger are not used, creating a class may be omitted and interface/mapper should be enough.
-
-Examples:
-
-- [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts)
-- [user.interface.ts](src/interface-adapters/interfaces/user/user.interface.ts)
 
 ---
 
