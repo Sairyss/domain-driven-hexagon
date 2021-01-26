@@ -571,14 +571,25 @@ The Infrastructure is responsible strictly to keep technology. You can find ther
 
 It's the most volatile layer. Since the things in this layer are so likely to change, they are kept as far away as possible from the more stable domain layers. Because they are kept separate, it's relatively easy make changes or swap one component for another.
 
+Infrastructure layer can contain `Adapters`, database related files like `Repositories`, `ORM entities`/`Schemas`, framework related files etc.
+
+## Adapters
+
 Infrastructure adapters (also called driven/secondary adapters) enable a software system to interact with external systems by receiving, storing and providing data when requested (like persistence, message brokers, sending emails or messages, requesting 3rd party APIs etc).
 
 Adapters are essentially an implementation of ports. They are not supposed to be called directly in any point in code, only through ports(interfaces).
 
+Adapters should have:
+
+- a `port` somewhere in application/domain layer that it implements;
+- a mapper that maps data **from** and **to** domain (if it's needed);
+- a DTO/interface for received data;
+- a validator to make sure incoming data is not corrupted (validation can reside in DTO class using decorators, or it can be validated by `Value Objects`).
+
 ## Database
 
 This folder contains all database related files:
-`Repositories`, `Orm Entities`, `Migrations`, `Seeds` and `Seeders` etc.
+`Repositories`, `Orm Entities`, `Migrations`, `Seeds`, `Seeders` etc.
 
 ## Repositories
 
@@ -632,22 +643,7 @@ Migrations are used for database table/schema changes:
 
 This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) as an example.
 
----
-
-# Adapters
-
-Adapters implementations for accessing external APIs.
-
-Adapters should have:
-
-- a `port` somewhere in domain layer that it implements;
-- a mapper that maps data **from** and **to** domain (if it's needed);
-- a DTO/interface for received data;
-- a validator to make sure incoming data is not corrupted (validation can reside in DTO class using decorators).
-
-## Other
-
-Other infrastructure related things:
+## Other infrastructure related things
 
 - Framework related files;
 - Application logger implementation;
