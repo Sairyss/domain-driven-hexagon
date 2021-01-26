@@ -837,9 +837,10 @@ Read more:
 ## Articles
 
 - [DDD, Hexagonal, Onion, Clean, CQRS, … How I put it all together](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together)
+- [Hexagonal Architecture](https://www.qwan.eu/2020/08/20/hexagonal-architecture.html)
+- [Khalil Stemmler blog](https://khalilstemmler.com)
 - [Clean architecture series](https://medium.com/@pereiren/clean-architecture-series-part-1-f34ef6b04b62)
 - [Clean architecture for the rest of us](https://pusher.com/tutorials/clean-architecture-introduction)
-- [Hexagonal Architecture](https://www.qwan.eu/2020/08/20/hexagonal-architecture.html)
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
 
 ## Videos
