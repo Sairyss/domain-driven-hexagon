@@ -49,7 +49,10 @@ export abstract class ValueObject<T> {
   }
 
   private checkIfEmpty(props: ValueObjectProps<T>): void {
-    if (Guard.isEmpty(props)) {
+    if (
+      Guard.isEmpty(props) ||
+      (this.isDomainPrimitive(props) && Guard.isEmpty(props.value))
+    ) {
       throw new ArgumentNotProvidedException('Property cannot be empty');
     }
   }
