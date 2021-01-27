@@ -310,7 +310,7 @@ Examples:
 Events can be published right before or right after insert/update/delete transaction, chose any option that is better for a particular project:
 
 - Before: to make side-effects part of that transaction. If any event fails all changes should be reverted.
-- After: to make side-effects independent. In that case eventual consistency techniques should be implemented.
+- After: to make side-effects independent. In that case [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency) techniques should be implemented.
 
 Both options have pros and cons.
 
