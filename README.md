@@ -647,6 +647,8 @@ Migrations are used for database table/schema changes:
 
 This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) as an example.
 
+Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
+
 ## Other infrastructure related things
 
 - Framework related files;
