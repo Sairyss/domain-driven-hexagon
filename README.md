@@ -296,6 +296,8 @@ Typical approach that is usually used involves executing all this logic in a ser
 
 A better approach would be publishing a `Domain Event`. Any side effect operations can be performed just by subscribing to a concrete `Domain Event` and creating as many event handlers as needed, without glueing any unrelated code to original domain's service that sends an event.
 
+Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
+
 Domain Events can be implemented using [Observer](https://refactoring.guru/design-patterns/observer) and [Mediator](https://refactoring.guru/design-patterns/mediator) patterns.
 
 Examples:
@@ -303,7 +305,9 @@ Examples:
 - [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
 - [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Event Handler that executes side-effects when user is created.
-- [typeorm.entity.base.ts](src/infrastructure/database/base-classes/typeorm.entity.base.ts) - check `publishAggregateEvents()` method. Events only get published right before insert/update/delete (or after, if preferred).
+- [typeorm.entity.base.ts](src/infrastructure/database/base-classes/typeorm.entity.base.ts) - check `publishAggregateEvents()` method.
+
+Events can be published right before or after insert/update/delete transaction. Before to make side-effects part of that transaction, or after to make side-effects independent (in that case some eventual consistency techniques should be implemented).
 
 To have a better understanding on domain events and code implementations above, read this:
 
