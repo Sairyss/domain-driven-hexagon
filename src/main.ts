@@ -8,11 +8,11 @@ import { ExceptionInterceptor } from './infrastructure/interceptors/exception.in
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalInterceptors(new ExceptionInterceptor());
+  initDomainEventHandlers();
 
   app.useGlobalPipes(new ValidationPipe());
 
-  initDomainEventHandlers();
+  app.useGlobalInterceptors(new ExceptionInterceptor());
 
   await app.listen(3000);
 }
