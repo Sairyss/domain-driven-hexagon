@@ -305,9 +305,14 @@ Examples:
 - [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
 - [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Event Handler that executes side-effects when user is created.
-- [typeorm.entity.base.ts](src/infrastructure/database/base-classes/typeorm.entity.base.ts) - check `publishAggregateEvents()` method.
+- [typeorm.entity.base.ts](src/infrastructure/database/base-classes/typeorm.entity.base.ts) - `publishAggregateEvents()` method publishes all events for execution right before transaction.
 
-Events can be published right before or after insert/update/delete transaction. Before to make side-effects part of that transaction, or after to make side-effects independent (in that case some eventual consistency techniques should be implemented).
+Events can be published right before or right after insert/update/delete transaction, chose any option that is better for a particular project:
+
+- Before: to make side-effects part of that transaction. If any event fails all changes should be reverted.
+- After: to make side-effects independent. In that case eventual consistency techniques should be implemented.
+
+Both options have pros and cons.
 
 To have a better understanding on domain events and code implementations above, read this:
 
