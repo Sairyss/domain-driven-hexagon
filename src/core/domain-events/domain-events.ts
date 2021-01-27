@@ -8,7 +8,7 @@ export interface EventHandler {
   subscribeTo(event: DomainEvent): void;
 }
 
-export type EventCallback = (event: DomainEvent) => void;
+export type EventCallback = (event: DomainEvent) => Promise<void>;
 
 type EventName = string;
 
@@ -22,7 +22,7 @@ export class DomainEvents {
 
   public static subscribe<T extends DomainEvent>(
     event: DomainEventClass,
-    callback: (event: T) => void,
+    callback: (event: T) => Promise<void>,
   ): void {
     const eventName: EventName = event.name;
     if (!this.subscribers.has(eventName)) {
@@ -38,16 +38,18 @@ export class DomainEvents {
     }
   }
 
-  public static publishEvents(id: ID, logger?: Logger): void {
+  public static async publishEvents(id: ID, logger?: Logger): Promise<void> {
     const aggregate = this.findAggregateByID(id);
 
     if (aggregate) {
-      aggregate.domainEvents.forEach((event: DomainEvent) => {
-        this.publish(event);
-        if (logger) {
-          logger.debug(`[${event.constructor.name}]: Event published`);
-        }
-      });
+      await Promise.all(
+        aggregate.domainEvents.map((event: DomainEvent) => {
+          if (logger) {
+            logger.debug(`[${event.constructor.name}]: Event published`);
+          }
+          return this.publish(event);
+        }),
+      );
       aggregate.clearEvents();
       this.removeAggregateFromPublishList(aggregate);
     }
@@ -68,14 +70,12 @@ export class DomainEvents {
     this.aggregates.splice(index, 1);
   }
 
-  private static publish(event: DomainEvent): void {
+  private static async publish(event: DomainEvent): Promise<void> {
     const eventName: string = event.constructor.name;
 
     if (this.subscribers.has(eventName)) {
       const callbacks: EventCallback[] = this.subscribers.get(eventName) || [];
-      for (const callback of callbacks) {
-        callback(event);
-      }
+      await Promise.all(callbacks.map(callback => callback(event)));
     }
   }
 }

@@ -49,7 +49,7 @@ export class UserRepository
   }
 
   async exists(email: string): Promise<boolean> {
-    const found = this.findOneByEmail(email);
+    const found = await this.findOneByEmail(email);
     if (found) {
       return true;
     }

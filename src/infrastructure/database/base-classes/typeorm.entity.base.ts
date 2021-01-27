@@ -33,8 +33,8 @@ export abstract class TypeormEntityBase {
   @BeforeInsert()
   @BeforeUpdate()
   @BeforeRemove()
-  public publishAggregateEvents(): void {
+  public async publishAggregateEvents(): Promise<void> {
     const aggregateId = new ID(this.id);
-    DomainEvents.publishEvents(aggregateId);
+    await DomainEvents.publishEvents(aggregateId);
   }
 }

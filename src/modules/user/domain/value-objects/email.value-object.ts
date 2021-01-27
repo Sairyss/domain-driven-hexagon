@@ -10,9 +10,8 @@ import { Guard } from 'src/core/guard';
 
 export class Email extends ValueObject<string> {
   constructor(value: string) {
-    const email = Email.format(value);
-    // validating in a constructor ensures that only valid objects are created. This protects object's invariant and prevents it to be in invalid state.
-    super({ value: email });
+    super({ value });
+    this.props.value = Email.format(value);
   }
 
   /* Type compatibility in TypeScript is based on structural subtyping.
@@ -37,7 +36,7 @@ export class Email extends ValueObject<string> {
     }
   }
 
-  private static format(email: string): string {
+  static format(email: string): string {
     return email.trim().toLowerCase();
   }
 }

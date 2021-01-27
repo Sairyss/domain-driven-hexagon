@@ -12,8 +12,8 @@ export class OnUserCreatedDomainEvent implements DomainEventHandler {
     );
   }
 
-  onUserCreated(event: UserCreatedDomainEvent): void {
-    this.email.send(event.email, 'Welcome message goes here');
+  async onUserCreated(event: UserCreatedDomainEvent): Promise<void> {
+    await this.email.send(event.email, 'Welcome message goes here');
     /* Other side-effects can go here, or different event handlers can
     be created if needed */
   }
