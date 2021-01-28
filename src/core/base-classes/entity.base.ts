@@ -1,6 +1,7 @@
 import {
   ArgumentNotProvidedException,
   ArgumentInvalidException,
+  ArgumentOutOfRangeException,
 } from '../exceptions';
 import { Guard } from '../guard';
 import { convertPropsToObject } from '../utils';
@@ -112,7 +113,7 @@ export abstract class Entity<EntityProps> {
       throw new ArgumentInvalidException('Entity props should be an object');
     }
     if (Object.keys(props).length > maxProps) {
-      throw new ArgumentInvalidException(
+      throw new ArgumentOutOfRangeException(
         `Entity props should not have more then ${maxProps} properties`,
       );
     }
