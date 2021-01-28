@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   UserEntity,
   UserProps,
@@ -27,7 +27,11 @@ export class UserRepository
     @InjectRepository(UserOrmEntity)
     private readonly userRepository: Repository<UserOrmEntity>,
   ) {
-    super(userRepository, new UserOrmMapper(UserEntity, UserOrmEntity));
+    super(
+      userRepository,
+      new UserOrmMapper(UserEntity, UserOrmEntity),
+      new Logger('user-repository'),
+    );
   }
 
   private async findOneByEmail(

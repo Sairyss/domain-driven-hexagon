@@ -1,7 +1,7 @@
 import { FindConditions, ObjectLiteral, Repository } from 'typeorm';
 import { ID } from 'src/core/value-objects/id.value-object';
-import { EventEmitterPort } from 'src/core/ports/event-emitter.port';
 import { DomainEvents } from 'src/core/domain-events';
+import { Logger } from 'src/core/ports/logger.port';
 import {
   QueryParams,
   FindManyPaginatedParams,
@@ -26,7 +26,7 @@ export abstract class TypeormRepositoryBase<
   protected constructor(
     protected readonly repository: Repository<OrmEntity>,
     protected readonly mapper: OrmMapper<Entity, OrmEntity>,
-    protected readonly emitter?: EventEmitterPort,
+    protected readonly logger: Logger,
   ) {}
 
   protected abstract relations: string[] = [];
@@ -40,15 +40,23 @@ export abstract class TypeormRepositoryBase<
   async save(entity: Entity): Promise<Entity> {
     const ormEntity = this.mapper.toOrmEntity(entity);
     const result = await this.repository.save(ormEntity);
-    await DomainEvents.publishEvents(entity.id);
+    this.logger?.debug(
+      `[Entity persisted]: ${this.tableName} ${entity.id.value}`,
+    );
+    await DomainEvents.publishEvents(entity.id, this.logger);
     return this.mapper.toDomainEntity(result);
   }
 
   async saveMultiple(entities: Entity[]): Promise<Entity[]> {
     const ormEntities = entities.map(entity => this.mapper.toOrmEntity(entity));
     const result = await this.repository.save(ormEntities);
+    this.logger?.debug(
+      `[Multiple entities persisted]: ${entities.length} ${this.tableName}`,
+    );
     await Promise.all(
-      entities.map(entity => DomainEvents.publishEvents(entity.id)),
+      entities.map(entity =>
+        DomainEvents.publishEvents(entity.id, this.logger),
+      ),
     );
     return result.map(entity => this.mapper.toDomainEntity(entity));
   }
@@ -118,7 +126,10 @@ export abstract class TypeormRepositoryBase<
 
   async delete(entity: Entity): Promise<Entity> {
     await this.repository.remove(this.mapper.toOrmEntity(entity));
-    await DomainEvents.publishEvents(entity.id);
+    this.logger?.debug(
+      `[Entity deleted]: ${this.tableName} ${entity.id.value}`,
+    );
+    await DomainEvents.publishEvents(entity.id, this.logger);
     return entity;
   }
 }
