@@ -64,9 +64,12 @@ More in details on each step below.
 # Modules
 
 This project's code examples use separation by modules (also called components). Each module is separated in parts and layers; Each module gets its own folder with a dedicated codebase; and each use case inside that module gets it's own folder to store most of the things it needs (this is also called _Vertical Slicing_).
+
 It is easier to work on things that change together if those things are gathered relatively close to each other. Try not to create dependencies between modules or use cases, move shared logic into a separate files and make both depend on that instead of depending on each other.
 
-Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Interactions between modules of a different domain can be done using events or public interfaces, try to avoid direct imports of other domain module's internal files. This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupling), and, if bounded contexts are defined and designed properly, each module can be easily separated into a microservice if needed.
+Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Try to avoid direct imports of other domain module's internal files into current domain that needs it, define a port and use adapters to get desired data from other domains/modules. Adapters can interact with other domains/modules using events or public interfaces.
+
+This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupling), and, if bounded contexts are defined and designed properly, each module can be easily separated into a microservice if needed without touching any domain logic, only adapters have to be re-implemented to get data from a new source (more on ports and adapters below).
 
 A lof of people tend to create one module per entity, but this approach is not very good. Each module may have multiple entities. One thing to keep in mind is that putting entities in a single module requires those entities to have related business logic, don't group unrelated entities in one module.
 
