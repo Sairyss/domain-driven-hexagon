@@ -762,7 +762,8 @@ Example files: // TODO
 - Avoid `console.log`. Use mature logger libraries that support features like enabling/disabling log levels, convenient log formats that are easy to parse (like JSON) etc.
 - When using microservices, consider generating unique id for each request that is later passed to every microservice that is involved in this request. This will make it easier to find logs related to this request across different log files.
 - Use consistent structure across all logs. Each log line should represent one single event and contain at least the timestamp, context, request id/aggregate id and meaningful message.
-- Use error reporting tools to receive error logs from production as fast as possible. It can be tools like [Sentry](https://sentry.io/for/node/), slack messages, or even SMS notifications in some cases.
+- Use error reporting tools like [Sentry](https://sentry.io/for/node/) to receive error logs fast as possible.
+- Send notifications of important events that happen in production to Slack or even by SMS.
 - Don't write logs to a file from your program. Write all logs to [stdout](https://www.computerhope.com/jargon/s/stdout.htm) (to a terminal window) and let other tools handle writing logs to a file (for example [docker supports writing logs to a file](https://docs.docker.com/config/containers/logging/configure/)).
 
 Read more:
