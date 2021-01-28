@@ -587,9 +587,12 @@ Infrastructure layer can contain `Adapters`, database related files like `Reposi
 
 ## Adapters
 
-Infrastructure adapters (also called driven/secondary adapters) enable a software system to interact with external systems by receiving, storing and providing data when requested (like persistence, message brokers, sending emails or messages, requesting 3rd party APIs etc).
+- Infrastructure adapters (also called driven/secondary adapters) enable a software system to interact with external systems by receiving, storing and providing data when requested (like persistence, message brokers, sending emails or messages, requesting 3rd party APIs etc).
+- Adapters also can be used to interact with different domains inside single process to avoid coupling between those domains.
+- Adapters are essentially an implementation of ports. They are not supposed to be called directly in any point in code, only through ports(interfaces).
+- Adapters can be used as Anti-Corruption Layer (ACL) for legacy code.
 
-Adapters are essentially an implementation of ports. They are not supposed to be called directly in any point in code, only through ports(interfaces).
+Read more on ACL: [Anti-Corruption Layer: How to Keep Legacy Support from Breaking New Systems](https://www.cloudbees.com/blog/anti-corruption-layer-how-keep-legacy-support-breaking-new-systems)
 
 Adapters should have:
 
