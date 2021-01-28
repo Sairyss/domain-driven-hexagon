@@ -654,12 +654,19 @@ This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/m
 
 Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
 
+## Infrastructure related events
+
+We use [Domain Events](#Domain-Events) for domain-related operations. For infrastructure related operations other types of events can be used. For example, in NodeJS world it can be [node event emitter](https://nodejs.org/api/events.html) (or [Nest-event](https://www.npmjs.com/package/nest-event) which is also based on node event emitter but exposes a better api).
+
+For example, check [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) file. After each create/update/delete operation it emits an event, for example: `user.updated` or `user.deleted` with an entity object. This may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
+
+Communication between modules also can be done using events instead of coupling modules to each other by importing files directly.
+
 ## Other infrastructure related things
 
 - Framework related files;
 - Application logger implementation;
 - Periodic cron jobs or tasks launchers ([NestJS Schedule](https://docs.nestjs.com/techniques/task-scheduling));
-- Internal events handlers for infrastructure operations ([Nest-event](https://www.npmjs.com/package/nest-event));
 - Other technology related files.
 
 ---
