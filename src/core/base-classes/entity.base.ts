@@ -24,6 +24,48 @@ export abstract class Entity<EntityProps> {
 
   protected readonly props: EntityProps;
 
+  private readonly _id: ID;
+
+  private readonly _createdAt: DateVO;
+
+  private _updatedAt: DateVO;
+
+  get id(): ID {
+    return this._id;
+  }
+
+  get createdAt(): DateVO {
+    return this._createdAt;
+  }
+
+  get updatedAt(): DateVO {
+    return this._updatedAt;
+  }
+
+  static isEntity(entity: unknown): entity is Entity<unknown> {
+    return entity instanceof Entity;
+  }
+
+  /**
+   *  Check if two entities are the same Entity. Checks using ID field.
+   * @param object Entity
+   */
+  public equals(object?: Entity<EntityProps>): boolean {
+    if (object === null || object === undefined) {
+      return false;
+    }
+
+    if (this === object) {
+      return true;
+    }
+
+    if (!Entity.isEntity(object)) {
+      return false;
+    }
+
+    return this.id ? this.id.equals(object.id) : false;
+  }
+
   /**
    * Returns current **copy** of entity's props.
    * Modifying entity's state won't change previously created
@@ -43,44 +85,6 @@ export abstract class Entity<EntityProps> {
     return Object.freeze(propsCopy);
   }
 
-  private readonly _id: ID;
-
-  private readonly _createdAt: DateVO;
-
-  private _updatedAt: DateVO;
-
-  get id(): ID {
-    return this._id;
-  }
-
-  get createdAt(): DateVO {
-    return this._createdAt;
-  }
-
-  get updatedAt(): DateVO {
-    return this._updatedAt;
-  }
-
-  /**
-   *  Check if two entities are the same Entity. Checks using ID field.
-   * @param object Entity
-   */
-  equals(object?: Entity<EntityProps>): boolean {
-    if (object === null || object === undefined) {
-      return false;
-    }
-
-    if (this === object) {
-      return true;
-    }
-
-    if (!Entity.isEntity(object)) {
-      return false;
-    }
-
-    return this.id ? this.id.equals(object.id) : false;
-  }
-
   /**
    * Convert to plain object. Mostly for debugging and testing purposes.
    */
@@ -94,10 +98,6 @@ export abstract class Entity<EntityProps> {
       ...propsCopy,
     };
     return Object.freeze(result);
-  }
-
-  static isEntity(entity: unknown): entity is Entity<unknown> {
-    return entity instanceof Entity;
   }
 
   private validateProps(props: EntityProps) {
