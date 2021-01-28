@@ -662,7 +662,7 @@ For example, check [typeorm.repository.base.ts](src/infrastructure/database/base
 
 Communication between modules also can be done using events instead of coupling modules to each other by importing files directly.
 
-## Other infrastructure related things
+## Other things that can be a part of Infrastructure layer:
 
 - Framework related files;
 - Application logger implementation;
