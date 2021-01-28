@@ -44,7 +44,9 @@ export class DomainEvents {
     if (aggregate) {
       await Promise.all(
         aggregate.domainEvents.map((event: DomainEvent) => {
-          logger.debug(`[Domain Event published]: ${event.constructor.name}`);
+          logger.debug(
+            `[Domain Event published]: ${event.constructor.name} ${aggregate.id.value}`,
+          );
           return this.publish(event);
         }),
       );

@@ -753,6 +753,22 @@ Example files: // TODO
 
 # Other recommendations and good practices
 
+## Logging
+
+- Try to log all meaningful events in a program that can be useful to anybody in your team.
+- Use proper log levels: `log`/`info` for events that are meaningful during production, `debug` for events useful while developing/debugging, and `warn`/`error` for unwanted behavior on any stage.
+- Write meaningful log messages and include metadata that may be useful. Try to avoid cryptic messages that only you understand.
+- Never log sensitive data: passwords, emails, credit card numbers etc. since this data will end up in log files. If log files are not stored securely this data can be leaked.
+- Avoid `console.log`. Use mature logger libraries that support features like enabling/disabling log levels, convenient log formats that are easy to parse (like JSON) etc.
+- When using microservices, consider generating unique id for each request that is later passed to every microservice that is involved in this request. This will make it easier to find logs related to this request across different log files.
+- Use consistent structure across all logs. Each log line should represent one single event and contain at least the timestamp, context, request id/aggregate id and meaningful message.
+- Use error reporting tools to receive error logs from production as fast as possible. It can be tools like [Sentry](https://sentry.io/for/node/), slack messages, or even SMS notifications in some cases.
+- Don't write logs to a file from your program. Write all logs to [stdout](https://www.computerhope.com/jargon/s/stdout.htm) (to a terminal window) and let other tools handle writing logs to a file (for example [docker supports writing logs to a file](https://docs.docker.com/config/containers/logging/configure/)).
+
+Read more:
+
+- [Why should your Node.js application not handle log routing?](https://www.coreycleary.me/why-should-your-node-js-application-not-handle-log-routing/)
+
 ## Prevent massive inheritance chains
 
 This can be achieved by making class `final`.
