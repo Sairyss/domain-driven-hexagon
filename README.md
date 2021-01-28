@@ -812,8 +812,6 @@ This is a bad practice and should be avoided. Setting up project after downloadi
 - Database [seeding](#Seeds) and [migrations](#Migrations)
 - or any other tools.
 
-# Tools
-
 ## Static Code Analysis
 
 > Static code analysis is a method of debugging by examining source code before a program is run.
