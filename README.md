@@ -672,9 +672,11 @@ Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrat
 
 ---
 
-# Error Handling
+# Other recommendations and best practices
 
-## Exception types
+## Error Handling
+
+### Exception types
 
 Consider extending `Error` object to make custom exception types for different situations. For example: `DomainException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
 
@@ -722,9 +724,7 @@ Read more:
 - [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
 - ["Secure by design" Chapter 9: Handling failures securely](https://livebook.manning.com/book/secure-by-design/chapter-9/)
 
----
-
-# Testing
+## Testing
 
 Testing each file and method separately is called [White Box](https://en.wikipedia.org/wiki/White-box_testing) testing (like entity tests, domain services tests etc). It creates coupling to implementation details, so every time you decide to refactor something this may also cause refactoring corresponding tests.
 
@@ -751,8 +751,6 @@ Example files: // TODO
 - Spec file for a use case in isolation: [TODO]();
 - e2e testing a use case from end-user standpoint (with all the infrastructure up, like API routes, databases etc): [TODO]().
 
-# Other recommendations and good practices
-
 ## Logging
 
 - Try to log all meaningful events in a program that can be useful to anybody in your team.
@@ -764,24 +762,7 @@ Example files: // TODO
 - Use consistent structure across all logs. Each log line should represent one single event and contain at least the timestamp, context, request id/aggregate id and meaningful message.
 - Use error reporting tools like [Sentry](https://sentry.io/for/node/) to receive error logs fast as possible.
 - Send notifications of important events that happen in production to Slack or even by SMS.
-- Don't write logs to a file from your program. Write all logs to [stdout](https://www.computerhope.com/jargon/s/stdout.htm) (to a terminal window) and let other tools handle writing logs to a file (for example [docker supports writing logs to a file](https://docs.docker.com/config/containers/logging/configure/)).
-
-Read more:
-
-- [Why should your Node.js application not handle log routing?](https://www.coreycleary.me/why-should-your-node-js-application-not-handle-log-routing/)
-
-## Prevent massive inheritance chains
-
-This can be achieved by making class `final`.
-
-**Note**: in TypeScript, unlike other languages, there is no default way to make class `final`. But there is a way around it using a custom decorator.
-
-Example file: [final.decorator.ts](src/core/decorators/final.decorator.ts)
-
-Read more:
-
-- [When to declare classes final](https://ocramius.github.io/blog/when-to-declare-classes-final/)
-- [Final classes by default, why?](https://matthiasnoback.nl/2018/09/final-classes-by-default-why/)
+- Don't write logs to a file from your program. Write all logs to [stdout](https://www.computerhope.com/jargon/s/stdout.htm) (to a terminal window) and let other tools handle writing logs to a file (for example [docker supports writing logs to a file](https://docs.docker.com/config/containers/logging/configure/)). Read more: [Why should your Node.js application not handle log routing?](https://www.coreycleary.me/why-should-your-node-js-application-not-handle-log-routing/)
 
 ## Folder/File Structure
 
@@ -819,11 +800,18 @@ Read more:
 
 - [Angular Style Guides: Separate file names with dots and dashes](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
 
-## Custom utility types
+## Prevent massive inheritance chains
 
-Consider creating a bunch of shared custom utility types for different situations.
+This can be achieved by making class `final`.
 
-Some examples can be found in [types](src/core/types) folder.
+**Note**: in TypeScript, unlike other languages, there is no default way to make class `final`. But there is a way around it using a custom decorator.
+
+Example file: [final.decorator.ts](src/core/decorators/final.decorator.ts)
+
+Read more:
+
+- [When to declare classes final](https://ocramius.github.io/blog/when-to-declare-classes-final/)
+- [Final classes by default, why?](https://matthiasnoback.nl/2018/09/final-classes-by-default-why/)
 
 ## Make application easy to setup
 
@@ -872,6 +860,12 @@ Read more:
 ## Code formatting
 
 Consider using code formatters like [Prettier](https://www.npmjs.com/package/prettier) to maintain same code styles in the project.
+
+## Custom utility types
+
+Consider creating a bunch of shared custom utility types for different situations.
+
+Some examples can be found in [types](src/core/types) folder.
 
 ## Pre-push/pre-commit hooks
 
