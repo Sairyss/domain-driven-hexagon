@@ -135,7 +135,7 @@ export abstract class TypeormRepositoryBase<
     ormEntity: OrmEntity,
   ): RepositoryEventType | undefined {
     if (ormEntity instanceof TypeormEntityBase) {
-      if (ormEntity.createdAt.toString() === ormEntity.updatedAt.toString()) {
+      if (ormEntity.createdAt.getTime() === ormEntity.updatedAt.getTime()) {
         return RepositoryEventType.created;
       }
       return RepositoryEventType.updated;
