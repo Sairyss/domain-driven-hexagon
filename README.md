@@ -310,7 +310,7 @@ Examples:
 Events can be published right before or right after insert/update/delete transaction, chose any option that is better for a particular project:
 
 - Before: to make side-effects part of that transaction. If any event fails all changes should be reverted.
-- After: to make side-effects independent. In that case [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency) techniques should be implemented.
+- After: to make side-effects independent. In that case [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency) should be implemented.
 
 Both options have pros and cons.
 
@@ -548,7 +548,7 @@ Data Transfer Object ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object))
 
 ### Request DTOs
 
-Input data sent by a user. May consists of request classes and interfaces.
+Input data sent by a user. May consist of request classes and interfaces.
 
 Examples:
 
@@ -793,6 +793,24 @@ Consider giving a descriptive type names to files after a dot "`.`", like `*.ser
 Read more:
 
 - [Angular Style Guides: Separate file names with dots and dashes](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
+
+## Custom utility types
+
+Consider creating a bunch of shared custom utility types for different situations.
+
+Some examples can be found in [types](src/core/types) folder.
+
+## Make application easy to setup
+
+There are a lot of projects out there which take effort to configure after downloading it. Everything has to be set up manually: database, all configs etc. If new developer joins the team he has to waste a lot of time just to make application work.
+
+This is a bad practice and should be avoided. Setting up project after downloading it should be as easy as launching one or few commands in terminal. Consider adding scripts to do this automatically:
+
+- [package.json scripts](https://krishankantsinghal.medium.com/scripting-inside-package-json-4b06bea74c0e)
+- [docker-compose file](https://docs.docker.com/compose/)
+- [Makefile](https://opensource.com/article/18/8/what-how-makefile)
+- Database [seeding](#Seeds) and [migrations](#Migrations)
+- or any other tools.
 
 # Tools
 
