@@ -1,6 +1,7 @@
 import { FindConditions, ObjectLiteral, Repository } from 'typeorm';
 import { ID } from 'src/core/value-objects/id.value-object';
 import { EventEmitterPort } from 'src/core/ports/event-emitter.port';
+import { DomainEvents } from 'src/core/domain-events';
 import {
   QueryParams,
   FindManyPaginatedParams,
@@ -10,19 +11,12 @@ import {
 import { NotFoundException } from '../../../core/exceptions';
 import { OrmMapper } from './orm-mapper.base';
 import { BaseEntityProps } from '../../../core/base-classes/entity.base';
-import { TypeormEntityBase } from './typeorm.entity.base';
 
 export type WhereCondition<OrmEntity> =
   | FindConditions<OrmEntity>[]
   | FindConditions<OrmEntity>
   | ObjectLiteral
   | string;
-
-enum RepositoryEventType {
-  created = 'created',
-  updated = 'updated',
-  deleted = 'deleted',
-}
 
 export abstract class TypeormRepositoryBase<
   Entity extends BaseEntityProps,
@@ -46,14 +40,16 @@ export abstract class TypeormRepositoryBase<
   async save(entity: Entity): Promise<Entity> {
     const ormEntity = this.mapper.toOrmEntity(entity);
     const result = await this.repository.save(ormEntity);
-    this.emitEvent(result);
+    await DomainEvents.publishEvents(entity.id);
     return this.mapper.toDomainEntity(result);
   }
 
   async saveMultiple(entities: Entity[]): Promise<Entity[]> {
     const ormEntities = entities.map(entity => this.mapper.toOrmEntity(entity));
     const result = await this.repository.save(ormEntities);
-    this.emitEvent(result);
+    await Promise.all(
+      entities.map(entity => DomainEvents.publishEvents(entity.id)),
+    );
     return result.map(entity => this.mapper.toDomainEntity(entity));
   }
 
@@ -120,54 +116,9 @@ export abstract class TypeormRepositoryBase<
     return result;
   }
 
-  async delete(id: ID | string): Promise<Entity> {
-    const found = await this.findOneByIdOrThrow(id);
-    const result = await this.repository.remove(this.mapper.toOrmEntity(found));
-    this.emitEvent(result, RepositoryEventType.deleted);
-    return found;
-  }
-
-  /**
-   * Determine if 'save' transaction is of type
-   * 'created' or 'updated'.
-   */
-  private determineEventType(
-    ormEntity: OrmEntity,
-  ): RepositoryEventType | undefined {
-    if (ormEntity instanceof TypeormEntityBase) {
-      if (ormEntity.createdAt.getTime() === ormEntity.updatedAt.getTime()) {
-        return RepositoryEventType.created;
-      }
-      return RepositoryEventType.updated;
-    }
-  }
-
-  /**
-   * Emitting events on create/update/delete.
-   * This may be useful in case if something
-   * like keeping an audit log is required.
-   * Event name is generated based on
-   * table name + transaction type.
-   * For example: 'user.created'
-   */
-  private emitEvent(
-    ormEntity: OrmEntity | OrmEntity[],
-    type?: RepositoryEventType,
-  ): void {
-    if (this.emitter) {
-      if (Array.isArray(ormEntity)) {
-        ormEntity.forEach(item => {
-          this.emitter?.emit(
-            `${this.tableName}.${type || this.determineEventType(item)}`,
-            item,
-          );
-        });
-      } else {
-        this.emitter?.emit(
-          `${this.tableName}.${type || this.determineEventType(ormEntity)}`,
-          ormEntity,
-        );
-      }
-    }
+  async delete(entity: Entity): Promise<Entity> {
+    await this.repository.remove(this.mapper.toOrmEntity(entity));
+    await DomainEvents.publishEvents(entity.id);
+    return entity;
   }
 }

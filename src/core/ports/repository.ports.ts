@@ -63,7 +63,7 @@ export interface FindManyPaginated<Entity, EntityProps> {
 }
 
 export interface DeleteOne<Entity> {
-  delete(id: ID | string): Promise<Entity>;
+  delete(entity: Entity): Promise<Entity>;
 }
 
 export interface RepositoryPort<Entity, EntityProps>

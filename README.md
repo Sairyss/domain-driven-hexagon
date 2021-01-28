@@ -301,6 +301,8 @@ A better approach would be publishing a `Domain Event`. Any side effect operatio
 
 Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
 
+Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
+
 Domain Events can be implemented using [Observer](https://refactoring.guru/design-patterns/observer) and [Mediator](https://refactoring.guru/design-patterns/mediator) patterns.
 
 Examples:
@@ -308,12 +310,12 @@ Examples:
 - [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
 - [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Event Handler that executes side-effects when user is created.
-- [typeorm.entity.base.ts](src/infrastructure/database/base-classes/typeorm.entity.base.ts) - `publishAggregateEvents()` method publishes all events for execution right before transaction.
+- [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all events for execution right before or right after persisting transaction.
 
 Events can be published right before or right after insert/update/delete transaction, chose any option that is better for a particular project:
 
 - Before: to make side-effects part of that transaction. If any event fails all changes should be reverted.
-- After: to make side-effects independent. In that case [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency) should be implemented.
+- After: to persist transaction even if some event fails. This makes side-effects independent, but in that case [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency) should be implemented.
 
 Both options have pros and cons.
 
@@ -660,18 +662,11 @@ This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/m
 
 Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
 
-## Infrastructure related events
-
-We use [Domain Events](#Domain-Events) for domain-related operations. For infrastructure related operations other types of events can be used. For example, in NodeJS world it can be [node event emitter](https://nodejs.org/api/events.html) (or [Nest-event](https://www.npmjs.com/package/nest-event) which is also based on node event emitter but exposes a better api).
-
-For example, check [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) file. After each create/update/delete operation it emits an event, for example: `user.updated` or `user.deleted` with an entity object. This may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
-
-Communication between modules/domains (inside the same process) also can be done using events instead of coupling them to each other by importing files directly.
-
 ## Other things that can be a part of Infrastructure layer:
 
 - Framework related files;
 - Application logger implementation;
+- Infrastructure related events ([Nest-event](https://www.npmjs.com/package/nest-event))
 - Periodic cron jobs or tasks launchers ([NestJS Schedule](https://docs.nestjs.com/techniques/task-scheduling));
 - Other technology related files.
 

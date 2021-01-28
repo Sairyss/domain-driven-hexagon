@@ -1,13 +1,4 @@
-import {
-  BeforeInsert,
-  BeforeRemove,
-  BeforeUpdate,
-  CreateDateColumn,
-  PrimaryColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { ID } from 'src/core/value-objects/id.value-object';
-import { DomainEvents } from 'src/core/domain-events';
+import { CreateDateColumn, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 export abstract class TypeormEntityBase {
   constructor(props?: unknown) {
@@ -29,12 +20,4 @@ export abstract class TypeormEntityBase {
     type: 'timestamptz',
   })
   updatedAt!: Date;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  @BeforeRemove()
-  public async publishAggregateEvents(): Promise<void> {
-    const aggregateId = new ID(this.id);
-    await DomainEvents.publishEvents(aggregateId);
-  }
 }
