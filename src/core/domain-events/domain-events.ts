@@ -38,15 +38,13 @@ export class DomainEvents {
     }
   }
 
-  public static async publishEvents(id: ID, logger?: Logger): Promise<void> {
+  public static async publishEvents(id: ID, logger: Logger): Promise<void> {
     const aggregate = this.findAggregateByID(id);
 
     if (aggregate) {
       await Promise.all(
         aggregate.domainEvents.map((event: DomainEvent) => {
-          if (logger) {
-            logger.debug(`[Domain Event published]: ${event.constructor.name}`);
-          }
+          logger.debug(`[Domain Event published]: ${event.constructor.name}`);
           return this.publish(event);
         }),
       );
