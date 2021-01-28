@@ -660,7 +660,7 @@ We use [Domain Events](#Domain-Events) for domain-related operations. For infras
 
 For example, check [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) file. After each create/update/delete operation it emits an event, for example: `user.updated` or `user.deleted` with an entity object. This may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-Communication between modules also can be done using events instead of coupling modules to each other by importing files directly.
+Communication between modules/domains (inside the same process) also can be done using events instead of coupling them to each other by importing files directly.
 
 ## Other things that can be a part of Infrastructure layer:
 
