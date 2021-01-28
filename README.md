@@ -816,13 +816,33 @@ This is a bad practice and should be avoided. Setting up project after downloadi
 
 > Static code analysis is a method of debugging by examining source code before a program is run.
 
-For JavasScript and TypeScript, [Eslint](https://www.npmjs.com/package/eslint) with [typescript-eslint plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin) and some rules (like [airbnb](https://www.npmjs.com/package/eslint-config-airbnb)) can be a great tool to enforce writing better code. Consider disallowing things like `any` type and other things that may cause problems. Also, enabling strict mode in `tsconfig` is recommended.
+For JavasScript and TypeScript, [Eslint](https://www.npmjs.com/package/eslint) with [typescript-eslint plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin) and some rules (like [airbnb](https://www.npmjs.com/package/eslint-config-airbnb)) can be a great tool to enforce writing better code.
+
+Using `any` type is a bad practice. Consider disallowing it (and other things that may cause problems):
+
+```javascript
+// .eslintrc.js file
+  rules: {
+    '@typescript-eslint/no-explicit-any': 'error',
+    ...
+  }
+```
+
+Also, enabling strict mode in `tsconfig.json` is recommended:
+
+```json
+  "compilerOptions": {
+    "strict": true,
+    ...
+  }
+```
 
 Example file: [.eslintrc.js](.eslintrc.js)
 
 Read more:
 
 - [What Is Static Analysis?](https://www.perforce.com/blog/sca/what-static-analysis)
+- [Controlling Type Checking Strictness in TypeScript](https://www.carlrippon.com/controlling-type-checking-strictness-in-typescript/)
 
 ## Code formatting
 
