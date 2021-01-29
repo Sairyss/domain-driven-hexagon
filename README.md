@@ -881,6 +881,22 @@ Some examples can be found in [types](src/core/types) folder.
 
 Consider launching tests/code formatting/linting every time you do `git push` or `git commit`. This prevents bad code getting in your repo. [Husky](https://www.npmjs.com/package/husky) is a great tool for that.
 
+## Documentation
+
+Create documentation that may help users/other developers to use your program.
+
+- Simple readme file in a git repository that describes basic app functionality, available CLI commands, how to setup a new project etc.
+- [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications will help greatly to users of your API and also other developers.
+
+Example files:
+
+- [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts) - notice `@ApiProperty()` decorators. This is [NestJS Swagger](https://docs.nestjs.com/openapi/types-and-parameters) module.
+
+Read more:
+
+- [Documenting a NodeJS REST API with OpenApi 3/Swagger](https://medium.com/wolox/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420)
+- [Best Practices in API Documentation](https://swagger.io/blog/api-documentation/best-practices-in-api-documentation/)
+
 ## Code Generation
 
 Code generation can be important when using complex architectures to avoid typing boilerplate code manually.
