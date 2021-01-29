@@ -810,19 +810,6 @@ Read more:
 
 - [Angular Style Guides: Separate file names with dots and dashes](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
 
-## Prevent massive inheritance chains
-
-This can be achieved by making class `final`.
-
-**Note**: in TypeScript, unlike other languages, there is no default way to make class `final`. But there is a way around it using a custom decorator.
-
-Example file: [final.decorator.ts](src/core/decorators/final.decorator.ts)
-
-Read more:
-
-- [When to declare classes final](https://ocramius.github.io/blog/when-to-declare-classes-final/)
-- [Final classes by default, why?](https://matthiasnoback.nl/2018/09/final-classes-by-default-why/)
-
 ## Make application easy to setup
 
 There are a lot of projects out there which take effort to configure after downloading it. Everything has to be set up manually: database, all configs etc. If new developer joins the team he has to waste a lot of time just to make application work.
@@ -871,6 +858,23 @@ Read more:
 
 Consider using code formatters like [Prettier](https://www.npmjs.com/package/prettier) to maintain same code styles in the project.
 
+## Code Generation
+
+Code generation can be important when using complex architectures to avoid typing boilerplate code manually.
+
+[Hygen](https://www.npmjs.com/package/hygen) is a great example.
+This tool can generate building blocks (or entire modules) by using custom templates. Templates can be designed to follow best practices and concepts based on Clean/Hexagonal Architecture, DDD, SOLID etc.
+
+Main advantages of automatic code generation are:
+
+- Avoid manual typing or copy-pasting of boilerplate code.
+- No hand-coding means less errors and faster implementations. Simple CRUD module can be generated and used right away in seconds without any manual code writing.
+- Using auto-generated code templates ensures that everyone in the team uses the same folder/file structures, name conventions, architectural and code styles.
+
+**Note**:
+
+- To really understand and work with generated templates you need to understand what is being generated and why, so full understanding of an architecture and patterns used is required.
+
 ## Custom utility types
 
 Consider creating a bunch of shared custom utility types for different situations.
@@ -897,22 +901,18 @@ Read more:
 - [Documenting a NodeJS REST API with OpenApi 3/Swagger](https://medium.com/wolox/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420)
 - [Best Practices in API Documentation](https://swagger.io/blog/api-documentation/best-practices-in-api-documentation/)
 
-## Code Generation
+## Prevent massive inheritance chains
 
-Code generation can be important when using complex architectures to avoid typing boilerplate code manually.
+This can be achieved by making class `final`.
 
-[Hygen](https://www.npmjs.com/package/hygen) is a great example.
-This tool can generate building blocks (or entire modules) by using custom templates. Templates can be designed to follow best practices and concepts based on Clean/Hexagonal Architecture, DDD, SOLID etc.
+**Note**: in TypeScript, unlike other languages, there is no default way to make class `final`. But there is a way around it using a custom decorator.
 
-Main advantages of automatic code generation are:
+Example file: [final.decorator.ts](src/core/decorators/final.decorator.ts)
 
-- Avoid manual typing or copy-pasting of boilerplate code.
-- No hand-coding means less errors and faster implementations. Simple CRUD module can be generated and used right away in seconds without any manual code writing.
-- Using auto-generated code templates ensures that everyone in the team uses the same folder/file structures, name conventions, architectural and code styles.
+Read more:
 
-**Note**:
-
-- To really understand and work with generated templates you need to understand what is being generated and why, so full understanding of an architecture and patterns used is required.
+- [When to declare classes final](https://ocramius.github.io/blog/when-to-declare-classes-final/)
+- [Final classes by default, why?](https://matthiasnoback.nl/2018/09/final-classes-by-default-why/)
 
 ## Conventional commits
 
