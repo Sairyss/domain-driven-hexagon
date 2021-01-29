@@ -810,18 +810,6 @@ Read more:
 
 - [Angular Style Guides: Separate file names with dots and dashes](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
 
-## Make application easy to setup
-
-There are a lot of projects out there which take effort to configure after downloading it. Everything has to be set up manually: database, all configs etc. If new developer joins the team he has to waste a lot of time just to make application work.
-
-This is a bad practice and should be avoided. Setting up project after downloading it should be as easy as launching one or few commands in terminal. Consider adding scripts to do this automatically:
-
-- [package.json scripts](https://krishankantsinghal.medium.com/scripting-inside-package-json-4b06bea74c0e)
-- [docker-compose file](https://docs.docker.com/compose/)
-- [Makefile](https://opensource.com/article/18/8/what-how-makefile)
-- Database [seeding](#Seeds) and [migrations](#Migrations)
-- or any other tools.
-
 ## Static Code Analysis
 
 > Static code analysis is a method of debugging by examining source code before a program is run.
@@ -858,6 +846,34 @@ Read more:
 
 Consider using code formatters like [Prettier](https://www.npmjs.com/package/prettier) to maintain same code styles in the project.
 
+## Documentation
+
+Create documentation that may help users/other developers to use your program.
+
+- Simple readme file in a git repository that describes basic app functionality, available CLI commands, how to setup a new project etc.
+- [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications will help greatly to users of your API and also other developers.
+
+Example files:
+
+- [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts) - notice `@ApiProperty()` decorators. This is [NestJS Swagger](https://docs.nestjs.com/openapi/types-and-parameters) module.
+
+Read more:
+
+- [Documenting a NodeJS REST API with OpenApi 3/Swagger](https://medium.com/wolox/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420)
+- [Best Practices in API Documentation](https://swagger.io/blog/api-documentation/best-practices-in-api-documentation/)
+
+## Make application easy to setup
+
+There are a lot of projects out there which take effort to configure after downloading it. Everything has to be set up manually: database, all configs etc. If new developer joins the team he has to waste a lot of time just to make application work.
+
+This is a bad practice and should be avoided. Setting up project after downloading it should be as easy as launching one or few commands in terminal. Consider adding scripts to do this automatically:
+
+- [package.json scripts](https://krishankantsinghal.medium.com/scripting-inside-package-json-4b06bea74c0e)
+- [docker-compose file](https://docs.docker.com/compose/)
+- [Makefile](https://opensource.com/article/18/8/what-how-makefile)
+- Database [seeding](#Seeds) and [migrations](#Migrations)
+- or any other tools.
+
 ## Code Generation
 
 Code generation can be important when using complex architectures to avoid typing boilerplate code manually.
@@ -884,22 +900,6 @@ Some examples can be found in [types](src/core/types) folder.
 ## Pre-push/pre-commit hooks
 
 Consider launching tests/code formatting/linting every time you do `git push` or `git commit`. This prevents bad code getting in your repo. [Husky](https://www.npmjs.com/package/husky) is a great tool for that.
-
-## Documentation
-
-Create documentation that may help users/other developers to use your program.
-
-- Simple readme file in a git repository that describes basic app functionality, available CLI commands, how to setup a new project etc.
-- [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications will help greatly to users of your API and also other developers.
-
-Example files:
-
-- [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts) - notice `@ApiProperty()` decorators. This is [NestJS Swagger](https://docs.nestjs.com/openapi/types-and-parameters) module.
-
-Read more:
-
-- [Documenting a NodeJS REST API with OpenApi 3/Swagger](https://medium.com/wolox/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420)
-- [Best Practices in API Documentation](https://swagger.io/blog/api-documentation/best-practices-in-api-documentation/)
 
 ## Prevent massive inheritance chains
 
