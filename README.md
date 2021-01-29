@@ -301,7 +301,7 @@ A better approach would be publishing a `Domain Event`. Any side effect operatio
 
 Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
 
-Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
+Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
 Domain Events can be implemented using [Observer](https://refactoring.guru/design-patterns/observer) and [Mediator](https://refactoring.guru/design-patterns/mediator) patterns.
 
@@ -323,6 +323,7 @@ To have a better understanding on domain events and code implementations above, 
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
+- [The Outbox Pattern](https://www.kamilgrzybek.com/design/the-outbox-pattern/)
 
 ---
 
@@ -908,10 +909,18 @@ Read more:
 
 - [DDD, Hexagonal, Onion, Clean, CQRS, … How I put it all together](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together)
 - [Hexagonal Architecture](https://www.qwan.eu/2020/08/20/hexagonal-architecture.html)
-- [Khalil Stemmler blog](https://khalilstemmler.com)
 - [Clean architecture series](https://medium.com/@pereiren/clean-architecture-series-part-1-f34ef6b04b62)
 - [Clean architecture for the rest of us](https://pusher.com/tutorials/clean-architecture-introduction)
+
+## Repositories
+
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
+
+## Blogs
+
+- [Martin Fowler](https://martinfowler.com/)
+- [Kamil Grzybek](https://www.kamilgrzybek.com/)
+- [Khalil Stemmler](https://khalilstemmler.com)
 
 ## Videos
 
