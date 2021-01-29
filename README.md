@@ -323,7 +323,11 @@ To have a better understanding on domain events and code implementations above, 
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
+
+For integration events in distributed systems here are some useful patterns:
+
 - [The Outbox Pattern](https://www.kamilgrzybek.com/design/the-outbox-pattern/)
+- [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
 
 ---
 
@@ -758,11 +762,12 @@ Example files: // TODO
 - Use proper log levels: `log`/`info` for events that are meaningful during production, `debug` for events useful while developing/debugging, and `warn`/`error` for unwanted behavior on any stage.
 - Write meaningful log messages and include metadata that may be useful. Try to avoid cryptic messages that only you understand.
 - Never log sensitive data: passwords, emails, credit card numbers etc. since this data will end up in log files. If log files are not stored securely this data can be leaked.
-- Avoid `console.log`. Use mature logger libraries that support features like enabling/disabling log levels, convenient log formats that are easy to parse (like JSON) etc.
-- When using microservices, consider generating unique id for each request that is later passed to every microservice that is involved in this request. This will make it easier to find logs related to this request across different log files.
-- Use consistent structure across all logs. Each log line should represent one single event and contain at least the timestamp, context, request id/aggregate id and meaningful message.
-- Use error reporting tools like [Sentry](https://sentry.io/for/node/) to receive error logs fast as possible.
-- Send notifications of important events that happen in production to Slack or even by SMS.
+- Avoid default logging tools (like `console.log`). Use mature logger libraries that support features like enabling/disabling log levels, convenient log formats that are easy to parse (like JSON) etc.
+- Consider including user id in logs. It will facilitate investigating if user creates an incident ticket.
+- In distributed systems a gateway can generate an unique id for each request and pass it to every system that processes this request. Logging this id will make it easier to find related logs across different systems/files.
+- Use consistent structure across all logs. Each log line should represent one single event and contain things like timestamp, context, unique user/request id and/or id of entity/aggregate that is being modified, as well as additional metadata if required.
+- Use error reporting tools like [Sentry](https://sentry.io/for/node/) to to facilitate logs management.
+- Send notifications of important events that happen in production to a corporate chat like Slack or even by SMS.
 - Don't write logs to a file from your program. Write all logs to [stdout](https://www.computerhope.com/jargon/s/stdout.htm) (to a terminal window) and let other tools handle writing logs to a file (for example [docker supports writing logs to a file](https://docs.docker.com/config/containers/logging/configure/)). Read more: [Why should your Node.js application not handle log routing?](https://www.coreycleary.me/why-should-your-node-js-application-not-handle-log-routing/)
 
 ## Folder/File Structure
@@ -915,6 +920,12 @@ Read more:
 ## Repositories
 
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
+- [The System Design Primer](https://github.com/donnemartin/system-design-primer)
+
+## Documentation
+
+- [Refactoring guru - Catalog of Design Patterns](https://refactoring.guru/design-patterns/catalog)
+- [Microsoft - Cloud Design Patterns](https://docs.microsoft.com/en-us/azure/architecture/patterns/index-patterns)
 
 ## Blogs
 
@@ -929,6 +940,7 @@ Read more:
 ## Books
 
 - ["Domain-Driven Design: Tackling Complexity in the Heart of Software" ](https://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215) by Eric Evans
-- ["Implementing Domain-Driven Design"](https://www.amazon.com/Implementing-Domain-Driven-Design-Vaughn-Vernon/dp/0321834577) by Vaughn Vernon
 - ["Secure by Design"](https://www.manning.com/books/secure-by-design) by Dan Bergh Johnsson, Daniel Deogun, Daniel Sawano
+- ["Implementing Domain-Driven Design"](https://www.amazon.com/Implementing-Domain-Driven-Design-Vaughn-Vernon/dp/0321834577) by Vaughn Vernon
 - ["Clean Architecture: A Craftsman's Guide to Software Structure and Design"](https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164/ref=sr_1_1?dchild=1&keywords=clean+architecture&qid=1605343702&s=books&sr=1-1) by Robert Martin
+- [Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems](https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321) by Martin Kleppmann
