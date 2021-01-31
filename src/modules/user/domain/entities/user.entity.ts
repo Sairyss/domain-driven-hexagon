@@ -21,7 +21,9 @@ export class UserEntity extends AggregateRoot<UserProps> {
     eventually so an event handler somewhere may receive it and do an
     appropriate action, like sending confirmation email, adding user
     to mailing list, send notification to slack etc */
-    this.addEvent(new UserCreatedDomainEvent(this.id, this.props.email));
+    this.addEvent(
+      new UserCreatedDomainEvent(this.id, this.props.email, this.address),
+    );
   }
 
   /* Private properties and getters without a setter protects entity
