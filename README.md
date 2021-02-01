@@ -1015,6 +1015,8 @@ Read more:
 ## Videos
 
 - [More Testable Code with the Hexagonal Architecture](https://youtu.be/ujb_O6myknY)
+- [Playlist: Design Patterns Video Tutorial](https://youtube.com/playlist?list=PLF206E906175C7E07)
+- [Playlist: Design Patterns in Object Oriented Programming](https://youtube.com/playlist?list=PLrhzvIcii6GNjpARdnO4ueTUAVR9eMBpc)
 
 ## Books
 
