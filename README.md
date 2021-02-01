@@ -80,7 +80,7 @@ And many other sources (more links below in every chapter).
 
 Those architectures and principles provide useful patterns that can be used in combination to achieve a better result.
 
-Before we begin, here are the PROS and CONS of using this approach:
+Before we begin, here are the PROS and CONS of using a complete architecture like this:
 
 ## Pros:
 
@@ -955,6 +955,10 @@ Some examples can be found in [types](src/core/types) folder.
 
 Consider launching tests/code formatting/linting every time you do `git push` or `git commit`. This prevents bad code getting in your repo. [Husky](https://www.npmjs.com/package/husky) is a great tool for that.
 
+Read more:
+
+- [Git Hooks](https://githooks.com/)
+
 ## Prevent massive inheritance chains
 
 This can be achieved by making class `final`.
@@ -967,6 +971,7 @@ Read more:
 
 - [When to declare classes final](https://ocramius.github.io/blog/when-to-declare-classes-final/)
 - [Final classes by default, why?](https://matthiasnoback.nl/2018/09/final-classes-by-default-why/)
+- [Prefer Composition Over Inheritance](https://medium.com/better-programming/prefer-composition-over-inheritance-1602d5149ea1)
 
 ## Conventional commits
 
