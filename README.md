@@ -2,7 +2,7 @@ _**This repo is work in progress**_
 
 # Domain-Driven Hexagon
 
-Main emphasis of this project is to provide a guide on how to design complex applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
+Main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
 **Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed.
 
@@ -11,6 +11,59 @@ This project's code examples are written using [TypeScript](https://www.typescri
 Though patterns and principles presented here are **framework/language agnostic**, so above technologies can be easily replaced with any alternative. No matter what language or framework is used, any application can benefit from principles described below.
 
 **Note**: code examples are adapted to TypeScript and mentioned above frameworks so may not fit well for other languages. Also remember that code examples presented here are just examples and must be changed according to project's needs or personal preference.
+
+## Table of Contents
+
+- [Architecture](#Architecture)
+
+  - [Diagram](#Diagram)
+  - [Modules](#Modules)
+  - [Application Core](#Application-Core)
+  - [Application layer](#Application-layer)
+    - [Application Services](#Application-Services)
+    - [Commands and Queries](#Commands-and-Queries)
+    - [Ports](#Ports)
+  - [Domain Layer](#Domain-Layer)
+    - [Entities](#Entities)
+    - [Aggregates](#Aggregates)
+    - [Domain Events](#Domain-Events)
+    - [Domain Services](#Domain-Services)
+    - [Value Objects](#Value-Objects)
+    - [Enforcing invariants of Domain Objects](#Enforcing-invariants-of-Domain-Objects)
+  - [Interface Adapters](#Interface-Adapters)
+    - [Controllers](#Controllers)
+    - [DTOs](#DTOs)
+  - [Infrastructure](#Infrastructure)
+    - [Adapters](#Adapters)
+    - [Repositories](#Repositories)
+    - [ORM Entities](#ORM-Entities)
+    - [Other things that can be a part of Infrastructure layer](#Other-things-that-can-be-a-part-of-Infrastructure-layer)
+
+- [Other recommendations and best practices](#Other-recommendations-and-best-practices)
+  - [Error Handling](#Error-Handling)
+  - [Testing](#Testing)
+  - [Logging](#Logging)
+  - [Folder/File Structure](#Folder/File-Structure)
+  - [File names](#File-names)
+  - [Static Code Analysis](#Static-Code-Analysis)
+  - [Code formatting](#Code-formatting)
+  - [Documentation](#Documentation)
+  - [Make application easy to setup](#Make-application-easy-to-setup)
+  - [Seeds](#Seeds)
+  - [Migrations](#Migrations)
+  - [Code Generation](#Code-Generation)
+  - [Custom utility types](#Custom-utility-types)
+  - [Pre-push/pre-commit hooks](#Pre-push/pre-commit-hooks)
+  - [Prevent massive inheritance chains](#Prevent-massive-inheritance-chains)
+  - [Conventional commits](#Conventional-commits)
+- [Additional resources](#Additional-resources)
+
+  - [Articles](#Articles)
+  - [Repositories](#Repositories)
+  - [Documentation](#Documentation)
+  - [Blogs](#Blogs)
+  - [Videos](#Videos)
+  - [Books](#Books)
 
 # Architecture
 
@@ -42,7 +95,9 @@ Before we begin, here are the PROS and CONS of using this approach:
 
 - This is a sophisticated architecture which requires a firm understanding of quality software principles, such as SOLID, Clean/Hexagonal Architecture, Domain-Driven Design, etc. Any team implementing such a solution will almost certainly require an expert to drive the solution and keep it from evolving the wrong way and accumulating technical debt.
 
-- This approach is not recommended for small applications. There is added up-front complexity to support the architecture, such as more boilerplate code, abstractions, data mapping etc. thus this architecture is generally ill-suited to simple CRUD applications and could over-complicate such solutions.
+- This architecture is not recommended for small applications. There is added up-front complexity to support it, such as more boilerplate code, abstractions, data mapping etc. thus this architecture is generally ill-suited to simple CRUD applications and could over-complicate such solutions.
+
+**Note**: though using a complete architecture described below is not recommended in simple applications with not a lot of business logic, some of the described below principles **can** be used in a small-medium applications, especially practices described in [Other recommendations and best practices](#Other-recommendations-and-best-practices) section below.
 
 # Diagram
 
@@ -361,12 +416,6 @@ Imagine you have a `User` entity which needs to have an `address` of a user. Usu
 
 `Value object` isn’t just a data structure that holds values. It can also encapsulate logic associated with the concept it represents.
 
-Equality of `Value Objects` can be checked using `equals` method:
-
-```typescript
-user1.address.equals(user2.address);
-```
-
 Example files:
 
 - [address.value-object.ts](src/modules/user/domain/value-objects/address.value-object.ts)
@@ -477,7 +526,7 @@ Data should not be trusted. There are a lot of cases when invalid data may end u
 
 Enforcing self-validation will inform immediately when `Value Object` is created with corrupted data. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
 
-**Note**: Though _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be an overengineering. For most projects it may be, since most projects out there are not that complex. There are people who advocate for and against this approach. If creating a class for every primitive is not preferred, create classes just for those primitives that have specific rules or behavior. Here are some thoughts on this topic: [From Primitive Obsession to Domain Modelling - Over-engineering?](https://blog.ploeh.dk/2015/01/19/from-primitive-obsession-to-domain-modelling/#7172fd9ca69c467e8123a20f43ea76c2).
+**Note**: Though _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be an overengineering. For less complex and smaller projects it definitely may be. For bigger projects, there are people who advocate for and against this approach. If creating a class for every primitive is not preferred, create classes just for those primitives that have specific rules or behavior. Here are some thoughts on this topic: [From Primitive Obsession to Domain Modelling - Over-engineering?](https://blog.ploeh.dk/2015/01/19/from-primitive-obsession-to-domain-modelling/#7172fd9ca69c467e8123a20f43ea76c2).
 
 **Recommended to read**:
 
@@ -612,11 +661,6 @@ Adapters should have:
 - a DTO/interface for received data;
 - a validator to make sure incoming data is not corrupted (validation can reside in DTO class using decorators, or it can be validated by `Value Objects`).
 
-## Database
-
-This folder contains all database related files:
-`Repositories`, `Orm Entities`, `Migrations`, `Seeds`, `Seeders` etc.
-
 ## Repositories
 
 Repositories centralize common data access functionality. They encapsulate the logic required to access that data. Entities/aggregates can be put into a repository and then retrieved at a later time without domain even knowing where data is saved, in a database, or a file, or some other source.
@@ -643,6 +687,8 @@ Since domain `Entities` have their data modeled so that it best accommodates dom
 
 `ORM Entities` should also have a corresponding mapper to map from domain to persistence and back.
 
+**Note**: separating `Entities` and `ORM Entities` may be an overkill for smaller applications, consider all pros and cons when making this decision.
+
 Example files:
 
 - [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts)
@@ -652,24 +698,6 @@ Read more:
 
 - [Stack Overflow question: DDD - Persistence Model and Domain Model](https://stackoverflow.com/questions/14024912/ddd-persistence-model-and-domain-model)
 - [Just Stop It! The Domain Model Is Not The Persistence Model](https://blog.sapiensworks.com/post/2012/04/07/Just-Stop-It!-The-Domain-Model-Is-Not-The-Persistence-Model.aspx)
-
-## Seeds
-
-To avoid manually creating data in the database, seeding is a great solution to populate database with data for development and testing purposes (e2e testing). [Wiki description](https://en.wikipedia.org/wiki/Database_seeding)
-
-This project uses [typeorm-seeding](https://www.npmjs.com/package/typeorm-seeding#-using-entity-factory) package. Files like: `Seeds`, `Seeders` and `Factories` are used by this package to seed the database.
-
-## Migrations
-
-Migrations are used for database table/schema changes:
-
-> Database migration refers to the management of incremental, reversible changes and version control to relational database schemas. A schema migration is performed on a database whenever it is necessary to update or revert that database's schema to some newer or older version.
-
-[Wiki](https://en.wikipedia.org/wiki/Schema_migration)
-
-This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) as an example.
-
-Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
 
 ## Other things that can be a part of Infrastructure layer:
 
@@ -837,6 +865,8 @@ Also, enabling strict mode in `tsconfig.json` is recommended:
 
 Example file: [.eslintrc.js](.eslintrc.js)
 
+[Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) may be a good addition to eslint.
+
 Read more:
 
 - [What Is Static Analysis?](https://www.perforce.com/blog/sca/what-static-analysis)
@@ -845,6 +875,10 @@ Read more:
 ## Code formatting
 
 Consider using code formatters like [Prettier](https://www.npmjs.com/package/prettier) to maintain same code styles in the project.
+
+Read more:
+
+- [Why Coding Style Matters](https://www.smashingmagazine.com/2012/10/why-coding-style-matters/)
 
 ## Documentation
 
@@ -871,8 +905,28 @@ This is a bad practice and should be avoided. Setting up project after downloadi
 - [package.json scripts](https://krishankantsinghal.medium.com/scripting-inside-package-json-4b06bea74c0e)
 - [docker-compose file](https://docs.docker.com/compose/)
 - [Makefile](https://opensource.com/article/18/8/what-how-makefile)
-- Database [seeding](#Seeds) and [migrations](#Migrations)
+- Database seeding and migrations (described below)
 - or any other tools.
+
+## Seeds
+
+To avoid manually creating data in the database, seeding is a great solution to populate database with data for development and testing purposes (e2e testing). [Wiki description](https://en.wikipedia.org/wiki/Database_seeding)
+
+This project uses [typeorm-seeding](https://www.npmjs.com/package/typeorm-seeding#-using-entity-factory) package. Files like: `Seeds`, `Seeders` and `Factories` are used by this package to seed the database.
+
+## Migrations
+
+Migrations are used for database table/schema changes:
+
+> Database migration refers to the management of incremental, reversible changes and version control to relational database schemas. A schema migration is performed on a database whenever it is necessary to update or revert that database's schema to some newer or older version.
+
+[Wiki](https://en.wikipedia.org/wiki/Schema_migration)
+
+Seeds and migrations belong to Infrastructure layer.
+
+This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) as an example.
+
+Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
 
 ## Code Generation
 
