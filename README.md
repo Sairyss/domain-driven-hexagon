@@ -885,7 +885,7 @@ Read more:
 Create documentation that may help users/other developers to use your program.
 
 - Simple readme file in a git repository that describes basic app functionality, available CLI commands, how to setup a new project etc.
-- [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications. Document every response and exceptions that endpoints may return and request body that those endpoints should receive. This will help greatly to other developers and users of your API.
+- [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications. Document in details every endpoint. Add description and examples of every request, response, properties and exceptions that endpoints may return or receive as body/parameters. This will help greatly to other developers and users of your API.
 
 Example files:
 
