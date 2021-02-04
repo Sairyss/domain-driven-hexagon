@@ -114,6 +114,8 @@ In short, data flow looks like this (from left to right):
 
 **Keep in mind** that different projects can have more or less steps/layers/building blocks then described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
 
+General recommendation for any project: analyze how big/complex the application will be, find a compromise and use as many layers/building blocks as needed for the project and skip ones that may over-complicate things.
+
 More in details on each step below.
 
 # Modules
