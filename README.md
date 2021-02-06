@@ -328,7 +328,7 @@ Read more: [Domain Entity pattern](https://badia-kharroubi.gitbooks.io/microserv
 
 - Aggregates help to simplify the domain model by gathering multiple domain objects under a single abstraction.
 - Aggregates should not be influenced by data model. Associations between domain objects are not the same as database relationships.
-- Aggregate root is just an entity that contains other entities/value objects and all logic to operate them.
+- Aggregate root is an entity that contains other entities/value objects and all logic to operate them.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
 - Saving an aggregate must be a [transactional operation](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved or nothing.
 - Aggregates can publish `Domain Events` (more on that below).
@@ -338,6 +338,7 @@ Example files: [aggregate-root.base.ts](src/core/base-classes/aggregate-root.bas
 Read more:
 
 - [Understanding Aggregates in Domain-Driven Design](https://dzone.com/articles/domain-driven-design-aggregate)
+- [What Are Aggregates In Domain-Driven Design?](https://www.jamesmichaelhickey.com/domain-driven-design-aggregates/) <- this is a series of multiple articles, don't forget to click "Next article" at the end.
 
 ---
 
@@ -635,7 +636,6 @@ Examples:
 - Interfaces for `Request`/`Response` objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating git submodule or a separate package for sharing interfaces.
 - `Request`/`Response` DTO classes may be a good place to use validation and sanitization decorators like [class-validator](https://www.npmjs.com/package/class-validator) and [class-sanitizer](https://www.npmjs.com/package/class-sanitizer) (make sure that all validation errors are gathered first and only then return them to the user, this is called [Notification pattern](https://martinfowler.com/eaaDev/Notification.html). Class-validator does this by default).
 - `Request`/`Response` DTO classes may also be a good place to use Swagger/OpenAPI library decorators that [NestJS provides](https://docs.nestjs.com/openapi/types-and-parameters).
-- If class decorators for validation/swagger are not used, creating a class may be omitted and interface/mapper should be enough.
 
 ---
 
