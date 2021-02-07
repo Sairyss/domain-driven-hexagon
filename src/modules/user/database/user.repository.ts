@@ -10,8 +10,6 @@ import {
   TypeormRepositoryBase,
   WhereCondition,
 } from 'src/infrastructure/database/base-classes/typeorm.repository.base';
-import { BaseEntityProps } from 'src/core/base-classes/entity.base';
-import { DeepPartial } from 'src/core/types';
 import { QueryParams } from 'src/core/ports/repository.ports';
 import { UserOrmEntity } from './user.orm-entity';
 import { UserRepositoryPort } from './user.repository.interface';
@@ -62,7 +60,7 @@ export class UserRepository
 
   // Used to construct a query
   protected prepareQuery(
-    params: DeepPartial<BaseEntityProps & UserProps>,
+    params: QueryParams<UserProps>,
   ): WhereCondition<UserOrmEntity> {
     const where: QueryParams<UserOrmEntity> = {};
     if (params.id) {

@@ -22,6 +22,6 @@ export class CreateUserService {
 
     const created = await this.userRepo.save(user);
 
-    return created.id as ID;
+    return created.id;
   }
 }
