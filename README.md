@@ -214,6 +214,8 @@ One service per use case is considered a good practice.
 
 Use cases are, simply said, list of actions required from an application.
 
+Example file: [create-user.service.ts](src/modules/user/use-cases/create-user/create-user.service.ts)
+
 ---
 
 </details>
@@ -691,7 +693,7 @@ Since domain `Entities` have their data modeled so that it best accommodates dom
 
 `ORM Entities` should also have a corresponding mapper to map from domain to persistence and back.
 
-**Note**: separating `Entities` and `ORM Entities` may be an overkill for smaller applications, consider all pros and cons when making this decision.
+**Note**: separating `Entities` and `ORM Entities` may be an overkill for smaller applications, consider all pros and cons before making this decision.
 
 Example files:
 
@@ -758,7 +760,7 @@ Consider adding optional `metadata` object to exceptions (if language doesn't su
 
 - Exception abstract base class example: [exception.base.ts](src/core/exceptions/exception.base.ts)
 - Domain Exception class example: [domain.exception.ts](src/core/exceptions/domain.exception.ts)
-- Check `src/core/exceptions` folder to see more examples (some of them are exceptions from other languages like C# or Java)
+- Check [exceptions]([src/core/exception]) folder to see more examples (some of them are exceptions from other languages like C# or Java)
 
 Read more:
 
