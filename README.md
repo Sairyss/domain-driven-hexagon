@@ -914,9 +914,11 @@ This is a bad practice and should be avoided. Setting up project after downloadi
 
 ## Seeds
 
-To avoid manually creating data in the database, seeding is a great solution to populate database with data for development and testing purposes (e2e testing). [Wiki description](https://en.wikipedia.org/wiki/Database_seeding)
+To avoid manually creating data in the database, seeding is a great solution to populate database with data for development and testing purposes (e2e testing). [Wiki description](https://en.wikipedia.org/wiki/Database_seeding).
 
-This project uses [typeorm-seeding](https://www.npmjs.com/package/typeorm-seeding#-using-entity-factory) package. Files like: `Seeds`, `Seeders` and `Factories` are used by this package to seed the database.
+This project uses [typeorm-seeding](https://www.npmjs.com/package/typeorm-seeding#-using-entity-factory) package.
+
+Example file: [user.seeds.ts](src/modules/user/database/seeding/user.seeds.ts)
 
 ## Migrations
 
