@@ -894,6 +894,7 @@ Create documentation that may help users/other developers to use your program.
 Example files:
 
 - [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts) - notice `@ApiProperty()` decorators. This is [NestJS Swagger](https://docs.nestjs.com/openapi/types-and-parameters) module.
+- [create-user.http.controller.ts](src/modules/user/use-cases/create-user/create-user.http.controller.ts) - notice `@ApiOperation()` and `@ApiResponse()` decorators.
 
 Read more:
 
@@ -930,9 +931,9 @@ Migrations are used for database table/schema changes:
 
 Seeds and migrations belong to Infrastructure layer.
 
-This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) as an example.
+This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) which automatically generates sql migrations like this:
 
-Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
+[1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
 
 ## Code Generation
 
