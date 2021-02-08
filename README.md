@@ -287,7 +287,7 @@ Ports (for Driven Adapters) are interfaces that define contracts which must be i
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
 - Mock implementations can be passed to ports while testing. Mocking makes your tests faster and independent from the environment.
 
-**Note**: since most port's implementations are injected and executed in application service, Application Layer can be a good place to keep those ports. But there are times when Domain Layer's business logic depends on executing some external resource, in that case those ports can be put in a Domain Layer.
+**Note**: since most ports implementations are injected and executed in application service, Application Layer can be a good place to keep those ports. But there are times when Domain Layer's business logic depends on executing some external resource, in that case those ports can be put in a Domain Layer.
 
 Example file: [repository.ports.ts](src/core/ports/repository.ports.ts)
 
@@ -929,13 +929,17 @@ Migrations are used for database table/schema changes:
 
 > Database migration refers to the management of incremental, reversible changes and version control to relational database schemas. A schema migration is performed on a database whenever it is necessary to update or revert that database's schema to some newer or older version.
 
-[Wiki](https://en.wikipedia.org/wiki/Schema_migration)
+Source: [Wiki](https://en.wikipedia.org/wiki/Schema_migration)
+
+Migrations should be generated every time database table schema is changed. When pushed to production it can be launched automatically.
+
+**BE CAREFUL** not to drop some columns/tables that contain data by accident. Perform data migrations before table schema migrations and always backup database before doing anything.
 
 Seeds and migrations belong to Infrastructure layer.
 
-This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) which automatically generates sql migrations like this:
+This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) which automatically generates sql table schema migrations like this:
 
-[1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
+Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
 
 ## Code Generation
 
