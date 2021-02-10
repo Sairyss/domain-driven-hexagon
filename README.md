@@ -783,6 +783,11 @@ Use _White Box_ testing only when it is really needed and as an addition to _Bla
 
 It's all about investing only in the tests that yield the biggest return on your effort.
 
+Behavioral tests can be divided in two parts:
+
+- Use cases tests in isolation, with all I/O mocked and injected. This makes tests fast so they can be run all the time before committing/pushing.
+- Full e2e tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before deploying. It is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are written by a separate QA team.
+
 Read more:
 
 - [Pragmatic unit testing](https://enterprisecraftsmanship.com/posts/pragmatic-unit-testing/)
@@ -790,9 +795,6 @@ Read more:
 - [Writing BDD Test Scenarios](https://www.departmentofproduct.com/blog/writing-bdd-test-scenarios/)
 
 Example files: // TODO
-
-- Spec file for a use case in isolation: [TODO]();
-- e2e testing a use case from end-user standpoint (with all the infrastructure up, like API routes, databases etc): [TODO]().
 
 ## Logging
 
@@ -935,11 +937,11 @@ Migrations should be generated every time database table schema is changed. When
 
 **BE CAREFUL** not to drop some columns/tables that contain data by accident. Perform data migrations before table schema migrations and always backup database before doing anything.
 
-Seeds and migrations belong to Infrastructure layer.
-
 This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) which automatically generates sql table schema migrations like this:
 
 Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
+
+Seeds and migrations belong to Infrastructure layer.
 
 ## Code Generation
 
