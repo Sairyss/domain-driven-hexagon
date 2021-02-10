@@ -42,6 +42,7 @@ Though patterns and principles presented here are **framework/language agnostic*
 - [Other recommendations and best practices](#Other-recommendations-and-best-practices)
   - [Error Handling](#Error-Handling)
   - [Testing](#Testing)
+  - [Configuration](#Configuration)
   - [Logging](#Logging)
   - [Folder/File Structure](#Folder/File-Structure)
   - [File names](#File-names)
@@ -795,6 +796,20 @@ Read more:
 - [Writing BDD Test Scenarios](https://www.departmentofproduct.com/blog/writing-bdd-test-scenarios/)
 
 Example files: // TODO
+
+## Configuration
+
+- Store all configurable options/variables/parameters in config files. Try to avoid using in-line config options/variables. This will make it easier to find and maintain all configurable parameters when they are in one place.
+- Never store sensitive configuration variables (passwords/API keys/secret keys etc) in plain text in a configuration files or source code.
+- Store sensitive configuration variables, or variables that change depending on environment, as [environment variables](https://en.wikipedia.org/wiki/Environment_variable) ([dotenv](https://www.npmjs.com/package/dotenv) is a nice package for that) or as a [Docker/Kubernetes secrets](https://www.bogotobogo.com/DevOps/Docker/Docker_Kubernetes_Secrets.php).
+- Create hierarchical config files that are grouped into sections. If possible, create multiple files for different configs (like database config, API config, tasks config etc).
+- Application should fail and provide the immediate feedback if the required environment variables are not present at start-up.
+- For most projects plain object configs may be enough. But there are other options: other formats like YAML, JSON or third party packages, for example: [NestJS Configuration](https://docs.nestjs.com/techniques/configuration), [rc](https://www.npmjs.com/package/rc), [nconf](https://www.npmjs.com/package/nconf) etc.
+
+Example files:
+
+- [ormconfig.ts](src/infrastructure/configs/ormconfig.ts) - this is typeorm database config file. Notice `process.env` - those are environmental variables.
+- [.env.example](.env.example) - this is [dotenv](https://www.npmjs.com/package/dotenv) example file. This file should only store dummy example secret keys, never store actual development/production secrets in it. This file later is renamed to `.env` and populated with real keys for every environment (local, dev or prod). Don't forget to add `.env` to [.gitignore](.gitignore) file to avoid pushing it to repo and leaking all keys.
 
 ## Logging
 
