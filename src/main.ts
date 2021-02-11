@@ -3,6 +3,7 @@ import { initDomainEventHandlers } from '@modules/domain-event-handlers';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
 import { AppModule } from './app.module';
 import { ExceptionInterceptor } from './infrastructure/interceptors/exception.interceptor';
 

@@ -1,4 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { config } from 'dotenv';
+
+config(); // Initializing dotenv
 
 export const typeormConfig: TypeOrmModuleOptions = {
   type: 'postgres',
