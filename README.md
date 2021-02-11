@@ -725,7 +725,7 @@ Be careful when implementing any complex architecture in small-medium sized APIs
 For example:
 
 - Separating code into layers, using controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any API.
-- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, dividing `Entities` and `ORM Entities` etc. in APIs that have little business logic only complicates such solutions and adds extra boilerplate code, data mapping etc. without adding much benefit.
+- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, dividing `Entities` and `ORM Entities` etc. in APIs that are more data-centric and have little or no business logic only complicates such solutions and adds extra boilerplate code, data mapping etc. without adding much benefit.
 
 Before implementing any pattern always analyze if benefit given by using it worth the extra code complexity.
 
