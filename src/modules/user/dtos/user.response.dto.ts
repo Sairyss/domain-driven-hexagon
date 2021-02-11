@@ -12,13 +12,22 @@ export class UserResponse extends ResponseBase implements User {
     this.street = user.address.postalCode;
   }
 
-  @ApiProperty({ example: 'joh-doe@gmail.com', description: 'User email' })
+  @ApiProperty({
+    example: 'joh-doe@gmail.com',
+    description: "User's email address",
+  })
   email: string;
 
-  @ApiProperty({ example: 'France', description: 'Users country of residence' })
+  @ApiProperty({
+    example: 'France',
+    description: "User's country of residence",
+  })
   country: string;
 
-  @ApiProperty({ example: '123456', description: 'Postal code' })
+  @ApiProperty({
+    example: '123456',
+    description: 'Postal code',
+  })
   postalCode: string;
 
   @ApiProperty({
