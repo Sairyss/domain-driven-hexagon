@@ -1,5 +1,5 @@
 import { Body, Controller, HttpStatus, Inject, Post } from '@nestjs/common';
-import { IdResponseDTO } from 'src/interface-adapters/dtos/id.response.dto';
+import { IdResponse } from 'src/interface-adapters/dtos/id.response.dto';
 import { routes } from '@config/app.routes';
 import { createUserSymbol } from '@modules/user/user.providers';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -18,7 +18,7 @@ export class CreateUserHttpController {
   @ApiOperation({ summary: 'Create a user' })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: IdResponseDTO,
+    type: IdResponse,
   })
   @ApiResponse({
     status: HttpStatus.CONFLICT,
@@ -27,7 +27,7 @@ export class CreateUserHttpController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
   })
-  async create(@Body() body: CreateUserRequest): Promise<IdResponseDTO> {
+  async create(@Body() body: CreateUserRequest): Promise<IdResponse> {
     const command = new CreateUserCommand({
       email: body.email,
       address: {
@@ -39,6 +39,6 @@ export class CreateUserHttpController {
 
     const id = await this.createUser.createUser(command);
 
-    return new IdResponseDTO(id.value);
+    return new IdResponse(id.value);
   }
 }

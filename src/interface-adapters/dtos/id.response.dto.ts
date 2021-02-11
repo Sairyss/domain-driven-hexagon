@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Id } from '../interfaces/id.interface';
 
-export class IdResponseDTO implements Id {
+export class IdResponse implements Id {
   constructor(id: string) {
     this.id = id;
   }
