@@ -78,10 +78,9 @@ Mainly based on:
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Onion Architecture](https://herbertograca.com/2017/09/21/onion-architecture/)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
+- [Software Design Patterns](https://refactoring.guru/design-patterns/what-is-pattern)
 
 And many other sources (more links below in every chapter).
-
-Those architectures and principles provide useful patterns that can be used in combination to achieve a better result.
 
 Before we begin, here are the PROS and CONS of using a complete architecture like this:
 
@@ -113,7 +112,7 @@ In short, data flow looks like this (from left to right):
 - Application service handles this Command/Query; it executes business logic using domain services and/or entities and uses the infrastructure layer through ports;
 - Infrastructure layer maps data to format that it needs, uses repositories to fetch/persist data and adapters to send events or do other I/O communications, maps data back to domain format and returns it back to Application service;
 - After application service finishes doing it's job, it returns data/confirmation back to Controllers;
-- Controllers return data back to the user (if application has presenters, presenters are returned instead).
+- Controllers return data back to the user (if application has presenters/views, those are returned instead).
 
 **Keep in mind** that different projects can have more or less steps/layers/building blocks then described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
 
