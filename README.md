@@ -1026,11 +1026,14 @@ Conventional commits add some useful prefixes to your commit messages, for examp
 
 - `feat: added ability to delete user's profile`
 
+This creates a common language that makes easier communicating the nature of changes to teammates and also may be useful for automatic package versioning and release notes generation.
+
 Read more:
 
 - [conventionalcommits.org](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
-- [Github Gist](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716)
+- [Semantic Commit Messages](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716)
 - [Commitlint](https://github.com/conventional-changelog/commitlint)
+- [Semantic release](https://github.com/semantic-release/semantic-release)
 
 ---
 
