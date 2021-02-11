@@ -961,7 +961,7 @@ Seeds and migrations belong to Infrastructure layer.
 
 ## Rate Limiting
 
-By default there is no limit on how many request users can make. This may lead to problems, like DDoS or brute force attacks.
+By default there is no limit on how many request users can make to your API. This may lead to problems, like DDoS or brute force attacks, lags and performance issues etc.
 
 To solve this, implementing [Rate Limiting](https://en.wikipedia.org/wiki/Rate_limiting) is essential for any API.
 
