@@ -52,6 +52,7 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Make application easy to setup](#Make-application-easy-to-setup)
   - [Seeds](#Seeds)
   - [Migrations](#Migrations)
+  - [Rate Limiting](#Rate-Limiting)
   - [Code Generation](#Code-Generation)
   - [Custom utility types](#Custom-utility-types)
   - [Pre-push/pre-commit hooks](#Pre-push/pre-commit-hooks)
@@ -957,6 +958,22 @@ This project uses [Typeorm Migrations](https://github.com/typeorm/typeorm/blob/m
 Example file: [1611765824842-CreateTables.ts](src/infrastructure/database/migrations/1611765824842-CreateTables.ts)
 
 Seeds and migrations belong to Infrastructure layer.
+
+## Rate Limiting
+
+By default there is no limit on how many request users can make. This may lead to problems, like DDoS or brute force attacks.
+
+To solve this, implementing [Rate Limiting](https://en.wikipedia.org/wiki/Rate_limiting) is essential for any API.
+
+- In NodeJS world, [express-rate-limit](https://www.npmjs.com/package/express-rate-limit) is an option for simple APIs.
+- Another alternative is [NGINX Rate Limiting](https://www.nginx.com/blog/rate-limiting-nginx/).
+- [Kong](https://konghq.com/kong/) has [rate limiting plugin](https://docs.konghq.com/hub/kong-inc/rate-limiting/).
+
+Read more:
+
+- [Everything You Need To Know About API Rate Limiting ](https://nordicapis.com/everything-you-need-to-know-about-api-rate-limiting/)
+- [Rate-limiting strategies and techniques](https://cloud.google.com/solutions/rate-limiting-strategies-techniques)
+- [How to Design a Scalable Rate Limiting Algorithm](https://konghq.com/blog/how-to-design-a-scalable-rate-limiting-algorithm/)
 
 ## Code Generation
 
