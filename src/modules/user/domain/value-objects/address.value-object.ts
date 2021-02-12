@@ -23,13 +23,13 @@ export class Address extends ValueObject<AddressProps> {
 
   protected validate(props: AddressProps): void {
     if (!Guard.lengthIsBetween(props.country, 2, 50)) {
-      throw new ArgumentOutOfRangeException('country');
+      throw new ArgumentOutOfRangeException('country is out of range');
     }
     if (!Guard.lengthIsBetween(props.street, 2, 50)) {
-      throw new ArgumentOutOfRangeException('street');
+      throw new ArgumentOutOfRangeException('street is out of range');
     }
     if (!Guard.lengthIsBetween(props.postalCode, 2, 10)) {
-      throw new ArgumentOutOfRangeException('postalCode');
+      throw new ArgumentOutOfRangeException('postalCode is out of range');
     }
   }
 }

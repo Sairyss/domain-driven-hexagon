@@ -337,7 +337,7 @@ Domain event indicates that something happened in a domain that you want other p
 For example, if a user buys something, you may want to:
 
 - Send confirmation email to that user;
-- Send notification to corporate slack channel;
+- Send notification to a corporate slack channel;
 - Notify shipping department;
 - Perform other side effects that are not concern of an original buy operation domain.
 
