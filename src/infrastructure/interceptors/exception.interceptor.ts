@@ -2,10 +2,10 @@ import {
   CallHandler,
   ExecutionContext,
   NestInterceptor,
-  // Not to confuse internal exceptions with Nest exceptions
+  // To avoid confusion between internal exceptions and NestJS exceptions
   ConflictException as NestConflictException,
   NotFoundException as NestNotFoundException,
-  ForbiddenException,
+  ForbiddenException as NestForbiddenException,
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -24,7 +24,7 @@ export class ExceptionInterceptor implements NestInterceptor {
     return next.handle().pipe(
       catchError(err => {
         if (err instanceof DomainException) {
-          throw new ForbiddenException(err.message);
+          throw new NestForbiddenException(err.message);
         }
         if (err instanceof NotFoundException) {
           throw new NestNotFoundException(err.message);
