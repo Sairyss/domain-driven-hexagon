@@ -303,7 +303,7 @@ Domain should only operate using domain objects, most important ones are describ
 
 ## Entities
 
-Entities are the core of the domain. They encapsulate Enterprise wide business rules and attributes. An entity can be an object with methods, or it can be a set of data structures and functions.
+Entities are the core of the domain. They encapsulate Enterprise wide business rules and attributes. An entity can be an object with properties and methods, or it can be a set of data structures and functions.
 
 Domain business logic goes here. Avoid having business logic in your services when possible, this leads to [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) (domain services are exception for business logic that can't be put in a single entity).
 
@@ -314,17 +314,22 @@ Entities:
 - Have an identity that defines it and makes it distinguishable from others. It's identity is consistent during its life cycle.
 - Equality between two entities is determined by comparing their identificators (usually its `id` field).
 - Can contain other objects, such as other entities or value objects.
+- Are responsible for collecting all the understanding of state and how it changes in the same place.
 - Responsible for the coordination of operations on the objects it owns.
-- Know nothing about other layers.
+- Know nothing about upper layers (services, controllers etc).
 - Domain entities data should be modelled to accommodate business logic, not some database schema.
 - Entities must protect their invariants, try to avoid public setters and update state using methods.
-- Validate Entities and other domain objects on creation and throw an error on first failure. [Fail Fast](https://en.wikipedia.org/wiki/Fail-fast).
+- Must be consistent on creation. Validate Entities and other domain objects on creation and throw an error on first failure. [Fail Fast](https://en.wikipedia.org/wiki/Fail-fast).
+- Avoid no-arg (empty) constructors, accept and validate all required fields through a constructor. For optional fields that require some complex setting up, [Fluent interface](https://en.wikipedia.org/wiki/Fluent_interface#JavaScript) and [Builder Pattern](https://refactoring.guru/design-patterns/builder) can be used.
 
 Example files:
 
 - [user.entity.ts](src/modules/user/domain/entities/user.entity.ts)
 
-Read more: [Domain Entity pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-entity-pattern.html)
+Read more:
+
+- [Domain Entity pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-entity-pattern.html)
+- [Secure by design: Chapter 6 Ensuring integrity of state](https://livebook.manning.com/book/secure-by-design/chapter-6/)
 
 ---
 
@@ -523,19 +528,21 @@ Things that can't be validated at compile time (like user input) are validated a
 
 Domain objects have to protect their invariants. Having some validation rules here will protect their state from corruption.
 
-`Value Object` can represent a typed value in domain. The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context.
+`Value Object` can represent a typed value in domain (a _domain primitive_). The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context.
 
 If every argument and return value of a method is valid by definition, you’ll have input and output validation in every single method in your codebase without any extra effort. This will make application more resilient to errors and will protect it from a whole class of bugs and security vulnerabilities caused by invalid input data.
 
 Data should not be trusted. There are a lot of cases when invalid data may end up in a domain. For example, if data comes from external API, database, or if it's just a programmer error.
 
-- External APIs may return corrupted data;
-- Database may return incorrect data when someone modifies it manually (especially when there are some admin panels that allow to do that);
-- Programmer may create objects with incorrect input by accident: `new Email(someRandomString)`.
+Enforcing self-validation will inform immediately when data is corrupted. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
 
-Enforcing self-validation will inform immediately when `Value Object` is created with corrupted data. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
+> Without domain primitives, the remaining code needs to take care of validation, formatting, comparing, and lots of other details. Entities represent long-lived objects with a distinguished identity, such as articles in a news feed, rooms in a hotel, and shopping carts in online sales. The functionality in a system often centers around changing the state of these objects: hotel rooms are booked, shopping cart contents are
+> paid for, and so on. Sooner or later the flow of control will be guided to some code representing these entities. And if all the data is transmitted as generic types such as int or String , responsibilities fall on the entity code to validate, compare, and format the data, among other tasks. The entity code will be burdened with a lot of
+> tasks, rather than focusing on the central business flow-of-state changes that it models. Using domain primitives can counteract the tendency for entities to grow overly complex.
 
-**Note**: Though _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be an overengineering. For less complex and smaller projects it definitely may be. For bigger projects, there are people who advocate for and against this approach. If creating a class for every primitive is not preferred, create classes just for those primitives that have specific rules or behavior. Here are some thoughts on this topic: [From Primitive Obsession to Domain Modelling - Over-engineering?](https://blog.ploeh.dk/2015/01/19/from-primitive-obsession-to-domain-modelling/#7172fd9ca69c467e8123a20f43ea76c2).
+Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/96)
+
+**Note**: Though _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be an overengineering. For less complex and smaller projects it definitely may be. For bigger projects, there are people who advocate for and against this approach. If creating a class for every primitive is not preferred, create classes just for those primitives that have specific rules or behavior, or just validate only outside of domain using some validation framework. Here are some thoughts on this topic: [From Primitive Obsession to Domain Modelling - Over-engineering?](https://blog.ploeh.dk/2015/01/19/from-primitive-obsession-to-domain-modelling/#7172fd9ca69c467e8123a20f43ea76c2).
 
 **Recommended to read**:
 
@@ -689,9 +696,9 @@ This project contains abstract repository class that allows to make basic CRUD o
 
 ## ORM Entities
 
-Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world those two should be separated. If ORM frameworks are used, `ORM Entities` can be created to represent domain entities in a database.
+Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world domain model and persistance model should be separated. If ORM frameworks are used, `ORM Entities` can be created to represent domain entities in a database.
 
-Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` are used that have shape that is better represented in a particular database that is used.
+Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` (or Schemas) are used that have shape that is better represented in a particular database that is used.
 
 `ORM Entities` should also have a corresponding mapper to map from domain to persistence and back.
 
@@ -706,6 +713,7 @@ Read more:
 
 - [Stack Overflow question: DDD - Persistence Model and Domain Model](https://stackoverflow.com/questions/14024912/ddd-persistence-model-and-domain-model)
 - [Just Stop It! The Domain Model Is Not The Persistence Model](https://blog.sapiensworks.com/post/2012/04/07/Just-Stop-It!-The-Domain-Model-Is-Not-The-Persistence-Model.aspx)
+- [Secure by Design: Chapter 6.2.2 ORM frameworks and no-arg constructors](https://livebook.manning.com/book/secure-by-design/chapter-6/40)
 
 ## Other things that can be a part of Infrastructure layer:
 
