@@ -861,11 +861,13 @@ It would be more logical to separate every module by components and have all the
 
 This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside of that component) are stored close together, in a single use-case folder.
 
+Check user [use-cases](src/modules/user/use-cases) folder for examples.
+
 And shared files (like domain objects, repositories etc) are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier.
 
-> The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
+Check [user](src/modules/user) folder to see this.
 
-Check user [use-cases](src/modules/user/use-cases) folder for examples.
+> The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
 
 Keep in mind that this project's folder/file structure is an example and might not work for everyone. Main recommendations here are:
 
