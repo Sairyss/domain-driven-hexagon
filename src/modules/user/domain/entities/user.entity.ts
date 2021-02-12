@@ -29,7 +29,7 @@ export class UserEntity extends AggregateRoot<UserProps> {
   /* Private properties and getters without a setter protects entity
   from outside modifications by using assignment, for example:
   "user.email = someOtherEmail". This technique only allows
-  updating value by using a setter method (see updateAddress below) */
+  updating value by using a dedicated 'update' method (see updateAddress below) */
   get address(): Address {
     return this.props.address;
   }
