@@ -146,29 +146,6 @@ This is the core of the system which is built using [DDD building blocks](https:
 
 Core layers shouldn't depend on frameworks or access external resources. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)).
 
-## Using libraries inside application's core and domain layers
-
-Whether or not to use libraries in a core/domain is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like number converting libraries etc). Read more: [referencing external libs](https://khorikov.org/posts/2019-08-07-referencing-external-libs/).
-
-Main recommendations to keep in mind is that libraries imported in application's core/domain **shouldn't** expose:
-
-- Functionality to access any out-of-process resources (http calls, database access etc);
-- Functionality not relevant to domain (frameworks, technology details like ORMs etc).
-- Functionality that brings randomness (generating random IDs, timestamps etc) since this makes tests unpredictable (though in TypeScript world it is not that big of a deal since this can be mocked by a test library without using DI);
-- If a library changes often or has a lot of dependencies of its own it most likely shouldn't be used in domain layer.
-
-To use such libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) or [facade](https://refactoring.guru/design-patterns/facade) patterns.
-
-Read more:
-
-- [Anti-corruption Layer — An effective Shield](https://medium.com/@malotor/anticorruption-layer-a-effective-shield-caa4d5ba548c)
-
-Be careful with general purpose libraries/frameworks that may scatter across many domain objects. It will be hard to replace those libraries if needed.
-
-Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects then a general purpose library that is everywhere.
-
-Offload as much of irrelevant responsibilities as possible from the core and especially from domain layer.
-
 ## Application's Core consists of:
 
 ### Domain layer:
@@ -597,6 +574,29 @@ Preferably in this order:
 Read more about validation types described above:
 
 - ["Secure by Design" Chapter 4.3: Validation](https://livebook.manning.com/book/secure-by-design/chapter-4/109).
+
+## Using libraries inside application's core and domain layers
+
+Whether or not to use libraries in a core/domain is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like number converting libraries etc). Read more: [referencing external libs](https://khorikov.org/posts/2019-08-07-referencing-external-libs/).
+
+Main recommendations to keep in mind is that libraries imported in application's core/domain **shouldn't** expose:
+
+- Functionality to access any out-of-process resources (http calls, database access etc);
+- Functionality not relevant to domain (frameworks, technology details like ORMs etc).
+- Functionality that brings randomness (generating random IDs, timestamps etc) since this makes tests unpredictable (though in TypeScript world it is not that big of a deal since this can be mocked by a test library without using DI);
+- If a library changes often or has a lot of dependencies of its own it most likely shouldn't be used in domain layer.
+
+To use such libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) or [facade](https://refactoring.guru/design-patterns/facade) patterns.
+
+Read more:
+
+- [Anti-corruption Layer — An effective Shield](https://medium.com/@malotor/anticorruption-layer-a-effective-shield-caa4d5ba548c)
+
+Be careful with general purpose libraries/frameworks that may scatter across many domain objects. It will be hard to replace those libraries if needed.
+
+Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects then a general purpose library that is everywhere.
+
+Offload as much of irrelevant responsibilities as possible from the core and especially from domain layer.
 
 ---
 
