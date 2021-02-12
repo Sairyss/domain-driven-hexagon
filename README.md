@@ -193,11 +193,11 @@ One service per use case is considered a good practice.
 
 Use cases are, simply said, list of actions required from an application.
 
-Example file: [create-user.service.ts](src/modules/user/use-cases/create-user/create-user.service.ts)
-
 ---
 
 </details>
+
+Example file: [create-user.service.ts](src/modules/user/use-cases/create-user/create-user.service.ts)
 
 More about services:
 
