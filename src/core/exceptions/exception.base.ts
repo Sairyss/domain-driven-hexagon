@@ -2,12 +2,10 @@ import { ObjectLiteral } from '../types';
 import { Exceptions } from './exception.types';
 
 export interface SerializedException {
-  error: {
-    name: string;
-    message: string;
-    stack?: string;
-    metadata?: ObjectLiteral;
-  };
+  name: string;
+  message: string;
+  stack?: string;
+  metadata?: ObjectLiteral;
 }
 
 /**
@@ -34,12 +32,10 @@ export abstract class ExceptionBase extends Error {
 
   toJSON(): SerializedException {
     return {
-      error: {
-        name: this.name,
-        message: this.message,
-        stack: this.stack,
-        metadata: this.metadata,
-      },
+      name: this.name,
+      message: this.message,
+      stack: this.stack,
+      metadata: this.metadata,
     };
   }
 }

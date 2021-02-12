@@ -752,7 +752,7 @@ Keep in mind that application's `core` shouldn't throw HTTP exceptions or status
 
 Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts)
 
-Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be made anymore so a `name` string is used instead. Store exception `name` enum types in a separate file so they can be reused on a receiving side.
+Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name` string is used instead. Store exception `name` enum types in a separate file so they can be reused on a receiving side.
 
 When using microservices, all exception types can be packed into a library and reused in each microservice for consistency.
 
@@ -760,8 +760,8 @@ When using microservices, all exception types can be packed into a library and r
 
 For example:
 
-- When validation error is thrown by validating user input, it means that this input is incorrect and a `400 Bad Request Exception` should be returned with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this project's code examples it's done automatically in DTOs by `class-validator` library.
-- When validation exception happens on a new `Value Object` creation that usually means a programmer did a mistake by assigning an incorrect value to a constructor, so a different type of error should be thrown here which later should be converted into `500 Internal Server Error`, in this case without adding additional info since it may cause a leak of some sensitive data.
+- When validation error is thrown by validating user input, it means that this input is incorrect and a `400 Bad Request Exception` should be returned with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this project's code examples it's done automatically in DTOs by [class-validator](https://www.npmjs.com/package/class-validator) library.
+- When validation exception happens on a new domain object creation that usually means a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point before reaching domain layer, so a different type of error should be thrown here which later should be converted into `500 Internal Server Error`, in this case without adding additional info since it may cause a leak of some sensitive data.
 
 Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended. No details should be returned to the user in case of programmer errors since those details may contain some sensitive information about the program.
 
@@ -897,7 +897,7 @@ Using `any` type is a bad practice. Consider disallowing it (and other things th
 // .eslintrc.js file
   rules: {
     '@typescript-eslint/no-explicit-any': 'error',
-    ...
+    // ...
   }
 ```
 
@@ -906,7 +906,7 @@ Also, enabling strict mode in `tsconfig.json` is recommended:
 ```json
   "compilerOptions": {
     "strict": true,
-    ...
+    // ...
   }
 ```
 
@@ -920,6 +920,8 @@ Read more:
 - [Controlling Type Checking Strictness in TypeScript](https://www.carlrippon.com/controlling-type-checking-strictness-in-typescript/)
 
 ## Code formatting
+
+The way code looks adds to our understanding of it. Good style makes reading code a pleasurable and consistent experience.
 
 Consider using code formatters like [Prettier](https://www.npmjs.com/package/prettier) to maintain same code styles in the project.
 
