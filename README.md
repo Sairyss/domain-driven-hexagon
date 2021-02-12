@@ -535,11 +535,11 @@ Example file: [guard.ts](src/core/guard.ts)
 
 Read more: [Refactoring: Guard Clauses](https://medium.com/better-programming/refactoring-guard-clauses-2ceeaa1a9da)
 
-Another solution would be using an external validation library, but it is not a good practice to tie domain to external libraries and is not usually recommended. Custom validation probably won't be as good as validation library, but it can be **good enough** to protect from a lot of potential errors and avoid tying domain to external libraries.
+Another solution would be using an external validation library, but it is not a good practice to tie domain to external libraries and is not usually recommended.
 
 Although exceptions can be made if needed, especially for very specific validation libraries that validate only one thing (like specific IDs, for example bitcoin wallet address). Tying only one or just few `Value Objects` to such a specific library won't cause any harm. Unlike general purpose validation libraries which will be tied to domain everywhere and it will be troublesome to change it in every `Value Object` in case when old library is no longer maintained, contains critical bugs or is compromised by hackers etc.
 
-Though, it is perfectly fine to do full sanity checks using validation framework or library **outside** of domain (for example [class-validator](https://www.npmjs.com/package/class-validator) decorators in `DTOs`), and do only some basic checks inside of `Value Objects` (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
+Though, it is fine to do full sanity checks using validation framework or library **outside** of domain (for example [class-validator](https://www.npmjs.com/package/class-validator) decorators in `DTOs`), and do only some basic checks inside of `Value Objects` (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
 
 <details>
 <summary>Note about using regexp</summary>
@@ -554,7 +554,11 @@ For example, value can be accepted as valid by a validation library, but `Value 
 
 </details>
 
+Although there are other strategies on how to do validation inside domain, like passing validation schema as a dependency when creating new `Value Object`, but this creates extra complexity.
+
 Either to use external library/framework for validation inside domain or not is a tradeoff, analyze all the pros and cons and choose what is more appropriate for current application.
+
+For some projects, especially smaller ones, it might be easier and more appropriate to just use validation library/framework.
 
 **Keep in mind** that not all validations can be done in a single `Value Object`, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may involve another field, or even a different entity. Handle those cases accordingly.
 
