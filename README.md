@@ -1086,12 +1086,14 @@ Read more:
 - [Martin Fowler](https://martinfowler.com/)
 - [Kamil Grzybek](https://www.kamilgrzybek.com/)
 - [Khalil Stemmler](https://khalilstemmler.com)
+- [Herberto Graca](https://herbertograca.com/)
 
 ## Videos
 
 - [More Testable Code with the Hexagonal Architecture](https://youtu.be/ujb_O6myknY)
 - [Playlist: Design Patterns Video Tutorial](https://youtube.com/playlist?list=PLF206E906175C7E07)
 - [Playlist: Design Patterns in Object Oriented Programming](https://youtube.com/playlist?list=PLrhzvIcii6GNjpARdnO4ueTUAVR9eMBpc)
+- [Herberto Graca - Making architecture explicit](https://www.youtube.com/watch?v=_yoZN9Sb3PM&feature=youtu.be)
 
 ## Books
 
