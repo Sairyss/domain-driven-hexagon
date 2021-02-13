@@ -21,6 +21,10 @@ export class Address extends ValueObject<AddressProps> {
     return this.props.street;
   }
 
+  /**
+   * Note: This is a very simplified example of validation,
+   * real world projects will have stricter rules
+   */
   protected validate(props: AddressProps): void {
     if (!Guard.lengthIsBetween(props.country, 2, 50)) {
       throw new ArgumentOutOfRangeException('country is out of range');

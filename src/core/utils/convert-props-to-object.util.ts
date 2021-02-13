@@ -4,8 +4,9 @@ import { ValueObject } from '../base-classes/value-object.base';
 
 function isEntity(obj: unknown): obj is Entity<unknown> {
   /**
-   * 'instanceof Entity' causes error here.
+   * 'instanceof Entity' causes error here for some reason.
    * Probably creates some circular dependency. This is a workaround
+   * until I find a solution :)
    */
   return (
     Object.prototype.hasOwnProperty.call(obj, 'toObject') &&

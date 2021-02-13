@@ -27,6 +27,10 @@ export class Email extends ValueObject<string> {
     return this.props.value;
   }
 
+  /**
+   * Note: This is a very simplified example of validation,
+   * real world projects will have stricter rules
+   */
   protected validate({ value }: DomainPrimitive<string>): void {
     if (!Guard.lengthIsBetween(value, 5, 320)) {
       throw new ArgumentOutOfRangeException('Email');
