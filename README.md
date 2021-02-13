@@ -349,7 +349,7 @@ Domain events are just messages pushed to a domain event dispatcher in the same 
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-Domain Events can be implemented using [Observer](https://refactoring.guru/design-patterns/observer) and [Mediator](https://refactoring.guru/design-patterns/mediator) patterns.
+Domain Events can be implemented using [Observer](https://refactoring.guru/design-patterns/observer) or [Mediator](https://refactoring.guru/design-patterns/mediator) patterns.
 
 Examples:
 
@@ -853,7 +853,7 @@ Example files:
 
 So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
-A lot of people tend to do the same thing as before: create a separate folders for services, controllers etc and keep all the use-cases there. This is the same approach that makes navigation harder.
+A lot of people tend to do the same thing as before: create a separate folders/files for services, controllers etc and keep all module's use-cases logic there, making those controllers and services bloated with responsibilities. This is the same approach that makes navigation harder.
 
 Using this approach, every time something in a service changes, we might have to go to another folder to change controllers, and then go to dtos folder to change the corresponding dto etc.
 
