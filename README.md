@@ -104,6 +104,7 @@ Before we begin, here are the PROS and CONS of using a complete architecture lik
 # Diagram
 
 ![Domain-Driven Hexagon](assets/images/DomainDrivenHexagon.png)
+<sup>Diagram is mostly based on [this one](https://github.com/hgraca/explicit-architecture-php) + others found online</sup>
 
 In short, data flow looks like this (from left to right):
 
