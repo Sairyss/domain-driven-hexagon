@@ -350,7 +350,7 @@ Domain events are just messages pushed to a domain event dispatcher in the same 
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-There may be different ways on implementing Domain Events, for example using some kind of internal messaging/event system, like [Event Emitter](https://www.tutorialspoint.com/nodejs/nodejs_event_emitter.htm), or using patterns like [Observer](https://refactoring.guru/design-patterns/observer) or [Mediator](https://refactoring.guru/design-patterns/mediator).
+There may be different ways on implementing Domain Events, for example using some kind of internal event bus/emitter, like [Event Emitter](https://www.tutorialspoint.com/nodejs/nodejs_event_emitter.htm), or using patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or slightly modified [Observer](https://refactoring.guru/design-patterns/observer).
 
 Examples:
 
