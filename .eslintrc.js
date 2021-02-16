@@ -19,21 +19,20 @@ module.exports = {
     jest: true,
   },
   rules: {
-    // off
+    // TS off
     '@typescript-eslint/interface-name-prefix': 'off',
 
-    // errors
+    // TS errors
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-misused-new': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'error',
     '@typescript-eslint/no-non-null-assertion': 'error',
 
-    // off
+    // Eslint off
     'import/extensions': 'off',
     'import/prefer-default-export': 'off',
     'class-methods-use-this': 'off',
     'no-useless-constructor': 'off',
-    camelcase: 'off',
     'import/no-unresolved': 'off',
     'no-control-regex': 'off',
     'no-shadow': 'off',
@@ -41,7 +40,7 @@ module.exports = {
     'consistent-return': 'off',
     'no-underscore-dangle': 'off',
 
-    // errors
+    // Eslint errors
     'no-restricted-syntax': [
       'error',
       {
