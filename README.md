@@ -613,15 +613,15 @@ Contains `Controllers` and `Request`/`Response` DTOs (can also contain `Views`, 
 
 ## Controllers
 
-Controllers are used for triggering use cases and presenting the result.
+- Controllers are used for parsing requests, triggering use cases and presenting the result back to the client.
+- One controller per use case is considered a good practice.
+- In [NestJS](https://docs.nestjs.com/) world controllers may be a good place to use [OpenAPI/Swagger decorators](https://docs.nestjs.com/openapi/operations) for documentation.
 
-One controller per use case is considered a good practice.
-
-Also, one controller per trigger type can be used. For example:
+One controller per trigger type can be used to have a more clear separation. For example:
 
 - [create-user.http.controller.ts](src/modules/user/use-cases/create-user/create-user.http.controller.ts) for http requests ([NestJS Controllers](https://docs.nestjs.com/controllers)),
 - [create-user.cli.controller.ts](src/modules/user/use-cases/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
-- `events controller` for external events ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
+- [create-user.event.controller.ts](src/modules/user/use-cases/create-user/create-user.event.controller.ts) for external events ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
 - etc.
 
 ---
