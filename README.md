@@ -366,6 +366,8 @@ Events can be published right before or right after insert/update/delete transac
 
 Both options have pros and cons.
 
+**Note**: this project uses custom implementation for Domain Events. Reason for not using `Node Event Emitter` is that event emitter executes events immediately when called, and also has no option to `await` for all events to finish, which might be useful when making those events a part of transaction.
+
 To have a better understanding on domain events and code implementations above, read this:
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
