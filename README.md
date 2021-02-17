@@ -851,6 +851,11 @@ Example files:
 - Use error reporting tools like [Sentry](https://sentry.io/for/node/) to to facilitate logs management.
 - Send notifications of important events that happen in production to a corporate chat like Slack or even by SMS.
 - Don't write logs to a file from your program. Write all logs to [stdout](https://www.computerhope.com/jargon/s/stdout.htm) (to a terminal window) and let other tools handle writing logs to a file (for example [docker supports writing logs to a file](https://docs.docker.com/config/containers/logging/configure/)). Read more: [Why should your Node.js application not handle log routing?](https://www.coreycleary.me/why-should-your-node-js-application-not-handle-log-routing/)
+- Logs can be visualized by using a tool like [Kibana](https://www.elastic.co/kibana).
+
+Read more:
+
+- [Make your app transparent using smart logs](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/smartlogging.md)
 
 ## Folder/File Structure
 
