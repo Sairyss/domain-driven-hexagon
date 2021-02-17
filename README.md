@@ -703,16 +703,16 @@ This project contains abstract repository class that allows to make basic CRUD o
 
 Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world domain model and persistance model should be separated. If ORM frameworks are used, `ORM Entities` can be created to represent domain entities in a database.
 
-Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` (or Schemas) are used that have shape that is better represented in a particular database that is used.
+Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` (or `Schemas`) are used that have shape that is better represented in a particular database that is used.
 
-`ORM Entities` should also have a corresponding mapper to map from domain to persistence and back.
+This approach can also be useful when amount of data in database grows and there is a need for re-design of tables (or even database change) to improve performance. When `ORM Entities`/`Schemas` are separated from `Entities` you don't need to touch any domain logic if something in database changes, thus avoiding potential bugs.
 
 **Note**: separating `Entities` and `ORM Entities` may be an overkill for smaller applications, consider all pros and cons before making this decision.
 
 Example files:
 
 - [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts)
-- [user.orm-mapper.ts](src/modules/user/database/user.orm-mapper.ts)
+- [user.orm-mapper.ts](src/modules/user/database/user.orm-mapper.ts) <- `ORM Entities` should also have a corresponding mapper to map from domain to persistence and back.
 
 Read more:
 
