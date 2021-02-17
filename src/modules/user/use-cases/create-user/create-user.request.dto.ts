@@ -9,23 +9,27 @@ import {
 } from 'class-validator';
 
 export class CreateUserRequest implements CreateUser {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'john@gmail.com',
+    description: 'User email address',
+  })
+  @MaxLength(320)
   @IsEmail()
   email!: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'France', description: 'Country of residence' })
+  @MaxLength(30)
   @IsString()
   @IsAlpha()
-  @MaxLength(30)
   country!: string;
 
-  @ApiProperty()
-  @IsAlphanumeric()
+  @ApiProperty({ example: '28566', description: 'Postal code' })
   @MaxLength(10)
+  @IsAlphanumeric()
   postalCode!: string;
 
-  @ApiProperty()
-  @IsAlphanumeric()
+  @ApiProperty({ example: 'Grande Rue', description: 'Street' })
   @MaxLength(30)
+  @IsAlphanumeric()
   street!: string;
 }
