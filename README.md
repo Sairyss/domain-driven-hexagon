@@ -844,7 +844,7 @@ Example files:
 - Use proper log levels: `log`/`info` for events that are meaningful during production, `debug` for events useful while developing/debugging, and `warn`/`error` for unwanted behavior on any stage.
 - Write meaningful log messages and include metadata that may be useful. Try to avoid cryptic messages that only you understand.
 - Never log sensitive data: passwords, emails, credit card numbers etc. since this data will end up in log files. If log files are not stored securely this data can be leaked.
-- Avoid default logging tools (like `console.log`). Use mature logger libraries that support features like enabling/disabling log levels, convenient log formats that are easy to parse (like JSON) etc.
+- Avoid default logging tools (like `console.log`). Use mature logger libraries (for example [Winston](https://www.npmjs.com/package/winston)) that support features like enabling/disabling log levels, convenient log formats that are easy to parse (like JSON) etc.
 - Consider including user id in logs. It will facilitate investigating if user creates an incident ticket.
 - In distributed systems a gateway can generate an unique id for each request and pass it to every system that processes this request. Logging this id will make it easier to find related logs across different systems/files.
 - Use consistent structure across all logs. Each log line should represent one single event and contain things like timestamp, context, unique user/request id and/or id of entity/aggregate that is being modified, as well as additional metadata if required.
