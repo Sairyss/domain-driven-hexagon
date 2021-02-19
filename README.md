@@ -732,16 +732,22 @@ Read more:
 
 # Recommendations for smaller APIs
 
-Be careful when implementing any complex architecture in small-medium sized APIs with not a lot of business logic. Some of the building blocks/patterns may fit well, but others may be an overengineering.
+Be careful when implementing any complex architecture in small-medium sized projects with not a lot of business logic. Some of the building blocks/patterns may fit well, but others may be an overengineering.
 
 For example:
 
-- Separating code into layers and modules, using controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any API.
-- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, dividing `Entities` and `ORM Entities` etc. in APIs that are more data-centric and have little or no business logic only complicates such solutions and adds extra boilerplate code, data mapping etc. without adding much benefit.
+- Separating code into modules/layers/use-cases, using some building blocks like controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any project.
+- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, dividing `Entities` and `ORM Entities` etc. in projects that are more data-centric and have little or no business logic may only complicate such solutions and add extra boilerplate code, data mapping etc. without adding much benefit.
 
 Some principles/patterns can be implemented in a simplified form, some can be skipped. Follow [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) principle and don't overengineer.
 
-**Before implementing any pattern always analyze if benefit given by using it worth the extra code complexity**.
+**Before implementing any pattern always analyze if benefit given by using it worth extra code complexity**.
+
+> Effective design argues that we need to know the price of a pattern is worth paying - that's its own skill.
+
+However, remember:
+
+> It's easier to refactor over-design than it is to refactor no design.
 
 Read more:
 
@@ -790,8 +796,14 @@ Consider adding optional `metadata` object to exceptions (if language doesn't su
 
 **Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone numbers etc) since this information may leak into log files. Aim adding only technical information.
 
-- Exception abstract base class example: [exception.base.ts](src/core/exceptions/exception.base.ts)
-- Domain Exception class example: [domain.exception.ts](src/core/exceptions/domain.exception.ts)
+### Other recommendations
+
+- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals.
+
+Example files:
+
+- [exception.base.ts](src/core/exceptions/exception.base.ts) - Exception abstract base class
+- [domain.exception.ts](src/core/exceptions/domain.exception.ts) - Domain Exception class example
 - Check [exceptions]([src/core/exception]) folder to see more examples (some of them are exceptions from other languages like C# or Java)
 
 Read more:
@@ -801,15 +813,25 @@ Read more:
 
 ## Testing
 
-Testing each file and method separately is called [White Box](https://en.wikipedia.org/wiki/White-box_testing) testing (like entity tests, domain services tests etc). It creates coupling to implementation details, so every time you decide to refactor something this may also cause refactoring corresponding tests.
+Software Testing helps catching bugs early. Properly tested software product ensures reliability, security and high performance which further results in time saving, cost effectiveness and customer satisfaction.
 
-To solve this and get the most out of your tests, prefer [Black Box](https://en.wikipedia.org/wiki/Black-box_testing) testing (also called [Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API, for example `createUser()` method in `Application Service`), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
+Lets review two types of software testing:
 
-Try to avoid _White Box_ testing when possible. Though, there are cases when _White Box_ testing may be needed, like:
+- [White Box](https://en.wikipedia.org/wiki/White-box_testing) testing.
+- [Black Box](https://en.wikipedia.org/wiki/Black-box_testing) testing.
 
-- There is a need to increase code coverage;
-- High complexity in implementation details that are hard to cover using _Black Box_ testing;
-- There is a suspicion that some area of the program may be under-tested, etc.
+Testing module/use-case internal structures (creating a test for every file/class) is called _`White Box`_ testing. _White Box_ testing is widely used technique, but it has disadvantages. It creates coupling to implementation details, so every time you decide to refactor something this may also cause refactoring corresponding tests.
+
+To solve this and get the most out of your tests, prefer _`Black Box`_ testing (also called [Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API, for example `createUser()` method in `Application Service`), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
+
+Try to avoid _White Box_ testing when possible. Though, there are cases when _White Box_ testing may be needed, for example:
+
+- Some class is reused by multiple use-cases/modules so it makes more sense to create a _White Box_ unit test for it.
+- High complexity in implementation details that are hard to cover using _Black Box_ testing.
+- There is a need to increase code coverage.
+- There is a suspicion that some area of the program may be under-tested.
+- Some parts of the code can't be properly tested by _Black Box_ testing.
+- etc.
 
 Use _White Box_ testing only when it is really needed and as an addition to _Black Box_ testing, not the other way around.
 
@@ -817,16 +839,16 @@ It's all about investing only in the tests that yield the biggest return on your
 
 Behavioral tests can be divided in two parts:
 
-- Use cases tests in isolation, with all I/O mocked and injected. This makes tests fast so they can be run all the time before committing/pushing.
-- Full e2e tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before deploying. It is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
+- Fast: Use cases tests in isolation, with all I/O mocked and injected. This makes tests fast so they can be run all the time before committing/pushing.
+- Slow: Full e2e tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before deploying. It is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
+
+Example files: // TODO
 
 Read more:
 
 - [Pragmatic unit testing](https://enterprisecraftsmanship.com/posts/pragmatic-unit-testing/)
 - [Google Blog: Test Behavior, Not Implementation ](https://testing.googleblog.com/2013/08/testing-on-toilet-test-behavior-not.html)
 - [Writing BDD Test Scenarios](https://www.departmentofproduct.com/blog/writing-bdd-test-scenarios/)
-
-Example files: // TODO
 
 ## Configuration
 
