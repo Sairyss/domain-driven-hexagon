@@ -826,10 +826,10 @@ To solve this and get the most out of your tests, prefer _`Black Box`_ testing (
 
 Try to avoid _White Box_ testing when possible. Though, there are cases when _White Box_ testing may be needed, for example:
 
-- Some class is reused by multiple use-cases/modules so it makes more sense to create a _White Box_ unit test for it.
 - High complexity in implementation details that are hard to cover using _Black Box_ testing.
 - There is a need to increase code coverage.
 - There is a suspicion that some area of the program may be under-tested.
+- Sometimes it makes more sense to create a separate _White Box_ unit test for a class with specific logic then cluttering a _Black Box_ test file with those test cases.
 - Some parts of the code can't be properly tested by _Black Box_ testing.
 - etc.
 
