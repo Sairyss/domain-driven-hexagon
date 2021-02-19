@@ -97,9 +97,7 @@ Before we begin, here are the PROS and CONS of using a complete architecture lik
 
 - This is a sophisticated architecture which requires a firm understanding of quality software principles, such as SOLID, Clean/Hexagonal Architecture, Domain-Driven Design, etc. Any team implementing such a solution will almost certainly require an expert to drive the solution and keep it from evolving the wrong way and accumulating technical debt.
 
-- This architecture is not recommended for small applications. There is added up-front complexity to support it, such as more boilerplate code, abstractions, data mapping etc. thus this architecture is generally ill-suited to simple CRUD applications and could over-complicate such solutions.
-
-**Note**: though using a complete architecture described below is not recommended in simple applications with not a lot of business logic, some of the described below principles **can** be used in a small-medium applications, especially practices described in [Other recommendations and best practices](#Other-recommendations-and-best-practices) section below.
+- Some of the practices presented here are not recommended for small-medium sized applications with not a lot of business logic. There is added up-front complexity to support all those building blocks and layers, boilerplate code, abstractions, data mapping etc. thus implementing a complete architecture like this is generally ill-suited to simple CRUD applications and could over-complicate such solutions. Some of the described below principles can be used in a smaller sized applications but must be implemented only after analyzing and understanding all pros and cons.
 
 # Diagram
 
@@ -738,10 +736,16 @@ Be careful when implementing any complex architecture in small-medium sized APIs
 
 For example:
 
-- Separating code into layers, using controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any API.
+- Separating code into layers and modules, using controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any API.
 - But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, dividing `Entities` and `ORM Entities` etc. in APIs that are more data-centric and have little or no business logic only complicates such solutions and adds extra boilerplate code, data mapping etc. without adding much benefit.
 
-Before implementing any pattern always analyze if benefit given by using it worth the extra code complexity.
+Some principles/patterns can be implemented in a simplified form, some can be skipped. Follow [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) principle and don't overengineer.
+
+**Before implementing any pattern always analyze if benefit given by using it worth the extra code complexity**.
+
+Read more:
+
+- [Margin Fowler blog: Yagni](https://martinfowler.com/bliki/Yagni.html)
 
 # Other recommendations and best practices
 
@@ -814,7 +818,7 @@ It's all about investing only in the tests that yield the biggest return on your
 Behavioral tests can be divided in two parts:
 
 - Use cases tests in isolation, with all I/O mocked and injected. This makes tests fast so they can be run all the time before committing/pushing.
-- Full e2e tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before deploying. It is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are written by a separate QA team.
+- Full e2e tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before deploying. It is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
 
 Read more:
 
