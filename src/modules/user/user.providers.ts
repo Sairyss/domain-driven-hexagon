@@ -16,7 +16,7 @@ export const createUserProvider: Provider = {
   inject: [UserRepository],
 };
 
-export const removeUserSymbol = Symbol('createUser');
+export const removeUserSymbol = Symbol('removeUser');
 
 export const removeUserProvider: Provider = {
   provide: removeUserSymbol,
