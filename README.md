@@ -745,7 +745,7 @@ Some principles/patterns can be implemented in a simplified form, some can be sk
 
 Read more:
 
-- [Margin Fowler blog: Yagni](https://martinfowler.com/bliki/Yagni.html)
+- [Martin Fowler blog: Yagni](https://martinfowler.com/bliki/Yagni.html)
 
 # Other recommendations and best practices
 
