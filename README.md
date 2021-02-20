@@ -840,7 +840,13 @@ It's all about investing only in the tests that yield the biggest return on your
 Behavioral tests can be divided in two parts:
 
 - Fast: Use cases tests in isolation, with all I/O mocked and injected. This makes tests fast so they can be run all the time before committing/pushing.
-- Slow: Full e2e tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before deploying. It is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
+- Slow: Full [End to End](https://www.guru99.com/end-to-end-testing.html) (e2e) tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before deploying. It is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
+
+**Note**: some projects use in-memory databases (like [sqlite3](https://www.npmjs.com/package/sqlite3)) for e2e testing. This makes tests faster, but reduces the reliability of those tests. In-memory databases should be avoided in real e2e testing. Read more: [Don't use In-Memory Databases for Tests](https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/).
+
+### Load Testing
+
+For projects with a bigger user base you might want to implement some kind of [load testing](https://en.wikipedia.org/wiki/Load_testing) to see how program behaves with a lot of concurrent users. [Artillery](https://www.npmjs.com/package/artillery) is a nice tool for that based on NodeJS. Though, there are plenty of other tools to choose from: [Top 6 Tools for API & Load Testing](https://medium.com/@Dickson_Mwendia/top-6-tools-for-api-load-testing-7ff51d1ac1e8).
 
 Example files: // TODO
 
@@ -1104,6 +1110,7 @@ Read more:
 - [Hexagonal Architecture](https://www.qwan.eu/2020/08/20/hexagonal-architecture.html)
 - [Clean architecture series](https://medium.com/@pereiren/clean-architecture-series-part-1-f34ef6b04b62)
 - [Clean architecture for the rest of us](https://pusher.com/tutorials/clean-architecture-introduction)
+- [An illustrated guide to 12 Factor Apps](https://www.redhat.com/architect/12-factor-app)
 
 ## Repositories
 
@@ -1112,6 +1119,7 @@ Read more:
 
 ## Documentation
 
+- [The Twelve-Factor App](https://12factor.net/)
 - [Refactoring guru - Catalog of Design Patterns](https://refactoring.guru/design-patterns/catalog)
 - [Microsoft - Cloud Design Patterns](https://docs.microsoft.com/en-us/azure/architecture/patterns/index-patterns)
 
