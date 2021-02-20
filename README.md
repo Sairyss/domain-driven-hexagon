@@ -820,7 +820,7 @@ Lets review two types of software testing:
 - [White Box](https://en.wikipedia.org/wiki/White-box_testing) testing.
 - [Black Box](https://en.wikipedia.org/wiki/Black-box_testing) testing.
 
-Testing module/use-case internal structures (creating a test for every file/class) is called _`White Box`_ testing. _White Box_ testing is widely used technique, but it has disadvantages. It creates coupling to implementation details, so every time you decide to refactor something this may also cause refactoring corresponding tests.
+Testing module/use-case internal structures (creating a test for every file/class) is called _`White Box`_ testing. _White Box_ testing is widely used technique, but it has disadvantages. It creates coupling to implementation details, so every time you decide to refactor business logic code this may also cause a refactoring of corresponding tests.
 
 To solve this and get the most out of your tests, prefer _`Black Box`_ testing (also called [Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API, for example `createUser()` method in `Application Service`), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
 
@@ -839,8 +839,8 @@ It's all about investing only in the tests that yield the biggest return on your
 
 Behavioral tests can be divided in two parts:
 
-- Fast: Use cases tests in isolation, with all I/O mocked and injected. This makes tests fast so they can be run all the time before committing/pushing.
-- Slow: Full [End to End](https://www.guru99.com/end-to-end-testing.html) (e2e) tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before deploying. It is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
+- Fast: Use cases tests in isolation, with all I/O mocked and injected. This makes tests fast so they can be run all the time (after each change or before every commit). This will inform you when something fails as fast as possible. Finding bugs early is critical and saves a lot of time.
+- Slow: Full [End to End](https://www.guru99.com/end-to-end-testing.html) (e2e) tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before pushing/deploying. Though e2e tests live in the same project/repository, it is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
 
 **Note**: some projects use in-memory databases (like [sqlite3](https://www.npmjs.com/package/sqlite3)) for e2e testing. This makes tests faster, but reduces the reliability of those tests. In-memory databases should be avoided in real e2e testing. Read more: [Don't use In-Memory Databases for Tests](https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/).
 
@@ -858,7 +858,7 @@ Read more:
 
 ## Configuration
 
-- Store all configurable options/variables/parameters in config files. Try to avoid using in-line config options/variables. This will make it easier to find and maintain all configurable parameters when they are in one place.
+- Store all configurable variables/parameters in config files. Try to avoid using in-line literals/primitives. This will make it easier to find and maintain all configurable parameters when they are in one place.
 - Never store sensitive configuration variables (passwords/API keys/secret keys etc) in plain text in a configuration files or source code.
 - Store sensitive configuration variables, or variables that change depending on environment, as [environment variables](https://en.wikipedia.org/wiki/Environment_variable) ([dotenv](https://www.npmjs.com/package/dotenv) is a nice package for that) or as a [Docker/Kubernetes secrets](https://www.bogotobogo.com/DevOps/Docker/Docker_Kubernetes_Secrets.php).
 - Create hierarchical config files that are grouped into sections. If possible, create multiple files for different configs (like database config, API config, tasks config etc).
