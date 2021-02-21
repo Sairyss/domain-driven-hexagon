@@ -842,7 +842,7 @@ Behavioral tests can be divided in two parts:
 - Fast: Use cases tests in isolation, with all I/O mocked and injected. This makes tests fast so they can be run all the time (after each change or before every commit). This will inform you when something fails as fast as possible. Finding bugs early is critical and saves a lot of time.
 - Slow: Full [End to End](https://www.guru99.com/end-to-end-testing.html) (e2e) tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests usually have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before pushing/deploying. Though e2e tests live in the same project/repository, it is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
 
-**Note**: some projects use in-memory databases (like [sqlite3](https://www.npmjs.com/package/sqlite3)) for e2e testing. This makes tests faster, but reduces the reliability of those tests. In-memory databases should be avoided in real e2e testing. Read more: [Don't use In-Memory Databases for Tests](https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/).
+**Note**: some people try to make e2e tests faster by using in-memory or embedded databases (like [sqlite3](https://www.npmjs.com/package/sqlite3)). This makes tests faster, but reduces the reliability of those tests. In real e2e testing this should be avoided. Read more: [Don't use In-Memory Databases for Tests](https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/).
 
 ### Load Testing
 
