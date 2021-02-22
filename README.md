@@ -30,6 +30,7 @@ Though patterns and principles presented here are **framework/language agnostic*
     - [Domain Services](#Domain-Services)
     - [Value Objects](#Value-Objects)
     - [Enforcing invariants of Domain Objects](#Enforcing-invariants-of-Domain-Objects)
+    - [Using libraries inside application's core](#Using-libraries-inside-application's-core)
   - [Interface Adapters](#Interface-Adapters)
     - [Controllers](#Controllers)
     - [DTOs](#DTOs)
@@ -580,9 +581,9 @@ Read more about validation types described above:
 
 - ["Secure by Design" Chapter 4.3: Validation](https://livebook.manning.com/book/secure-by-design/chapter-4/109).
 
-## Using libraries inside application's core and domain layers
+## Using libraries inside application's core
 
-Whether or not to use libraries in a core/domain is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like number converting libraries etc). Read more: [referencing external libs](https://khorikov.org/posts/2019-08-07-referencing-external-libs/).
+Whether or not to use libraries in application layer and especially domain layer is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like number converting libraries etc).
 
 Main recommendations to keep in mind is that libraries imported in application's core/domain **shouldn't** expose:
 
@@ -601,7 +602,11 @@ Be careful with general purpose libraries/frameworks that may scatter across man
 
 Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects then a general purpose library that is everywhere.
 
-Offload as much of irrelevant responsibilities as possible from the core and especially from domain layer.
+Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer.
+
+Read more:
+
+- [Referencing external libs](https://khorikov.org/posts/2019-08-07-referencing-external-libs/).
 
 ---
 
