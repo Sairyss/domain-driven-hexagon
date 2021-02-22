@@ -232,7 +232,7 @@ This principle is called [Command–Query Separation(CQS)](https://en.wikipedia.
 
 Data retrieval is responsibility of `Queries`, so `Command` methods should not return anything. Though, if needed, returning a bare minimum (like `ID` of a created item or a confirmation message) may not be a bad idea.
 
-**Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple classes with data.
+**Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
 Example of command object: [create-user.command.ts](src/modules/user/use-cases/create-user/create-user.command.ts)
 
@@ -364,9 +364,9 @@ Events can be published right before or right after insert/update/delete transac
 
 Both options have pros and cons.
 
-**Note**: this project uses custom implementation for Domain Events. Reason for not using `Node Event Emitter` is that event emitter executes events immediately when called, and also has no option to `await` for all events to finish, which might be useful when making those events a part of transaction.
+**Note**: this project uses custom implementation for Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) is that event emitter executes events immediately when called instead of when we want it (before/after transaction), and also has no option to `await` for all events to finish, which might be useful when making those events a part of transaction.
 
-To have a better understanding on domain events and code implementations above, read this:
+To have a better understanding on domain events and implementation read this:
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
