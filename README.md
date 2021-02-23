@@ -901,7 +901,14 @@ Read more:
 
 Additionally to logging tools, health monitoring tools are a good way to keep track of system performance, identify causes of crashes or downtime, monitor behavior, availability and load. Some health monitoring tools already include logging management and error tracking, as well as alerts and general performance monitoring.
 
-Choose depending on your needs, here are some examples:
+Here are some basic recommendation on what can be monitored:
+
+- Connectivity – Verify if user can successfully send a request to the API endpoint and get a response with expected HTTP status code. This will confirm if the API endpoint is up and running. This can be achieved by creating some kind of 'heath check' endpoint.
+- Performance – Make sure the response time of the API is within acceptable limits. Long response times cause bad user experience.
+- Error rate – errors immediately affect your customers, you need to know when errors happen right away and fix them.
+- CPU and Memory usage – spikes in CPU and Memory usage can indicate that there are bad optimized code, memory leaks etc. This can result in loss of money for your organization, especially when cloud providers are used.
+
+Choose health monitoring tools depending on your needs, here are some examples:
 
 - [Sematext](https://sematext.com/), [AppSignal](https://appsignal.com/), [Prometheus](https://prometheus.io/), [Checkly](https://www.checklyhq.com/), [ClinicJS](https://clinicjs.org/)
 
