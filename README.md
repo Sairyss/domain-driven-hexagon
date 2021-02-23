@@ -30,7 +30,7 @@ Though patterns and principles presented here are **framework/language agnostic*
     - [Domain Services](#Domain-Services)
     - [Value Objects](#Value-Objects)
     - [Enforcing invariants of Domain Objects](#Enforcing-invariants-of-Domain-Objects)
-    - [Using libraries inside application's core](#Using-libraries-inside-application's-core)
+    - [Using libraries inside application's core](#Using-libraries-inside-applications-core)
   - [Interface Adapters](#Interface-Adapters)
     - [Controllers](#Controllers)
     - [DTOs](#DTOs)
