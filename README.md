@@ -829,6 +829,8 @@ Testing module/use-case internal structures (creating a test for every file/clas
 
 To solve this and get the most out of your tests, prefer _`Black Box`_ testing (also called [Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API, for example `createUser()` method in `Application Service`), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
 
+> Tests that are independent of implementation details are easier to maintain since they don't need to be changed each time you make a change to the implementation.
+
 Try to avoid _White Box_ testing when possible. Though, there are cases when _White Box_ testing may be needed, for example:
 
 - High complexity in implementation details that are hard to cover using _Black Box_ testing.
@@ -885,7 +887,7 @@ Example files:
 - Consider including user id in logs. It will facilitate investigating if user creates an incident ticket.
 - In distributed systems a gateway can generate an unique id for each request and pass it to every system that processes this request. Logging this id will make it easier to find related logs across different systems/files.
 - Use consistent structure across all logs. Each log line should represent one single event and contain things like timestamp, context, unique user/request id and/or id of entity/aggregate that is being modified, as well as additional metadata if required.
-- Use error reporting tools like [Sentry](https://sentry.io/for/node/) to to facilitate logs management.
+- Use log managements systems. This will allow you to track and analyze logs as they happen in real-time. Here are some short list of log managers: [Sentry](https://sentry.io/for/node/), [Loggly](https://www.loggly.com/), [Logstash](https://www.elastic.co/logstash), [Splunk](https://www.splunk.com/) etc.
 - Send notifications of important events that happen in production to a corporate chat like Slack or even by SMS.
 - Don't write logs to a file from your program. Write all logs to [stdout](https://www.computerhope.com/jargon/s/stdout.htm) (to a terminal window) and let other tools handle writing logs to a file (for example [docker supports writing logs to a file](https://docs.docker.com/config/containers/logging/configure/)). Read more: [Why should your Node.js application not handle log routing?](https://www.coreycleary.me/why-should-your-node-js-application-not-handle-log-routing/)
 - Logs can be visualized by using a tool like [Kibana](https://www.elastic.co/kibana).
