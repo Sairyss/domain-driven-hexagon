@@ -48,7 +48,7 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Configuration](#Configuration)
   - [Logging](#Logging)
   - [Health monitoring](#Health-monitoring)
-  - [Folder/File Structure](#Folder/File-Structure)
+  - [Folder and File Structure](#Folder-and-File-Structure)
   - [File names](#File-names)
   - [Static Code Analysis](#Static-Code-Analysis)
   - [Code formatting](#Code-formatting)
@@ -927,7 +927,7 @@ Read more:
 
 - [Essential Guide to API Monitoring: Basics Metrics & Choosing the Best Tools](https://sematext.com/blog/api-monitoring/)
 
-## Folder/File Structure
+## Folder and File Structure
 
 So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
