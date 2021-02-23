@@ -46,6 +46,7 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Testing](#Testing)
   - [Configuration](#Configuration)
   - [Logging](#Logging)
+  - [Health monitoring](#Health-monitoring)
   - [Folder/File Structure](#Folder/File-Structure)
   - [File names](#File-names)
   - [Static Code Analysis](#Static-Code-Analysis)
@@ -895,6 +896,12 @@ Example files:
 Read more:
 
 - [Make your app transparent using smart logs](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/smartlogging.md)
+
+## Health monitoring
+
+Additionally to logging tools, health monitoring tools are a good way to keep track of system performance, identify causes of crashes or downtime, monitor behavior, availability and load. Some health monitoring tools already include logging management and error tracking, as well as alerts and general performance monitoring.
+
+Choose depending on your needs, here are some examples: [Sematext](https://sematext.com/), [AppSignal](https://appsignal.com/), [Checkly](https://www.checklyhq.com/), [ClinicJS](https://clinicjs.org/), [PM2](https://pm2.keymetrics.io/)
 
 ## Folder/File Structure
 
