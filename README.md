@@ -297,9 +297,10 @@ Entities:
 - Responsible for the coordination of operations on the objects it owns.
 - Know nothing about upper layers (services, controllers etc).
 - Domain entities data should be modelled to accommodate business logic, not some database schema.
-- Entities must protect their invariants, try to avoid public setters and update state using methods.
+- Entities must protect their invariants, try to avoid public setters - update state using methods and execute invariant validation on each update if needed (this can be a simple `validate()` method that checks if business rules are not violated by update).
 - Must be consistent on creation. Validate Entities and other domain objects on creation and throw an error on first failure. [Fail Fast](https://en.wikipedia.org/wiki/Fail-fast).
-- Avoid no-arg (empty) constructors, accept and validate all required fields through a constructor. For optional fields that require some complex setting up, [Fluent interface](https://en.wikipedia.org/wiki/Fluent_interface#JavaScript) and [Builder Pattern](https://refactoring.guru/design-patterns/builder) can be used.
+- Avoid no-arg (empty) constructors, accept and validate all required properties through a constructor.
+- For optional properties that require some complex setting up, [Fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) and [Builder Pattern](https://refactoring.guru/design-patterns/builder) can be used.
 
 Example files:
 
@@ -321,14 +322,21 @@ Read more:
 - Aggregate root is an entity that contains other entities/value objects and all logic to operate them.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
 - Saving an aggregate must be a [transactional operation](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved or nothing.
+- Similar to `Entities`, aggregates must protect their invariants through entire lifecycle.
+- Aggregates can reference other aggregates. Prefer references to external aggregates only by their globally unique identity, not by holding a direct object reference.
+- Try to avoid aggregates that are too big, this can lead to performance and maintaining problems.
 - Aggregates can publish `Domain Events` (more on that below).
 
-Example files: [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts)
+Example files:
+
+- [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts)
 
 Read more:
 
 - [Understanding Aggregates in Domain-Driven Design](https://dzone.com/articles/domain-driven-design-aggregate)
 - [What Are Aggregates In Domain-Driven Design?](https://www.jamesmichaelhickey.com/domain-driven-design-aggregates/) <- this is a series of multiple articles, don't forget to click "Next article" at the end.
+- [Effective Aggregate Design Part I: Modeling a Single Aggregate](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_1.pdf)
+- [Effective Aggregate Design Part II: Making Aggregates Work Together](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf)
 
 ---
 
