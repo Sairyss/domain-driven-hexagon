@@ -901,7 +901,13 @@ Read more:
 
 Additionally to logging tools, health monitoring tools are a good way to keep track of system performance, identify causes of crashes or downtime, monitor behavior, availability and load. Some health monitoring tools already include logging management and error tracking, as well as alerts and general performance monitoring.
 
-Choose depending on your needs, here are some examples: [Sematext](https://sematext.com/), [AppSignal](https://appsignal.com/), [Checkly](https://www.checklyhq.com/), [ClinicJS](https://clinicjs.org/), [PM2](https://pm2.keymetrics.io/)
+Choose depending on your needs, here are some examples:
+
+- [Sematext](https://sematext.com/), [AppSignal](https://appsignal.com/), [Prometheus](https://prometheus.io/), [Checkly](https://www.checklyhq.com/), [ClinicJS](https://clinicjs.org/)
+
+Read more:
+
+- [Essential Guide to API Monitoring: Basics Metrics & Choosing the Best Tools](https://sematext.com/blog/api-monitoring/)
 
 ## Folder/File Structure
 
