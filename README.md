@@ -345,8 +345,7 @@ Typical approach that is usually used involves executing all this logic in a ser
 
 A better approach would be publishing a `Domain Event`. Any side effect operations can be performed just by subscribing to a concrete `Domain Event` and creating as many event handlers as needed, without glueing any unrelated code to original domain's service that sends an event.
 
-Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed 
-domain event handler should send an `Integration Event`.
+Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
