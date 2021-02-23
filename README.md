@@ -329,7 +329,8 @@ Read more:
 
 Example files:
 
-- [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts)
+- [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts) - abstract base class.
+- [user.entity.ts](src/modules/user/domain/entities/user.entity.ts) - aggregate implementations are similar to `Entities`, with some additional rules described above.
 
 Read more:
 
