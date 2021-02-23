@@ -42,6 +42,7 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Recommendations for smaller APIs](#Recommendations-for-smaller-APIs)
 
 - [Other recommendations and best practices](#Other-recommendations-and-best-practices)
+
   - [Error Handling](#Error-Handling)
   - [Testing](#Testing)
   - [Configuration](#Configuration)
@@ -61,8 +62,8 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Pre-push/pre-commit hooks](#Pre-push/pre-commit-hooks)
   - [Prevent massive inheritance chains](#Prevent-massive-inheritance-chains)
   - [Conventional commits](#Conventional-commits)
-- [Additional resources](#Additional-resources)
 
+- [Additional resources](#Additional-resources)
   - [Articles](#Articles)
   - [Repositories](#Repositories)
   - [Documentation](#Documentation)
@@ -906,7 +907,8 @@ Here are some basic recommendation on what can be monitored:
 - Connectivity – Verify if user can successfully send a request to the API endpoint and get a response with expected HTTP status code. This will confirm if the API endpoint is up and running. This can be achieved by creating some kind of 'heath check' endpoint.
 - Performance – Make sure the response time of the API is within acceptable limits. Long response times cause bad user experience.
 - Error rate – errors immediately affect your customers, you need to know when errors happen right away and fix them.
-- CPU and Memory usage – spikes in CPU and Memory usage can indicate that there are bad optimized code, memory leaks etc. This can result in loss of money for your organization, especially when cloud providers are used.
+- CPU and Memory usage – spikes in CPU and Memory usage can indicate that there are problems in your system, for example bad optimized code, unwanted process running, memory leaks etc. This can result in loss of money for your organization, especially when cloud providers are used.
+- Storage usage – servers run out of storage. Monitoring storage usage is essential to avoid data loss.
 
 Choose health monitoring tools depending on your needs, here are some examples:
 
