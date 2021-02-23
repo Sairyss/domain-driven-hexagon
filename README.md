@@ -114,7 +114,7 @@ In short, data flow looks like this (from left to right):
 - After application service finishes doing it's job, it returns data/confirmation back to Controllers;
 - Controllers return data back to the user (if application has presenters/views, those are returned instead).
 
-**Keep in mind** that different projects can have more or less steps/layers/building blocks then described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
+**Keep in mind** that different projects can have more or less steps/layers/building blocks than described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
 
 General recommendation for any project: analyze how big/complex the application will be, find a compromise and use as many layers/building blocks as needed for the project and skip ones that may over-complicate things.
 
@@ -260,7 +260,7 @@ Read more about CQS:
 
 ## Ports
 
-Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather then business logic. Ports act like abstractions for technology details that business logic does not care about.
+Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather than business logic. Ports act like abstractions for technology details that business logic does not care about.
 
 - Ports are basically just interfaces that define what has to be done and don't care about how it is done.
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
@@ -345,7 +345,8 @@ Typical approach that is usually used involves executing all this logic in a ser
 
 A better approach would be publishing a `Domain Event`. Any side effect operations can be performed just by subscribing to a concrete `Domain Event` and creating as many event handlers as needed, without glueing any unrelated code to original domain's service that sends an event.
 
-Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
+Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed 
+domain event handler should send an `Integration Event`.
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
@@ -550,7 +551,7 @@ Be careful with custom regexp validations for things like validating `email`, on
 
 Also, keep in mind that custom regexp that does same type of validation that is already done by validation library outside of domain may create conflicts between your regexp and the one used by a validation library.
 
-For example, value can be accepted as valid by a validation library, but `Value Object` may throw an error because custom regexp is not good enough (validating `email` is more complex then just copy - pasting a regular expression found in google. Though, it can be validated by a simple rule that is true all the time and won't cause any conflicts, like every `email` must contain an `@`). Try finding and validating only patterns that won't cause conflicts.
+For example, value can be accepted as valid by a validation library, but `Value Object` may throw an error because custom regexp is not good enough (validating `email` is more complex than just copy - pasting a regular expression found in google. Though, it can be validated by a simple rule that is true all the time and won't cause any conflicts, like every `email` must contain an `@`). Try finding and validating only patterns that won't cause conflicts.
 
 ---
 
@@ -600,7 +601,7 @@ Read more:
 
 Be careful with general purpose libraries/frameworks that may scatter across many domain objects. It will be hard to replace those libraries if needed.
 
-Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects then a general purpose library that is everywhere.
+Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
 
 Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer.
 
@@ -834,7 +835,7 @@ Try to avoid _White Box_ testing when possible. Though, there are cases when _Wh
 - High complexity in implementation details that are hard to cover using _Black Box_ testing.
 - There is a need to increase code coverage.
 - There is a suspicion that some area of the program may be under-tested.
-- Sometimes it makes more sense to create a separate _White Box_ unit test for a class with specific logic then cluttering a _Black Box_ test file with those test cases.
+- Sometimes it makes more sense to create a separate _White Box_ unit test for a class with specific logic than cluttering a _Black Box_ test file with those test cases.
 - Some parts of the code can't be properly tested by _Black Box_ testing.
 - etc.
 
