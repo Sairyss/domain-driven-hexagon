@@ -366,7 +366,7 @@ Examples:
 
 - [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
-- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Event Handler that executes side-effects when user is created.
+- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Domain Event Handler that executes actions and side-effects when a domain event is raised (in this case, user is created). Domain event handlers belong to Application layer.
 - [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all events for execution right before or right after persisting transaction.
 
 Events can be published right before or right after insert/update/delete transaction, chose any option that is better for a particular project:
