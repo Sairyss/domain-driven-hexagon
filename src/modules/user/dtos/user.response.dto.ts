@@ -9,7 +9,7 @@ export class UserResponse extends ResponseBase implements User {
     this.email = user.email.value;
     this.country = user.address.country;
     this.postalCode = user.address.postalCode;
-    this.street = user.address.postalCode;
+    this.street = user.address.street;
   }
 
   @ApiProperty({
