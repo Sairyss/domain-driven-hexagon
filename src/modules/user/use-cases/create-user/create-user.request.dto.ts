@@ -18,7 +18,7 @@ export class CreateUserRequest implements CreateUser {
   email!: string;
 
   @ApiProperty({ example: 'France', description: 'Country of residence' })
-  @MaxLength(30)
+  @MaxLength(50)
   @IsString()
   @IsAlpha()
   country!: string;
@@ -29,7 +29,7 @@ export class CreateUserRequest implements CreateUser {
   postalCode!: string;
 
   @ApiProperty({ example: 'Grande Rue', description: 'Street' })
-  @MaxLength(30)
+  @MaxLength(50)
   @IsAlphanumeric()
   street!: string;
 }
