@@ -59,7 +59,7 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Rate Limiting](#Rate-Limiting)
   - [Code Generation](#Code-Generation)
   - [Custom utility types](#Custom-utility-types)
-  - [Pre-push/pre-commit hooks](#Pre-push/pre-commit-hooks)
+  - [Pre-push/pre-commit hooks](#Pre-pushpre-commit-hooks)
   - [Prevent massive inheritance chains](#Prevent-massive-inheritance-chains)
   - [Conventional commits](#Conventional-commits)
 
