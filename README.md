@@ -284,12 +284,15 @@ Domain should only operate using domain objects, most important ones are describ
 
 Entities are the core of the domain. They encapsulate Enterprise wide business rules and attributes. An entity can be an object with properties and methods, or it can be a set of data structures and functions.
 
-Domain business logic goes here. Avoid having business logic in your services when possible, this leads to [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) (domain services are exception for business logic that can't be put in a single entity).
+Entities represent business models and express what properties a particular model has, what it can do, when and at what conditions it can do it. An example of business model can be a User, Product, Booking, Ticket, Wallet etc.
+
+Entities must always protect it's [invariant](https://en.wikipedia.org/wiki/Class_invariant):
 
 > Domain entities should always be valid entities. There are a certain number of invariants for an object that should always be true. For example, an order item object always has to have a quantity that must be a positive integer, plus an article name and price. Therefore, invariants enforcement is the responsibility of the domain entities (especially of the aggregate root) and an entity object should not be able to exist without being valid.
 
 Entities:
 
+- Contain Domain business logic. Avoid having business logic in your services when possible, this leads to [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) (domain services are exception for business logic that can't be put in a single entity).
 - Have an identity that defines it and makes it distinguishable from others. It's identity is consistent during its life cycle.
 - Equality between two entities is determined by comparing their identificators (usually its `id` field).
 - Can contain other objects, such as other entities or value objects.
