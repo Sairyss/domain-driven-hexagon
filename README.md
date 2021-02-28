@@ -853,7 +853,7 @@ There is an alternative approach of not throwing exceptions, but returning some 
 class User {
   // ...
   public createUser(): Either<User, EmailInvalidException> {
-    // ...code creating user
+    // ...code for creating a user
     if (invalidEmail) {
       return EmailInvalidException; // <- returning instead of throwing
     }
