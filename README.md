@@ -803,9 +803,9 @@ Adding a `name` string with type name for every exception is a good practice, si
 
 When using microservices, all exception types can be packed into a library and reused in each microservice for consistency.
 
-### Differentiate between programmer errors and user input errors
+### Differentiate between programmer errors and operational errors
 
-Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended.
+Application should be protected not only from operational errors (like incorrect user input), but from a programmer errors as well by throwing exceptions when something is not used as intended.
 
 For example:
 
