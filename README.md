@@ -153,6 +153,7 @@ Core layers shouldn't depend on frameworks or access external resources. Any ext
 ### Domain layer:
 
 - Entities
+- Aggregates
 - Domain Services
 - Value Objects
 
@@ -326,7 +327,7 @@ Read more:
 - Aggregate root is an entity that contains other entities/value objects and all logic to operate them.
 - Aggregate root has global identity. Entities inside the boundary have local identity, unique only within the Aggregate.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
-- Any operations on an aggregate must be [transactional operations](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved/deleted/updated or nothing.
+- Any operations on an aggregate must be [transactional operations](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved/updated/deleted or nothing.
 - Only Aggregate Roots can be obtained directly with database queries. Everything else must be done through traversal.
 - Similar to `Entities`, aggregates must protect their invariants through entire lifecycle. When a change to any object within the Aggregate boundary is committed, all invariants of the whole Aggregate must be satisfied.
 - Objects within the Aggregate can hold references to other Aggregate roots. Prefer references to external aggregates only by their globally unique identity, not by holding a direct object reference.
@@ -792,22 +793,24 @@ Read more:
 
 Consider extending `Error` object to make custom exception types for different situations. For example: `DomainException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
 
-Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know anything about where it is used, since it can be used by anything: HTTP, Microservice, CLI etc. To return proper HTTP code back to user an `instanceof` check can be performed in exception interceptor and appropriate HTTP exception can be returned depending on exception type.
+Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc.
 
-Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts)
+When used in HTTP context, for returning proper status code back to user an `instanceof` check can be performed in exception interceptor or in a controller and appropriate HTTP exception can be returned depending on exception type.
 
-Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name` string is used instead. Store exception `name` enum types in a separate file so they can be reused on a receiving side.
+Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - notice how custom exceptions are converted to nest.js exceptions.
+
+Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name` string is used instead. Exception `name` enum types can be stored in a separate file so they can be reused on a receiving side: [exception.types.ts](src/core/exceptions/exception.types.ts).
 
 When using microservices, all exception types can be packed into a library and reused in each microservice for consistency.
 
 ### Differentiate between programmer errors and user input errors
 
+Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended.
+
 For example:
 
-- When validation error is thrown by validating user input, it means that this input is incorrect and a `400 Bad Request Exception` should be returned with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this project's code examples it's done automatically in DTOs by [class-validator](https://www.npmjs.com/package/class-validator) library.
-- When validation exception happens on a new domain object creation that usually means a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point before reaching domain layer, so a different type of error should be thrown here which later should be converted into `500 Internal Server Error`, in this case without adding additional info since it may cause a leak of some sensitive data.
-
-Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended. No details should be returned to the user in case of programmer errors since those details may contain some sensitive information about the program.
+- When validation error is thrown by validating user input, it means that this input body is incorrect and a `400 Bad Request` exception should be returned to the user with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this case user can fix it's input body and retry the request.
+- On the other hand, when exception happens on a new domain object creation, sometimes it can mean that some rule is violated, for example a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, so it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
 
 ### Error Serialization
 
@@ -825,11 +828,11 @@ Consider serializing errors by creating a `toJSON()` method so it can be easily 
 
 Consider adding optional `metadata` object to exceptions (if language doesn't support anything similar by default) and pass some useful technical information about the error when throwing. This will make debugging easier.
 
-**Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone numbers etc) since this information may leak into log files. Aim adding only technical information.
+**Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone or credit card numbers etc) since this information may leak into log files, and if log files are not protected properly this information can leak or be seen by developers who have access to log files. Aim adding only technical information to your logs.
 
 ### Other recommendations
 
-- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals.
+- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters.
 
 Example files:
 
@@ -841,6 +844,36 @@ Read more:
 
 - [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
 - ["Secure by design" Chapter 9: Handling failures securely](https://livebook.manning.com/book/secure-by-design/chapter-9/)
+
+### Alternatives to exceptions
+
+There is an alternative approach of not throwing exceptions, but returning some kind of Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell). Unlike throwing exceptions, this approach allows to define types for exceptional outcomes and will force us to handle those cases explicitly instead of using `try/catch`. For example:
+
+```typescript
+class User {
+  // ...
+  public createUser(): Either<User, EmailInvalidException> {
+    // ...code creating user
+    if (invalidEmail) {
+      return EmailInvalidException; // <- returning instead of throwing
+    }
+    return User;
+  }
+}
+```
+
+This approach has its advantages and may work nicely in some languages, especially in functional languages which support `Either` type natively, but is not widely used in TypeScript/Javascript world.
+
+It also has some downsides:
+
+- It goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, this approach continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors.
+- It adds extra complexity. Exception cases returned somewhere deep inside application have to be handled by functions in upper layers until it reaches controllers which may add a lot of extra `if` statements.
+
+For most projects this approach may be an overkill. Use it only if you really need it and know what you are doing.
+
+Read more:
+
+- ["Secure by Design" Chapter 9.2: Handling failures without exceptions](https://livebook.manning.com/book/secure-by-design/chapter-9/51)
 
 ## Testing
 
