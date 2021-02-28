@@ -326,7 +326,7 @@ Read more:
 - Aggregate root is an entity that contains other entities/value objects and all logic to operate them.
 - Aggregate root has global identity. Entities inside the boundary have local identity, unique only within the Aggregate.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
-- Saving an aggregate must be a [transactional operation](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved/deleted or nothing.
+- Any operations on an aggregate must be [transactional operations](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved/deleted/updated or nothing.
 - Only Aggregate Roots can be obtained directly with database queries. Everything else must be done through traversal.
 - Similar to `Entities`, aggregates must protect their invariants through entire lifecycle. When a change to any object within the Aggregate boundary is committed, all invariants of the whole Aggregate must be satisfied.
 - Objects within the Aggregate can hold references to other Aggregate roots. Prefer references to external aggregates only by their globally unique identity, not by holding a direct object reference.
