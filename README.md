@@ -324,12 +324,16 @@ Read more:
 - Aggregates help to simplify the domain model by gathering multiple domain objects under a single abstraction.
 - Aggregates should not be influenced by data model. Associations between domain objects are not the same as database relationships.
 - Aggregate root is an entity that contains other entities/value objects and all logic to operate them.
+- Aggregate root has global identity. Entities inside the boundary have local identity, unique only within the Aggregate.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
-- Saving an aggregate must be a [transactional operation](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved or nothing.
-- Similar to `Entities`, aggregates must protect their invariants through entire lifecycle.
-- Aggregates can reference other aggregates. Prefer references to external aggregates only by their globally unique identity, not by holding a direct object reference.
+- Saving an aggregate must be a [transactional operation](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved/deleted or nothing.
+- Only Aggregate Roots can be obtained directly with database queries. Everything else must be done through traversal.
+- Similar to `Entities`, aggregates must protect their invariants through entire lifecycle. When a change to any object within the Aggregate boundary is committed, all invariants of the whole Aggregate must be satisfied.
+- Objects within the Aggregate can hold references to other Aggregate roots. Prefer references to external aggregates only by their globally unique identity, not by holding a direct object reference.
 - Try to avoid aggregates that are too big, this can lead to performance and maintaining problems.
 - Aggregates can publish `Domain Events` (more on that below).
+
+All of this rules just come from the idea of creating a boundary around Aggregates. The boundary simplifies business model, as it forces us to consider each relationship very carefully, and within a well-defined set of rules.
 
 Example files:
 
