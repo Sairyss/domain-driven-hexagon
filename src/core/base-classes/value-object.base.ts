@@ -3,7 +3,7 @@ import { Guard } from '../guard';
 import { convertPropsToObject } from '../utils';
 
 export type Primitives = string | number | boolean;
-export interface DomainPrimitive<T = Primitives> {
+export interface DomainPrimitive<T extends Primitives | Date> {
   value: T;
 }
 
@@ -40,12 +40,12 @@ export abstract class ValueObject<T> {
    */
   public getRawProps(): T {
     if (this.isDomainPrimitive(this.props)) {
-      return (this.props.value as unknown) as T;
+      return this.props.value;
     }
 
     const propsCopy = convertPropsToObject(this.props);
 
-    return Object.freeze(propsCopy) as T;
+    return Object.freeze(propsCopy);
   }
 
   private checkIfEmpty(props: ValueObjectProps<T>): void {
@@ -57,7 +57,7 @@ export abstract class ValueObject<T> {
     }
   }
 
-  private isDomainPrimitive(obj: unknown): obj is DomainPrimitive {
+  private isDomainPrimitive(obj: unknown): obj is DomainPrimitive<T & (Primitives | Date)> {
     if (Object.prototype.hasOwnProperty.call(obj, 'value')) {
       return true;
     }
