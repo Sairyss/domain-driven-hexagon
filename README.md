@@ -30,7 +30,7 @@ Though patterns and principles presented here are **framework/language agnostic*
     - [Domain Services](#Domain-Services)
     - [Value Objects](#Value-Objects)
     - [Enforcing invariants of Domain Objects](#Enforcing-invariants-of-Domain-Objects)
-    - [Using libraries inside application's core](#Using-libraries-inside-application's-core)
+    - [Using libraries inside application's core](#Using-libraries-inside-applications-core)
   - [Interface Adapters](#Interface-Adapters)
     - [Controllers](#Controllers)
     - [DTOs](#DTOs)
@@ -42,11 +42,13 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Recommendations for smaller APIs](#Recommendations-for-smaller-APIs)
 
 - [Other recommendations and best practices](#Other-recommendations-and-best-practices)
+
   - [Error Handling](#Error-Handling)
   - [Testing](#Testing)
   - [Configuration](#Configuration)
   - [Logging](#Logging)
-  - [Folder/File Structure](#Folder/File-Structure)
+  - [Health monitoring](#Health-monitoring)
+  - [Folder and File Structure](#Folder-and-File-Structure)
   - [File names](#File-names)
   - [Static Code Analysis](#Static-Code-Analysis)
   - [Code formatting](#Code-formatting)
@@ -57,11 +59,11 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Rate Limiting](#Rate-Limiting)
   - [Code Generation](#Code-Generation)
   - [Custom utility types](#Custom-utility-types)
-  - [Pre-push/pre-commit hooks](#Pre-push/pre-commit-hooks)
+  - [Pre-push/pre-commit hooks](#Pre-pushpre-commit-hooks)
   - [Prevent massive inheritance chains](#Prevent-massive-inheritance-chains)
   - [Conventional commits](#Conventional-commits)
-- [Additional resources](#Additional-resources)
 
+- [Additional resources](#Additional-resources)
   - [Articles](#Articles)
   - [Repositories](#Repositories)
   - [Documentation](#Documentation)
@@ -114,7 +116,7 @@ In short, data flow looks like this (from left to right):
 - After application service finishes doing it's job, it returns data/confirmation back to Controllers;
 - Controllers return data back to the user (if application has presenters/views, those are returned instead).
 
-**Keep in mind** that different projects can have more or less steps/layers/building blocks then described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
+**Keep in mind** that different projects can have more or less steps/layers/building blocks than described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
 
 General recommendation for any project: analyze how big/complex the application will be, find a compromise and use as many layers/building blocks as needed for the project and skip ones that may over-complicate things.
 
@@ -151,6 +153,7 @@ Core layers shouldn't depend on frameworks or access external resources. Any ext
 ### Domain layer:
 
 - Entities
+- Aggregates
 - Domain Services
 - Value Objects
 
@@ -260,7 +263,7 @@ Read more about CQS:
 
 ## Ports
 
-Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather then business logic. Ports act like abstractions for technology details that business logic does not care about.
+Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather than business logic. Ports act like abstractions for technology details that business logic does not care about.
 
 - Ports are basically just interfaces that define what has to be done and don't care about how it is done.
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
@@ -282,12 +285,15 @@ Domain should only operate using domain objects, most important ones are describ
 
 Entities are the core of the domain. They encapsulate Enterprise wide business rules and attributes. An entity can be an object with properties and methods, or it can be a set of data structures and functions.
 
-Domain business logic goes here. Avoid having business logic in your services when possible, this leads to [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) (domain services are exception for business logic that can't be put in a single entity).
+Entities represent business models and express what properties a particular model has, what it can do, when and at what conditions it can do it. An example of business model can be a User, Product, Booking, Ticket, Wallet etc.
+
+Entities must always protect it's [invariant](https://en.wikipedia.org/wiki/Class_invariant):
 
 > Domain entities should always be valid entities. There are a certain number of invariants for an object that should always be true. For example, an order item object always has to have a quantity that must be a positive integer, plus an article name and price. Therefore, invariants enforcement is the responsibility of the domain entities (especially of the aggregate root) and an entity object should not be able to exist without being valid.
 
 Entities:
 
+- Contain Domain business logic. Avoid having business logic in your services when possible, this leads to [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) (domain services are exception for business logic that can't be put in a single entity).
 - Have an identity that defines it and makes it distinguishable from others. It's identity is consistent during its life cycle.
 - Equality between two entities is determined by comparing their identificators (usually its `id` field).
 - Can contain other objects, such as other entities or value objects.
@@ -295,9 +301,11 @@ Entities:
 - Responsible for the coordination of operations on the objects it owns.
 - Know nothing about upper layers (services, controllers etc).
 - Domain entities data should be modelled to accommodate business logic, not some database schema.
-- Entities must protect their invariants, try to avoid public setters and update state using methods.
+- Entities must protect their invariants, try to avoid public setters - update state using methods and execute invariant validation on each update if needed (this can be a simple `validate()` method that checks if business rules are not violated by update).
 - Must be consistent on creation. Validate Entities and other domain objects on creation and throw an error on first failure. [Fail Fast](https://en.wikipedia.org/wiki/Fail-fast).
-- Avoid no-arg (empty) constructors, accept and validate all required fields through a constructor. For optional fields that require some complex setting up, [Fluent interface](https://en.wikipedia.org/wiki/Fluent_interface#JavaScript) and [Builder Pattern](https://refactoring.guru/design-patterns/builder) can be used.
+- Avoid no-arg (empty) constructors, accept and validate all required properties through a constructor.
+- For optional properties that require some complex setting up, [Fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) and [Builder Pattern](https://refactoring.guru/design-patterns/builder) can be used.
+- Make Entities partially immutable. Identify what properties shouldn't change after creation and make them `readonly` (for example `id` or `createdAt`).
 
 Example files:
 
@@ -317,16 +325,28 @@ Read more:
 - Aggregates help to simplify the domain model by gathering multiple domain objects under a single abstraction.
 - Aggregates should not be influenced by data model. Associations between domain objects are not the same as database relationships.
 - Aggregate root is an entity that contains other entities/value objects and all logic to operate them.
+- Aggregate root has global identity. Entities inside the boundary have local identity, unique only within the Aggregate.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
-- Saving an aggregate must be a [transactional operation](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved or nothing.
+- Any operations on an aggregate must be [transactional operations](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved/updated/deleted or nothing.
+- Only Aggregate Roots can be obtained directly with database queries. Everything else must be done through traversal.
+- Similar to `Entities`, aggregates must protect their invariants through entire lifecycle. When a change to any object within the Aggregate boundary is committed, all invariants of the whole Aggregate must be satisfied.
+- Objects within the Aggregate can hold references to other Aggregate roots. Prefer references to external aggregates only by their globally unique identity, not by holding a direct object reference.
+- Try to avoid aggregates that are too big, this can lead to performance and maintaining problems.
 - Aggregates can publish `Domain Events` (more on that below).
 
-Example files: [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts)
+All of this rules just come from the idea of creating a boundary around Aggregates. The boundary simplifies business model, as it forces us to consider each relationship very carefully, and within a well-defined set of rules.
+
+Example files:
+
+- [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts) - abstract base class.
+- [user.entity.ts](src/modules/user/domain/entities/user.entity.ts) - aggregate implementations are similar to `Entities`, with some additional rules described above.
 
 Read more:
 
 - [Understanding Aggregates in Domain-Driven Design](https://dzone.com/articles/domain-driven-design-aggregate)
 - [What Are Aggregates In Domain-Driven Design?](https://www.jamesmichaelhickey.com/domain-driven-design-aggregates/) <- this is a series of multiple articles, don't forget to click "Next article" at the end.
+- [Effective Aggregate Design Part I: Modeling a Single Aggregate](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_1.pdf)
+- [Effective Aggregate Design Part II: Making Aggregates Work Together](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf)
 
 ---
 
@@ -355,7 +375,7 @@ Examples:
 
 - [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
-- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Event Handler that executes side-effects when user is created.
+- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Domain Event Handler that executes actions and side-effects when a domain event is raised (in this case, user is created). Domain event handlers belong to Application layer.
 - [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all events for execution right before or right after persisting transaction.
 
 Events can be published right before or right after insert/update/delete transaction, chose any option that is better for a particular project:
@@ -550,7 +570,7 @@ Be careful with custom regexp validations for things like validating `email`, on
 
 Also, keep in mind that custom regexp that does same type of validation that is already done by validation library outside of domain may create conflicts between your regexp and the one used by a validation library.
 
-For example, value can be accepted as valid by a validation library, but `Value Object` may throw an error because custom regexp is not good enough (validating `email` is more complex then just copy - pasting a regular expression found in google. Though, it can be validated by a simple rule that is true all the time and won't cause any conflicts, like every `email` must contain an `@`). Try finding and validating only patterns that won't cause conflicts.
+For example, value can be accepted as valid by a validation library, but `Value Object` may throw an error because custom regexp is not good enough (validating `email` is more complex than just copy - pasting a regular expression found in google. Though, it can be validated by a simple rule that is true all the time and won't cause any conflicts, like every `email` must contain an `@`). Try finding and validating only patterns that won't cause conflicts.
 
 ---
 
@@ -600,7 +620,7 @@ Read more:
 
 Be careful with general purpose libraries/frameworks that may scatter across many domain objects. It will be hard to replace those libraries if needed.
 
-Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects then a general purpose library that is everywhere.
+Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
 
 Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer.
 
@@ -633,11 +653,13 @@ One controller per trigger type can be used to have a more clear separation. For
 
 ## DTOs
 
-Data Transfer Object ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object)) is an object that carries data between processes.
+Data Transfer Object ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object)) is an object that carries data between processes. This is a contract between your API and clients.
 
 ### Request DTOs
 
-Input data sent by a user. May consist of request classes and interfaces.
+Input data sent by a user.
+
+- Using Request DTOs gives a contract that a client of your API has to follow to make a correct request.
 
 Examples:
 
@@ -646,7 +668,10 @@ Examples:
 
 ### Response DTOs
 
-Output data returned to a user. May consist of a `Request`/`Response` class, interface and/or mapper.
+Output data returned to a user.
+
+- Using Response DTOs ensures clients only receive data described in DTOs contract, not everything that your model/entity owns (which may result in data leaks).
+- It also to some extent protects your clients from internal data structure changes that may happen in your API.
 
 Examples:
 
@@ -655,10 +680,12 @@ Examples:
 
 ### Additional recommendations:
 
-- When returning a `Response` prefer _whitelisting_ properties over _blacklisting_ using mapper (or right in the `Response` class in some cases). This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
+- When returning a `Response` prefer _whitelisting_ properties over _blacklisting_. This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
 - Interfaces for `Request`/`Response` objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating git submodule or a separate package for sharing interfaces.
 - `Request`/`Response` DTO classes may be a good place to use validation and sanitization decorators like [class-validator](https://www.npmjs.com/package/class-validator) and [class-sanitizer](https://www.npmjs.com/package/class-sanitizer) (make sure that all validation errors are gathered first and only then return them to the user, this is called [Notification pattern](https://martinfowler.com/eaaDev/Notification.html). Class-validator does this by default).
 - `Request`/`Response` DTO classes may also be a good place to use Swagger/OpenAPI library decorators that [NestJS provides](https://docs.nestjs.com/openapi/types-and-parameters).
+- If DTO decorators for validation/documentation are not used, DTO can be just an interface instead of class + interface.
+- Data can be transformed to DTO format using a separate mapper or right in the constructor if DTO classes are used.
 
 ---
 
@@ -766,22 +793,24 @@ Read more:
 
 Consider extending `Error` object to make custom exception types for different situations. For example: `DomainException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
 
-Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know anything about where it is used, since it can be used by anything: HTTP, Microservice, CLI etc. To return proper HTTP code back to user an `instanceof` check can be performed in exception interceptor and appropriate HTTP exception can be returned depending on exception type.
+Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc.
 
-Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts)
+When used in HTTP context, for returning proper status code back to user an `instanceof` check can be performed in exception interceptor or in a controller and appropriate HTTP exception can be returned depending on exception type.
 
-Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name` string is used instead. Store exception `name` enum types in a separate file so they can be reused on a receiving side.
+Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - notice how custom exceptions are converted to nest.js exceptions.
+
+Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name` string is used instead. Exception `name` enum types can be stored in a separate file so they can be reused on a receiving side: [exception.types.ts](src/core/exceptions/exception.types.ts).
 
 When using microservices, all exception types can be packed into a library and reused in each microservice for consistency.
 
-### Differentiate between programmer errors and user input errors
+### Differentiate between programmer errors and operational errors
+
+Application should be protected not only from operational errors (like incorrect user input), but from a programmer errors as well by throwing exceptions when something is not used as intended.
 
 For example:
 
-- When validation error is thrown by validating user input, it means that this input is incorrect and a `400 Bad Request Exception` should be returned with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this project's code examples it's done automatically in DTOs by [class-validator](https://www.npmjs.com/package/class-validator) library.
-- When validation exception happens on a new domain object creation that usually means a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point before reaching domain layer, so a different type of error should be thrown here which later should be converted into `500 Internal Server Error`, in this case without adding additional info since it may cause a leak of some sensitive data.
-
-Application should be protected not only from incorrect user input but from a programmer errors as well by throwing exceptions when something is not used as intended. No details should be returned to the user in case of programmer errors since those details may contain some sensitive information about the program.
+- When validation error is thrown by validating user input, it means that this input body is incorrect and a `400 Bad Request` exception should be returned to the user with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this case user can fix it's input body and retry the request.
+- On the other hand, when exception happens on a new domain object creation, sometimes it can mean that some rule is violated, for example a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, so it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
 
 ### Error Serialization
 
@@ -799,11 +828,11 @@ Consider serializing errors by creating a `toJSON()` method so it can be easily 
 
 Consider adding optional `metadata` object to exceptions (if language doesn't support anything similar by default) and pass some useful technical information about the error when throwing. This will make debugging easier.
 
-**Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone numbers etc) since this information may leak into log files. Aim adding only technical information.
+**Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone or credit card numbers etc) since this information may leak into log files, and if log files are not protected properly this information can leak or be seen by developers who have access to log files. Aim adding only technical information to your logs.
 
 ### Other recommendations
 
-- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals.
+- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters.
 
 Example files:
 
@@ -815,6 +844,36 @@ Read more:
 
 - [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
 - ["Secure by design" Chapter 9: Handling failures securely](https://livebook.manning.com/book/secure-by-design/chapter-9/)
+
+### Alternatives to exceptions
+
+There is an alternative approach of not throwing exceptions, but returning some kind of Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell). Unlike throwing exceptions, this approach allows to define types for exceptional outcomes and will force us to handle those cases explicitly instead of using `try/catch`. For example:
+
+```typescript
+class User {
+  // ...
+  public createUser(): Either<User, EmailInvalidException> {
+    // ...code for creating a user
+    if (invalidEmail) {
+      return EmailInvalidException; // <- returning instead of throwing
+    }
+    return User;
+  }
+}
+```
+
+This approach has its advantages and may work nicely in some languages, especially in functional languages which support `Either` type natively, but is not widely used in TypeScript/Javascript world.
+
+It also has some downsides:
+
+- It goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, this approach continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors.
+- It adds extra complexity. Exception cases returned somewhere deep inside application have to be handled by functions in upper layers until it reaches controllers which may add a lot of extra `if` statements.
+
+For most projects this approach may be an overkill. Use it only if you really need it and know what you are doing.
+
+Read more:
+
+- ["Secure by Design" Chapter 9.2: Handling failures without exceptions](https://livebook.manning.com/book/secure-by-design/chapter-9/51)
 
 ## Testing
 
@@ -829,12 +888,14 @@ Testing module/use-case internal structures (creating a test for every file/clas
 
 To solve this and get the most out of your tests, prefer _`Black Box`_ testing (also called [Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API, for example `createUser()` method in `Application Service`), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
 
+> Tests that are independent of implementation details are easier to maintain since they don't need to be changed each time you make a change to the implementation.
+
 Try to avoid _White Box_ testing when possible. Though, there are cases when _White Box_ testing may be needed, for example:
 
 - High complexity in implementation details that are hard to cover using _Black Box_ testing.
 - There is a need to increase code coverage.
 - There is a suspicion that some area of the program may be under-tested.
-- Sometimes it makes more sense to create a separate _White Box_ unit test for a class with specific logic then cluttering a _Black Box_ test file with those test cases.
+- Sometimes it makes more sense to create a separate _White Box_ unit test for a class with specific logic than cluttering a _Black Box_ test file with those test cases.
 - Some parts of the code can't be properly tested by _Black Box_ testing.
 - etc.
 
@@ -885,7 +946,7 @@ Example files:
 - Consider including user id in logs. It will facilitate investigating if user creates an incident ticket.
 - In distributed systems a gateway can generate an unique id for each request and pass it to every system that processes this request. Logging this id will make it easier to find related logs across different systems/files.
 - Use consistent structure across all logs. Each log line should represent one single event and contain things like timestamp, context, unique user/request id and/or id of entity/aggregate that is being modified, as well as additional metadata if required.
-- Use error reporting tools like [Sentry](https://sentry.io/for/node/) to to facilitate logs management.
+- Use log managements systems. This will allow you to track and analyze logs as they happen in real-time. Here are some short list of log managers: [Sentry](https://sentry.io/for/node/), [Loggly](https://www.loggly.com/), [Logstash](https://www.elastic.co/logstash), [Splunk](https://www.splunk.com/) etc.
 - Send notifications of important events that happen in production to a corporate chat like Slack or even by SMS.
 - Don't write logs to a file from your program. Write all logs to [stdout](https://www.computerhope.com/jargon/s/stdout.htm) (to a terminal window) and let other tools handle writing logs to a file (for example [docker supports writing logs to a file](https://docs.docker.com/config/containers/logging/configure/)). Read more: [Why should your Node.js application not handle log routing?](https://www.coreycleary.me/why-should-your-node-js-application-not-handle-log-routing/)
 - Logs can be visualized by using a tool like [Kibana](https://www.elastic.co/kibana).
@@ -894,7 +955,27 @@ Read more:
 
 - [Make your app transparent using smart logs](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/smartlogging.md)
 
-## Folder/File Structure
+## Health monitoring
+
+Additionally to logging tools, health monitoring tools are a good way to keep track of system performance, identify causes of crashes or downtime, monitor behavior, availability and load. Some health monitoring tools already include logging management and error tracking, as well as alerts and general performance monitoring.
+
+Here are some basic recommendation on what can be monitored:
+
+- Connectivity – Verify if user can successfully send a request to the API endpoint and get a response with expected HTTP status code. This will confirm if the API endpoint is up and running. This can be achieved by creating some kind of 'heath check' endpoint.
+- Performance – Make sure the response time of the API is within acceptable limits. Long response times cause bad user experience.
+- Error rate – errors immediately affect your customers, you need to know when errors happen right away and fix them.
+- CPU and Memory usage – spikes in CPU and Memory usage can indicate that there are problems in your system, for example bad optimized code, unwanted process running, memory leaks etc. This can result in loss of money for your organization, especially when cloud providers are used.
+- Storage usage – servers run out of storage. Monitoring storage usage is essential to avoid data loss.
+
+Choose health monitoring tools depending on your needs, here are some examples:
+
+- [Sematext](https://sematext.com/), [AppSignal](https://appsignal.com/), [Prometheus](https://prometheus.io/), [Checkly](https://www.checklyhq.com/), [ClinicJS](https://clinicjs.org/)
+
+Read more:
+
+- [Essential Guide to API Monitoring: Basics Metrics & Choosing the Best Tools](https://sematext.com/blog/api-monitoring/)
+
+## Folder and File Structure
 
 So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
