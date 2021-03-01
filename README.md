@@ -838,7 +838,7 @@ Example files:
 
 - [exception.base.ts](src/core/exceptions/exception.base.ts) - Exception abstract base class
 - [domain.exception.ts](src/core/exceptions/domain.exception.ts) - Domain Exception class example
-- Check [exceptions](src/core/exception) folder to see more examples (some of them are exceptions from other languages like C# or Java)
+- Check [exceptions](src/core/exceptions) folder to see more examples (some of them are exceptions from other languages like C# or Java)
 
 Read more:
 
