@@ -810,7 +810,7 @@ Application should be protected not only from operational errors (like incorrect
 For example:
 
 - Operational errors can happen when validation error is thrown by validating user input, it means that input body is incorrect and a `400 Bad Request` exception should be returned to the user with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this case user can fix the input body and retry the request.
-- On the other hand, programmer error means something unexpected occurs in the program. For example, when exception happens on a new domain object creation, sometimes it can mean that an object is not used as intended and some rule is violated, for example a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, only a programmer can. In this case it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
+- On the other hand, programmer error means something unexpected occurs in the program. For example, when exception happens on a new domain object creation, sometimes it can mean that a class is not used as intended and some rule is violated, for example a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, only a programmer can, so it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
 
 ### Error Serialization
 
@@ -838,7 +838,7 @@ Example files:
 
 - [exception.base.ts](src/core/exceptions/exception.base.ts) - Exception abstract base class
 - [domain.exception.ts](src/core/exceptions/domain.exception.ts) - Domain Exception class example
-- Check [exceptions]([src/core/exception]) folder to see more examples (some of them are exceptions from other languages like C# or Java)
+- Check [exceptions](src/core/exception) folder to see more examples (some of them are exceptions from other languages like C# or Java)
 
 Read more:
 
