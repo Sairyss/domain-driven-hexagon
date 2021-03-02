@@ -737,7 +737,7 @@ Using a single entity for domain logic and database concerns leads to a database
 
 Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` (or `Schemas`) are used that have shape that is better represented in a particular database that is used.
 
-This approach can also be useful when amount of data in database grows and there is a need for re-design of tables (or even database change) to improve performance. When `ORM Entities`/`Schemas` are separated from `Entities` you don't need to touch any domain logic if something in database changes, thus avoiding potential bugs.
+This approach can also be useful when amount of data in database grows and there is a need to improve performance, for example by doing a re-design of some tables, [database normalization](https://en.wikipedia.org/wiki/Database_normalization), or even changing the database entirely. Without an explicit separation between `Entities` and `ORM Entities`/`Schemas` any change to the database will lead to change in your `Entities`, since data can spread across multiple tables rather than being in one table. This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges.
 
 **Note**: separating `Entities` and `ORM Entities` may be an overkill for smaller applications, consider all pros and cons before making this decision.
 
