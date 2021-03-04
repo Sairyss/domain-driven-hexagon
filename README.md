@@ -142,13 +142,7 @@ Each module is separated in layers described below.
 
 # Application Core
 
-This is the core of the system which is built using [DDD building blocks](https://dzone.com/articles/ddd-part-ii-ddd-building-blocks).
-
-**Dependencies point inwards**. Outer layers can depend on inner layers, but inner layers never depend on outer layers.
-
-Core layers shouldn't depend on frameworks or access external resources. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)).
-
-## Application's Core consists of:
+This is the core of the system which is built using [DDD building blocks](https://dzone.com/articles/ddd-part-ii-ddd-building-blocks):
 
 ### Domain layer:
 
@@ -163,7 +157,9 @@ Core layers shouldn't depend on frameworks or access external resources. Any ext
 - Commands and Queries
 - Ports
 
-This is just a short list the main things that may reside in here. More building blocks may be added if needed.
+_More building blocks may be added if needed._
+
+In Application Core **dependencies point inwards**. Outer layers can depend on inner layers, but inner layers never depend on outer layers. Also, Application Core shouldn't depend on frameworks or access external resources directly. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)). This makes business logic independent of technology, facilitates testing, allows to plug/unplug/swap any external resources easily making application modular and [loosely coupled](https://en.wikipedia.org/wiki/Loose_coupling).
 
 ---
 
