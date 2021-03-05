@@ -230,7 +230,7 @@ This principle is called [Command–Query Separation(CQS)](https://en.wikipedia.
 
 - `Commands` are used for state-changing actions, like creating new user and saving it to the database. Create, Update and Delete operations are considered as state-changing.
 
-Data retrieval is responsibility of `Queries`, so `Command` methods should not return anything. Though, violating a CQS rule and returning a bare minimum (like `ID` of created item or a confirmation message) may simplify things for a lot of APIs. Though there are other options you can find online:
+Data retrieval is responsibility of `Queries`, so `Command` methods should not return anything. Though, violating a CQS rule and returning a bare minimum (like `ID` of created item or a confirmation message) may simplify things for a lot of APIs. But there are other options:
 
 - Letting consumer of a command generate a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) on a client-side (more info here: [CQS versus server generated IDs](https://blog.ploeh.dk/2014/08/11/cqs-versus-server-generated-ids/));
 - Returning a `303 See Other` with a redirect location (described here: [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)).
@@ -739,6 +739,8 @@ Since domain `Entities` have their data modeled so that it best accommodates dom
 This approach can also be useful when amount of data in database grows and there is a need to improve performance, for example by doing a re-design of some tables, [database normalization](https://en.wikipedia.org/wiki/Database_normalization), or even changing the database entirely. Without an explicit separation between `Entities` and `ORM Entities`/`Schemas` any change to the database will lead to change in your `Entities`, since data can spread across multiple tables rather than being in one table. This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges.
 
 **Note**: separating `Entities` and `ORM Entities` may be an overkill for smaller applications, consider all pros and cons before making this decision.
+
+An alternative to using [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) may be raw queries or some sort of a query builder, in this case you may not need to create `ORM Entities`.
 
 Example files:
 
