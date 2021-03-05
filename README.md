@@ -230,10 +230,12 @@ This principle is called [Command–Query Separation(CQS)](https://en.wikipedia.
 
 - `Commands` are used for state-changing actions, like creating new user and saving it to the database. Create, Update and Delete operations are considered as state-changing.
 
-Data retrieval is responsibility of `Queries`, so `Command` methods should not return anything. Though, violating a CQS rule and returning a bare minimum (like `ID` of created item or a confirmation message) may simplify things for a lot of APIs. But there are other options:
+Data retrieval is responsibility of `Queries`, so `Command` methods should not return anything. There are some options on how to achieve this:
 
 - Letting consumer of a command generate a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) on a client-side (more info here: [CQS versus server generated IDs](https://blog.ploeh.dk/2014/08/11/cqs-versus-server-generated-ids/));
-- Returning a `303 See Other` with a redirect location (described here: [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)).
+- Returning some kind of a redirect location instead of creating a new resource on POST request (described here: [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)).
+
+Though, violating a CQS rule and returning a bare minimum (like `ID` of created item or a confirmation message) may simplify things for a lot of APIs.
 
 **Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
