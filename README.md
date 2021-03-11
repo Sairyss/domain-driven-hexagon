@@ -768,14 +768,16 @@ Read more:
 
 # Recommendations for smaller APIs
 
-Be careful when implementing any complex architecture in small-medium sized projects with not a lot of business logic. Some of the building blocks/patterns may fit well, but others may be an overengineering.
+Be careful when implementing any complex architecture in small-medium sized projects with not a lot of business logic. Some of the building blocks/patterns/principles may fit well, but others may be an overengineering.
 
 For example:
 
 - Separating code into modules/layers/use-cases, using some building blocks like controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any project.
-- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, dividing `Entities` and `ORM Entities` etc. in projects that are more data-centric and have little or no business logic may only complicate such solutions and add extra boilerplate code, data mapping etc. without adding much benefit.
+- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, dividing `Entities` and `ORM Entities` etc. in projects that are more data-centric and have little or no business logic may only complicate such solutions and add extra boilerplate code, data mapping, maintenance overheads etc. without adding much benefit.
 
 Some principles/patterns can be implemented in a simplified form, some can be skipped. Follow [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) principle and don't overengineer.
+
+Sometimes, though, complex architecture and principles like [SOLID](https://en.wikipedia.org/wiki/SOLID) can be incompatible with [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) and [KISS](https://en.wikipedia.org/wiki/KISS_principle). A good programmer has to be able to combine his skills and knowledge with a common sense. It's all about pragmatism and the skill of choosing the best solution for your problem.
 
 **Before implementing any pattern always analyze if benefit given by using it worth extra code complexity**.
 
@@ -788,6 +790,7 @@ However, remember:
 Read more:
 
 - [Martin Fowler blog: Yagni](https://martinfowler.com/bliki/Yagni.html)
+- [7 Software Development Principles That Should Be Embraced Daily](https://betterprogramming.pub/7-software-development-principles-that-should-be-embraced-daily-c26a94ec4ecc?gi=3b5b298ddc23)
 
 # Other recommendations and best practices
 
