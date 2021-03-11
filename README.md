@@ -247,8 +247,6 @@ Example of command object: [create-user.command.ts](src/modules/user/use-cases/c
 
 Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it should be done in a corresponding application service.
 
-Validation also can be skipped, since no input is persisted in query operations. But, if needed, it can be validated to tell the user that query format is incorrect (when using enums for example).
-
 Example of query bypassing application/domain layers completely: [find-user-by-email.http.controller.ts](src/modules/user/use-cases/find-user-by-email/find-user-by-email.http.controller.ts)
 
 ---
