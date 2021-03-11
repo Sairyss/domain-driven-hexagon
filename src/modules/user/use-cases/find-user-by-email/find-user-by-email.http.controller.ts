@@ -1,7 +1,8 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 import { routes } from '@config/app.routes';
 import { UserResponse } from '@modules/user/dtos/user.response.dto';
 import { UserRepository } from '@modules/user/database/user.repository';
+import { FindUserByEmailRequest } from './find-user-by-email.request.dto';
 
 @Controller()
 export class FindUserByEmailHttpController {
@@ -13,8 +14,10 @@ export class FindUserByEmailHttpController {
      query is also not required since no data is persisted; if 
      email is incorrect "Not found" exception will be returned anyway.
    */
-  @Get(routes.user.findByEmail)
-  async findByEmail(@Param('email') email: string): Promise<UserResponse> {
+  @Get(routes.user.root)
+  async findByEmail(
+    @Body() { email }: FindUserByEmailRequest,
+  ): Promise<UserResponse> {
     const user = await this.userRepo.findOneByEmailOrThrow(email);
 
     return new UserResponse(user);
