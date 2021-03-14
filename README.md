@@ -37,7 +37,7 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Infrastructure](#Infrastructure)
     - [Adapters](#Adapters)
     - [Repositories](#Repositories)
-    - [ORM Entities](#ORM-Entities)
+    - [Persistence models](#Persistence-models)
     - [Other things that can be a part of Infrastructure layer](#Other-things-that-can-be-a-part-of-Infrastructure-layer)
   - [Recommendations for smaller APIs](#Recommendations-for-smaller-APIs)
 
@@ -731,17 +731,17 @@ The data flow here looks something like this: repository receives a domain `Enti
 
 This project contains abstract repository class that allows to make basic CRUD operations: [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts). This base class is then extended by a specific repository, and all specific operations that an entity may need is implemented in that specific repo: [user.repository.ts](src/modules/user/database/user.repository.ts).
 
-## ORM Entities
+## Persistence models
 
 Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world domain model and persistance model should be separated. If ORM frameworks are used, `ORM Entities` can be created to represent domain entities in a database.
 
-Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` (or `Schemas`) are used that have shape that is better represented in a particular database that is used.
+Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` (or `Schemas`) can be created that have a shape that is better represented in a particular database that is used.
 
-This approach can also be useful when amount of data in database grows and there is a need to improve performance, for example by doing a re-design of some tables, [database normalization](https://en.wikipedia.org/wiki/Database_normalization), or even changing the database entirely. Without an explicit separation between `Entities` and `ORM Entities`/`Schemas` any change to the database will lead to change in your `Entities`, since data can spread across multiple tables rather than being in one table. This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges.
-
-**Note**: separating `Entities` and `ORM Entities` may be an overkill for smaller applications, consider all pros and cons before making this decision.
+Over time, when the amount of data grows, there may be a need to make some changes in the database, for example: improve performance or data integrity, re-design of some tables, database [normalization](https://en.wikipedia.org/wiki/Database_normalization) / [denormalization](https://en.wikipedia.org/wiki/Denormalization), or even changing the database entirely. Without an explicit separation between `Entities` and `ORM Entities`/`Schemas` any change to the database will lead to change in your `Entities`, since, for example, data can spread across multiple tables rather than being in one table. This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges. Separating domain and persistance models prevents that.
 
 An alternative to using [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) may be raw queries or some sort of a query builder, in this case you may not need to create `ORM Entities`.
+
+**Note**: separating domain and persistance models may be an overkill for smaller applications, consider all pros and cons before making this decision.
 
 Example files:
 
