@@ -916,10 +916,6 @@ Behavioral tests can be divided in two parts:
 
 **Note**: some people try to make e2e tests faster by using in-memory or embedded databases (like [sqlite3](https://www.npmjs.com/package/sqlite3)). This makes tests faster, but reduces the reliability of those tests. In real e2e testing this should be avoided. Read more: [Don't use In-Memory Databases for Tests](https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/).
 
-### Load Testing
-
-For projects with a bigger user base you might want to implement some kind of [load testing](https://en.wikipedia.org/wiki/Load_testing) to see how program behaves with a lot of concurrent users. [Artillery](https://www.npmjs.com/package/artillery) is a nice tool for that based on NodeJS. Though, there are plenty of other tools to choose from: [Top 6 Tools for API & Load Testing](https://medium.com/@Dickson_Mwendia/top-6-tools-for-api-load-testing-7ff51d1ac1e8).
-
 Example files: // TODO
 
 Read more:
@@ -927,6 +923,14 @@ Read more:
 - [Pragmatic unit testing](https://enterprisecraftsmanship.com/posts/pragmatic-unit-testing/)
 - [Google Blog: Test Behavior, Not Implementation ](https://testing.googleblog.com/2013/08/testing-on-toilet-test-behavior-not.html)
 - [Writing BDD Test Scenarios](https://www.departmentofproduct.com/blog/writing-bdd-test-scenarios/)
+
+### Load Testing
+
+For projects with a bigger user base you might want to implement some kind of [load testing](https://en.wikipedia.org/wiki/Load_testing) to see how program behaves with a lot of concurrent users. [Artillery](https://www.npmjs.com/package/artillery) is a nice tool for that based on NodeJS. Though, there are plenty of other tools to choose from.
+
+Read more:
+
+- [Top 6 Tools for API & Load Testing](https://medium.com/@Dickson_Mwendia/top-6-tools-for-api-load-testing-7ff51d1ac1e8).
 
 ## Configuration
 
