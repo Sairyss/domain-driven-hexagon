@@ -733,20 +733,25 @@ This project contains abstract repository class that allows to make basic CRUD o
 
 ## Persistence models
 
-Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world domain model and persistance model should be separated. If ORM frameworks are used, `ORM Entities` can be created to represent domain entities in a database.
+Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world domain model and persistance model should be separated.
 
-Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `ORM Entities` (or `Schemas`) can be created that have a shape that is better represented in a particular database that is used.
+Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `Persistence models` can be created that have a shape that is better represented in a particular database that is used. Domain logic should not know anything about persistance models, and it should not care.
 
-Over time, when the amount of data grows, there may be a need to make some changes in the database, for example: improve performance or data integrity, re-design of some tables, database [normalization](https://en.wikipedia.org/wiki/Database_normalization) / [denormalization](https://en.wikipedia.org/wiki/Denormalization), or even changing the database entirely. Without an explicit separation between `Entities` and `ORM Entities`/`Schemas` any change to the database will lead to change in your `Entities`, since, for example, data can spread across multiple tables rather than being in one table. This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges. Separating domain and persistance models prevents that.
+There can be multiple models optimized for different purposes, for example:
 
-An alternative to using [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) may be raw queries or some sort of a query builder, in this case you may not need to create `ORM Entities`.
+- Domain with it's own models - `Entities`, `Aggregates` and `Value Objects`.
+- Persistence layer with it's own models - `ORM` for SQL, `Schemas` for NoSQL, `Read/Write` models if databases are separated into a read and write db ([CQRS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)) etc.
+
+Over time, when the amount of data grows, there may be a need to make some changes in the database, for example: improve performance or data integrity, re-design of some tables, database [normalization](https://en.wikipedia.org/wiki/Database_normalization) / [denormalization](https://en.wikipedia.org/wiki/Denormalization), or even changing the database entirely. Without an explicit separation between `Domain` and `Persistance` models any change to the database will lead to change in your domain `Entities` or `Aggregates`, since, for example, when optimizing database data can spread across multiple tables rather than being in one table. This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges. Separating Domain and Persistance models prevents that.
+
+An alternative to using Persistence Models may be raw queries or some sort of a query builder, in this case you may not need to create `ORM Entities` or `Schemas`.
 
 **Note**: separating domain and persistance models may be an overkill for smaller applications, consider all pros and cons before making this decision.
 
 Example files:
 
-- [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts)
-- [user.orm-mapper.ts](src/modules/user/database/user.orm-mapper.ts) <- `ORM Entities` should also have a corresponding mapper to map from domain to persistence and back.
+- [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts) <- Persistence model using [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping).
+- [user.orm-mapper.ts](src/modules/user/database/user.orm-mapper.ts) <- Persistence models should also have a corresponding mapper to map from domain to persistence and back.
 
 Read more:
 
