@@ -603,30 +603,26 @@ Read more about validation types described above:
 
 ## Using libraries inside application's core
 
-Whether or not to use libraries in application layer and especially domain layer is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like number converting libraries etc).
+Whether or not to use libraries in application layer and especially domain layer is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like working with numbers).
 
-Main recommendations to keep in mind is that libraries imported in application's core/domain **shouldn't** expose:
+Main recommendations to keep in mind is that libraries imported in application's core **shouldn't** expose:
 
 - Functionality to access any out-of-process resources (http calls, database access etc);
-- Functionality not relevant to domain (frameworks, technology details like ORMs etc).
+- Functionality not relevant to domain (frameworks, technology details like ORMs, Logger etc).
 - Functionality that brings randomness (generating random IDs, timestamps etc) since this makes tests unpredictable (though in TypeScript world it is not that big of a deal since this can be mocked by a test library without using DI);
+- Frameworks can be a real nuisance because by definition they want to be in control. Isolate them within the adapters and keep our domain model clean of them.
 - If a library changes often or has a lot of dependencies of its own it most likely shouldn't be used in domain layer.
 
 To use such libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) or [facade](https://refactoring.guru/design-patterns/facade) patterns.
 
-Read more:
-
-- [Anti-corruption Layer — An effective Shield](https://medium.com/@malotor/anticorruption-layer-a-effective-shield-caa4d5ba548c)
-
-Be careful with general purpose libraries/frameworks that may scatter across many domain objects. It will be hard to replace those libraries if needed.
-
-Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
+We sometimes tolerate libraries in the center: libraries are not in control so they are less intrusive. But be careful with general purpose libraries that may scatter across many domain objects. It will be hard to replace those libraries if needed. Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
 
 Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer.
 
 Read more:
 
 - [Referencing external libs](https://khorikov.org/posts/2019-08-07-referencing-external-libs/).
+- [Anti-corruption Layer — An effective Shield](https://medium.com/@malotor/anticorruption-layer-a-effective-shield-caa4d5ba548c)
 
 ---
 
@@ -735,7 +731,7 @@ This project contains abstract repository class that allows to make basic CRUD o
 
 Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world domain model and persistance model should be separated.
 
-Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in database. For that purpose `Persistence models` can be created that have a shape that is better represented in a particular database that is used. Domain logic should not know anything about persistance models, and it should not care.
+Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in a database. For that purpose `Persistence models` can be created that have a shape that is better represented in a particular database that is used. Domain layer should not know anything about persistance models, and it should not care.
 
 There can be multiple models optimized for different purposes, for example:
 
