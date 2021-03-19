@@ -2,6 +2,12 @@ import { ValueObject } from 'src/core/base-classes/value-object.base';
 import { Guard } from 'src/core/guard';
 import { ArgumentOutOfRangeException } from '@exceptions';
 
+/** Note: Every property in address Value Object can be
+ * it's own Value Object if needed.
+ * Value Objects with multiple properties can contain
+ * other Value Objects inside.
+ * */
+
 export interface AddressProps {
   country: string;
   postalCode: string;
