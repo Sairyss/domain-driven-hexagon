@@ -159,8 +159,6 @@ This is the core of the system which is built using [DDD building blocks](https:
 
 _More building blocks may be added if needed._
 
-In Application Core **dependencies point inwards**. Outer layers can depend on inner layers, but inner layers never depend on outer layers. Also, Application Core shouldn't depend on frameworks or access external resources directly. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)). This makes business logic independent of technology, facilitates testing, allows to plug/unplug/swap any external resources easily making application modular and [loosely coupled](https://en.wikipedia.org/wiki/Loose_coupling).
-
 ---
 
 # Application layer
@@ -265,6 +263,8 @@ Read more about CQS:
 
 Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather than business logic. Ports act like abstractions for technology details that business logic does not care about.
 
+In Application Core **dependencies point inwards**. Outer layers can depend on inner layers, but inner layers never depend on outer layers. Application Core shouldn't depend on frameworks or access external resources directly. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)). This makes business logic independent of technology, facilitates testing, allows to plug/unplug/swap any external resources easily making application modular and [loosely coupled](https://en.wikipedia.org/wiki/Loose_coupling).
+
 - Ports are basically just interfaces that define what has to be done and don't care about how it is done.
 - Ports can be created to abstract I/O operations, technology details, invasive libraries, legacy code etc. from the Domain.
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
@@ -276,7 +276,10 @@ Ports (for Driven Adapters) are interfaces that define contracts which must be i
 
 **Note**: creating ports in smaller applications/APIs may overcomplicate such solutions by adding unnecessary abstractions. Using concrete implementations directly instead of ports may be enough in such applications. Consider all pros and cons before using this pattern.
 
-Example file: [repository.ports.ts](src/core/ports/repository.ports.ts)
+Example files:
+
+- [repository.ports.ts](src/core/ports/repository.ports.ts)
+- [logger.port.ts](src/core/ports/logger.port.ts)
 
 ---
 
