@@ -40,6 +40,7 @@ Though patterns and principles presented here are **framework/language agnostic*
     - [Persistence models](#Persistence-models)
     - [Other things that can be a part of Infrastructure layer](#Other-things-that-can-be-a-part-of-Infrastructure-layer)
   - [Recommendations for smaller APIs](#Recommendations-for-smaller-APIs)
+  - [General recommendations on architectures, best practices, design patterns and principles](#General-recommendations-on-architectures-best-practices-design-patterns-and-principles)
 
 - [Other recommendations and best practices](#Other-recommendations-and-best-practices)
 
@@ -782,11 +783,17 @@ Be careful when implementing any complex architecture in small-medium sized proj
 For example:
 
 - Separating code into modules/layers/use-cases, using some building blocks like controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any project.
-- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, dividing `Entities` and `ORM Entities` etc. in projects that are more data-centric and have little or no business logic may only complicate such solutions and add extra boilerplate code, data mapping, maintenance overheads etc. without adding much benefit.
+- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, separating `Domain Models` from `Persistence Models` etc. in projects that are more data-centric and have little or no business logic may only complicate such solutions and add extra boilerplate code, data mapping, maintenance overheads etc. without adding much benefit.
 
-Some principles/patterns can be implemented in a simplified form, some can be skipped. Follow [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) principle and don't overengineer.
+# General recommendations on architectures, best practices, design patterns and principles
+
+Different projects most likely will have different requirements. Some principles/patterns in such projects can be implemented in a simplified form, some can be skipped. Follow [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) principle and don't overengineer.
 
 Sometimes complex architecture and principles like [SOLID](https://en.wikipedia.org/wiki/SOLID) can be incompatible with [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) and [KISS](https://en.wikipedia.org/wiki/KISS_principle). A good programmer should be pragmatic and has to be able to combine his skills and knowledge with a common sense to choose the best solution for the problem.
+
+> You need some experience with object-oriented software development in real world projects before they are of any use to you. Furthermore, they don’t tell you when you have found a good solution and when you went too far. Going too far means that you are outside the “scope” of a principle and the expected advantages don’t appear.
+
+> Principles, Heuristics, ‘laws of engineering’ are like hint signs, they are helpful when you know where they are pointing to and you know when you have gone too far. Applying them requires experience, that is trying things out, failing, analysing, talking to people, failing again, fixing, learning and failing some more. There is no short cut as far as I know.
 
 **Before implementing any pattern always analyze if benefit given by using it worth extra code complexity**.
 
@@ -800,6 +807,7 @@ Read more:
 
 - [Martin Fowler blog: Yagni](https://martinfowler.com/bliki/Yagni.html)
 - [7 Software Development Principles That Should Be Embraced Daily](https://betterprogramming.pub/7-software-development-principles-that-should-be-embraced-daily-c26a94ec4ecc?gi=3b5b298ddc23)
+- [SOLID Principles and the Arts of Finding the Beach](https://sebastiankuebeck.wordpress.com/2017/09/17/solid-principles-and-the-arts-of-finding-the-beach/)
 
 # Other recommendations and best practices
 
