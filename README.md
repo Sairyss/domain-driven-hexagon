@@ -112,9 +112,11 @@ In short, data flow looks like this (from left to right):
 - Request/CLI command/event is sent to the controller using plain DTO;
 - Controller parses this DTO, maps it to a Command/Query object format and passes it to a Application service;
 - Application service handles this Command/Query; it executes business logic using domain services and/or entities and uses the infrastructure layer through ports;
-- Infrastructure layer maps data to format that it needs, uses repositories to fetch/persist data and adapters to send events or do other I/O communications, maps data back to domain format and returns it back to Application service;
+- Infrastructure layer uses a mapper to convert data to format that it needs, uses repositories to fetch/persist data and adapters to send events or do other I/O communications, maps data back to domain format and returns it back to Application service;
 - After application service finishes doing it's job, it returns data/confirmation back to Controllers;
 - Controllers return data back to the user (if application has presenters/views, those are returned instead).
+
+Each layer is in charge of it's own logic and has building blocks that usually should follow a [Single-responsibility principle](https://en.wikipedia.org/wiki/Single-responsibility_principle) when possible and when it makes sense (for example, using `Repositories` only for database access, using `Entities` for business logic etc).
 
 **Keep in mind** that different projects can have more or less steps/layers/building blocks than described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
 
@@ -131,8 +133,6 @@ It is easier to work on things that change together if those things are gathered
 Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Try to avoid direct imports between modules (like importing a service from other domain) since this creates [tight coupling](<https://en.wikipedia.org/wiki/Coupling_(computer_programming)>). Communication between modules can be done using events, public interfaces or through a port/adapter (more on that topic below).
 
 This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupling), and, if bounded contexts are defined and designed properly, each module can be easily separated into a microservice if needed without touching any domain logic.
-
-A lof of people tend to create one module per entity, but this approach is not very good. Each module may have multiple entities. One thing to keep in mind is that putting entities in a single module requires those entities to have related business logic, don't group unrelated entities in one module.
 
 Read more about modular programming benefits:
 
@@ -314,6 +314,8 @@ Entities:
 - Avoid no-arg (empty) constructors, accept and validate all required properties through a constructor.
 - For optional properties that require some complex setting up, [Fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) and [Builder Pattern](https://refactoring.guru/design-patterns/builder) can be used.
 - Make Entities partially immutable. Identify what properties shouldn't change after creation and make them `readonly` (for example `id` or `createdAt`).
+
+**Note**: A lof of people tend to create one module per entity, but this approach is not very good. Each module may have multiple entities. One thing to keep in mind is that putting entities in a single module requires those entities to have related business logic, don't group unrelated entities in one module.
 
 Example files:
 
