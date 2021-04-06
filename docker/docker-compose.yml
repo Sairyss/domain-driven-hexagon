@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  postgres:
+    container_name: postgres-container
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'password'
+    volumes:
+      - ../data/db:/var/lib/postgresql/data
+    networks:
+      - postgres
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@email.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - 5050:80
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge

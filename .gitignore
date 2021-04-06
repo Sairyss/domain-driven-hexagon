@@ -38,3 +38,4 @@ lerna-debug.log*
 
 # Other
 package-lock.json
+/data/db/*

@@ -19,7 +19,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:all": "npm run test && npm run test:e2e",
     "typeorm": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./node_modules/.bin/typeorm",
+    "docker:env": "docker-compose --file docker/docker-compose.yml up --build",
     "migration:generate": "npm run typeorm -- migration:generate --config src/infrastructure/configs/database.config",
     "migration:run": "npm run typeorm -- migration:run  --config src/infrastructure/configs/database.config",
     "migration:revert": "npm run typeorm -- migration:revert  --config src/infrastructure/configs/database.config"
