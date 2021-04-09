@@ -24,7 +24,8 @@
     "docker:env": "docker-compose --file docker/docker-compose.yml up --build",
     "migration:generate": "npm run typeorm -- migration:generate --config src/infrastructure/configs/database.config",
     "migration:run": "npm run typeorm -- migration:run  --config src/infrastructure/configs/database.config",
-    "migration:revert": "npm run typeorm -- migration:revert  --config src/infrastructure/configs/database.config"
+    "migration:revert": "npm run typeorm -- migration:revert  --config src/infrastructure/configs/database.config",
+    "seed:run": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./node_modules/typeorm-seeding/dist/cli.js seed --root src/infrastructure/configs"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
