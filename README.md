@@ -1088,6 +1088,20 @@ Read more:
 
 Here are some useful tips to help users/other developers to use your program.
 
+### Document APIs
+
+Use [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications. Document in details every endpoint. Add description and examples of every request, response, properties and exceptions that endpoints may return or receive as body/parameters. This will help greatly to other developers and users of your API.
+
+Example files:
+
+- [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts) - notice `@ApiProperty()` decorators. This is [NestJS Swagger](https://docs.nestjs.com/openapi/types-and-parameters) module.
+- [create-user.http.controller.ts](src/modules/user/use-cases/create-user/create-user.http.controller.ts) - notice `@ApiOperation()` and `@ApiResponse()` decorators.
+
+Read more:
+
+- [Documenting a NodeJS REST API with OpenApi 3/Swagger](https://medium.com/wolox/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420)
+- [Best Practices in API Documentation](https://swagger.io/blog/api-documentation/best-practices-in-api-documentation/)
+
 ### Add Readme
 
 Create a simple readme file in a git repository that describes basic app functionality, available CLI commands, how to setup a new project etc.
@@ -1126,20 +1140,6 @@ Read more:
 Types give useful semantic information to a developer and can be useful for documenting code, so prefer static typed languages to dynamic typed (untyped) languages for larger projects (for example by using TypeScript over JavaScript).
 
 **Note**: For smaller projects/scripts/jobs static typing may not be needed.
-
-### Document APIs
-
-Use [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications. Document in details every endpoint. Add description and examples of every request, response, properties and exceptions that endpoints may return or receive as body/parameters. This will help greatly to other developers and users of your API.
-
-Example files:
-
-- [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts) - notice `@ApiProperty()` decorators. This is [NestJS Swagger](https://docs.nestjs.com/openapi/types-and-parameters) module.
-- [create-user.http.controller.ts](src/modules/user/use-cases/create-user/create-user.http.controller.ts) - notice `@ApiOperation()` and `@ApiResponse()` decorators.
-
-Read more:
-
-- [Documenting a NodeJS REST API with OpenApi 3/Swagger](https://medium.com/wolox/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420)
-- [Best Practices in API Documentation](https://swagger.io/blog/api-documentation/best-practices-in-api-documentation/)
 
 ## Make application easy to setup
 
