@@ -1086,10 +1086,50 @@ Read more:
 
 ## Documentation
 
-Create documentation that may help users/other developers to use your program.
+Here are some useful tips to help users/other developers to use your program.
 
-- Simple readme file in a git repository that describes basic app functionality, available CLI commands, how to setup a new project etc.
-- [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications. Document in details every endpoint. Add description and examples of every request, response, properties and exceptions that endpoints may return or receive as body/parameters. This will help greatly to other developers and users of your API.
+### Add Readme
+
+Create a simple readme file in a git repository that describes basic app functionality, available CLI commands, how to setup a new project etc.
+
+### Try to make your code readable
+
+Code can be self-documenting to some degree. One useful trick is to separate complex code to smaller chunks with a descriptive name. For example:
+
+- Separating a big function into a bunch of small ones with descriptive names, each with a single responsibility;
+- Moving in-line primitives or hard to read conditionals into a variable with a descriptive name.
+
+This makes code easier to understand and maintain.
+
+Read more:
+
+- [Tips for Writing Self-Documenting Code](https://itnext.io/tips-for-writing-self-documenting-code-e54a15e9de2?gi=424f36cc1604)
+
+### Avoid useless comments
+
+Writing readable code, using descriptive function/method/variable names and creating tests can document your code well enough. Try to avoid comments when possible and try to make your code legible and tested instead.
+
+Use comments only when it's really needed. Commenting may be a code smell in some cases, like when code gets changed but a developer forgets to update a comment (comments should be maintained, too).
+
+> Code never lies, comments sometimes do.
+
+Use comments only in some special cases, like when writing an counter-intuitive "hack" or performance optimization which is hard to read
+
+Use code annotations (like [JSDoc](https://en.wikipedia.org/wiki/JSDoc)).
+
+Read more:
+
+- [Code Comment Is A Smell](https://fagnerbrack.medium.com/code-comment-is-a-smell-4e8d78b0415b)
+
+### Prefer typed languages
+
+Types give useful semantic information to a developer and can be useful for documenting code, so prefer static typed languages to dynamic typed (untyped) languages for larger projects (for example by using TypeScript over JavaScript).
+
+**Note**: For smaller projects/scripts/jobs static typing may not be needed.
+
+### Document APIs
+
+Use [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://graphql.org/) specifications. Document in details every endpoint. Add description and examples of every request, response, properties and exceptions that endpoints may return or receive as body/parameters. This will help greatly to other developers and users of your API.
 
 Example files:
 
