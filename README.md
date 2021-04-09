@@ -1155,8 +1155,8 @@ This is a bad practice and should be avoided. Setting up project after downloadi
 
 Example files:
 
-- [package.json](package.json) - notice all added scripts for launching tests, migrations, docker environment etc.
-- [docker-compose.yml](docker/docker-compose.yml) - after configuring everything running a database and a db admin panel (and any other additional tools) can be done using only one command.
+- [package.json](package.json) - notice all added scripts for launching tests, migrations, seeding, docker environment etc.
+- [docker-compose.yml](docker/docker-compose.yml) - after configuring everything in a docker-compose file, running a database and a db admin panel (and any other additional tools) can be done using only one command. This way there is no need to install and configure a database separately.
 
 ## Seeds
 
