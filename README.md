@@ -1127,13 +1127,14 @@ Use comments only when it's really needed. Commenting may be a code smell in som
 
 > Code never lies, comments sometimes do.
 
-Use comments only in some special cases, like when writing an counter-intuitive "hack" or performance optimization which is hard to read
+Use comments only in some special cases, like when writing an counter-intuitive "hack" or performance optimization which is hard to read.
 
-Use code annotations (like [JSDoc](https://en.wikipedia.org/wiki/JSDoc)).
+Use code annotations (like [JSDoc](https://en.wikipedia.org/wiki/JSDoc)) instead of comments to document public APIs.
 
 Read more:
 
 - [Code Comment Is A Smell](https://fagnerbrack.medium.com/code-comment-is-a-smell-4e8d78b0415b)
+- [// No comments](https://medium.com/swlh/stop-adding-comments-to-your-code-80a3575519ad)
 
 ### Prefer typed languages
 
