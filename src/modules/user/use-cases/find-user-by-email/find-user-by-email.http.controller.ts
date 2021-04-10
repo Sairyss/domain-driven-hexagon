@@ -18,6 +18,8 @@ export class FindUserByEmailHttpController {
   ): Promise<UserResponse> {
     const user = await this.userRepo.findOneByEmailOrThrow(email);
 
+    /* Returning a Response class which is responsible
+       for whitelisting data that is sent to the user */
     return new UserResponse(user);
   }
 }

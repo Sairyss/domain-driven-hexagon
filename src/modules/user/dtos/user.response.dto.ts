@@ -6,6 +6,13 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UserResponse extends ResponseBase implements User {
   constructor(user: UserEntity) {
     super(user);
+    /* Whitelisting returned data to avoid leaks.
+       If a new property is added, like password or a
+       credit card number, it won't be returned
+       unless you specifically allow this.
+       (avoid blacklisting, which will return everything
+        but blacklisted items, which can lead to a data leak).
+    */
     this.email = user.email.value;
     this.country = user.address.country;
     this.postalCode = user.address.postalCode;
