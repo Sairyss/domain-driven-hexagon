@@ -1129,7 +1129,7 @@ Use comments only when it's really needed. Commenting may be a code smell in som
 
 Use comments only in some special cases, like when writing an counter-intuitive "hack" or performance optimization which is hard to read.
 
-Use code annotations (like [JSDoc](https://en.wikipedia.org/wiki/JSDoc)) instead of comments to document public APIs.
+For documenting public APIs use code annotations (like [JSDoc](https://en.wikipedia.org/wiki/JSDoc)) instead of comments, this works nicely with code editor [intellisense](https://code.visualstudio.com/docs/editor/intellisense).
 
 Read more:
 
