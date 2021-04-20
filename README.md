@@ -528,9 +528,16 @@ Solution: this could be presented as a [union type](https://www.typescriptlang.o
 type ContactInfo = Email | Phone | [Email, Phone];
 ```
 
-Now only either `Email`, or `Phone`, or both must be provided. If nothing is provided IDE will show a type error right away. This is a business rule validation used at **compile time**.
+Now only either `Email`, or `Phone`, or both must be provided. If nothing is provided IDE will show a type error right away. Now business rule validation is moved from runtime to a **compile time** which makes application more secure and gives a faster feedback when something is not used as intended.
 
-This approach can be used to make business logic safer and get an error as fast as possible (at compile time).
+This is called a _typestate pattern_.
+
+> The typestate pattern is an API design pattern that encodes information about an object’s run-time state in its compile-time type.
+
+Read more about typestates:
+
+- [Typestates Would Have Saved the Roman Republic](https://blog.yoavlavi.com/state-machines-would-have-saved-the-roman-republic/)
+- [The Typestate Pattern](https://cliffle.com/blog/rust-typestate/)
 
 ### At runtime
 
