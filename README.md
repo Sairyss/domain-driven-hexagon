@@ -1059,9 +1059,15 @@ Read more:
 
 > Static code analysis is a method of debugging by examining source code before a program is run.
 
-For JavasScript and TypeScript, [Eslint](https://www.npmjs.com/package/eslint) with [typescript-eslint plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin) and some rules (like [airbnb](https://www.npmjs.com/package/eslint-config-airbnb)) can be a great tool to enforce writing better code.
+For JavasScript and TypeScript, [Eslint](https://www.npmjs.com/package/eslint) with [typescript-eslint plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin) and some rules (like [airbnb](https://www.npmjs.com/package/eslint-config-airbnb) / [airbnb-typescript](https://www.npmjs.com/package/eslint-config-airbnb-typescript)) can be a great tool to enforce writing better code.
 
-Using `any` type is a bad practice. Consider disallowing it (and other things that may cause problems):
+Try to make linter rules reasonably strict, this will help greatly to avoid "shooting yourself in a foot". Strict linter rules can prevent bugs and even serious security holes ([eslint-plugin-security](https://www.npmjs.com/package/eslint-plugin-security)).
+
+> **Adopt programming habits that constrain you, to help you to limit mistakes**.
+
+For example:
+
+Using _explicit_ `any` type is a bad practice. Consider disallowing it (and other things that may cause problems):
 
 ```javascript
 // .eslintrc.js file
@@ -1071,7 +1077,7 @@ Using `any` type is a bad practice. Consider disallowing it (and other things th
   }
 ```
 
-Also, enabling strict mode in `tsconfig.json` is recommended:
+Also, enabling strict mode in `tsconfig.json` is recommended, this will disallow things like _implicit_ `any` types:
 
 ```json
   "compilerOptions": {
