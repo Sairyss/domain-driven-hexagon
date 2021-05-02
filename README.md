@@ -211,7 +211,7 @@ Some people prefer having an interface for each use case (Driving Port), which `
 
 ### Local DTOs
 
-Another thing that can be seen in some projects is local DTOs. Some people prefer never use domain objects (like entities) outside of core (in `controllers`, for example), and are using DTOs instead. This project doesn't use this technique to avoid extra interfaces and data mapping. Either to use local DTOs or not is a matter of taste.
+Another thing that can be seen in some projects is local DTOs. Some people prefer never to use domain objects (like entities) outside of core (in `controllers`, for example), and are using DTOs instead. This project doesn't use this technique to avoid extra interfaces and data mapping. Either to use local DTOs or not is a matter of taste.
 
 [Here](https://martinfowler.com/bliki/LocalDTO.html) are Martin Fowler's thoughts on local DTOs, in short (quote):
 
