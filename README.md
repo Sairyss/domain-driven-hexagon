@@ -635,7 +635,7 @@ To use such libraries consider creating an `anti-corruption` layer by using [ada
 
 We sometimes tolerate libraries in the center: libraries are not in control so they are less intrusive. But be careful with general purpose libraries that may scatter across many domain objects. It will be hard to replace those libraries if needed. Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
 
-Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer.
+Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer. In addition, try to minimize usage of dependencies in general. More dependencies your software has means more potential errors and security holes. One technique for making software more robust is to minimize what your software depends on - the less that can go wrong, the less that will go wrong. On the other hand, removing all dependencies would be counterproductive as replicating that functionality would have been a huge amount of work and less reliable than just using a widely-used dependency. Finding a good balance is important, this skill requires experience.
 
 Read more:
 
