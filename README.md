@@ -997,7 +997,11 @@ Read more:
 
 ## Health monitoring
 
-Additionally to logging tools, health monitoring tools are a good way to keep track of system performance, identify causes of crashes or downtime, monitor behavior, availability and load. Some health monitoring tools already include logging management and error tracking, as well as alerts and general performance monitoring.
+Additionally to logging tools, when something unexpected happens in production, it's critical to have thorough monitoring in place. As software hardens more and more, unexpected events will get more and more infrequent and reproducing those events will become harder and harder. So when one of those unexpected events happens, there should be as much data available about the event as possible. Software should be designed from the start to be monitored. Monitoring aspects of software are almost as important as the functionality of the software itself, especially in big systems.
+
+Health monitoring tools are a good way to keep track of system performance, identify causes of crashes or downtime, monitor behavior, availability and load.
+
+Some health monitoring tools already include logging management and error tracking, as well as alerts and general performance monitoring.
 
 Here are some basic recommendation on what can be monitored:
 
