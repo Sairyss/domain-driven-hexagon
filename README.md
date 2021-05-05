@@ -953,6 +953,7 @@ Read more:
 - [Pragmatic unit testing](https://enterprisecraftsmanship.com/posts/pragmatic-unit-testing/)
 - [Google Blog: Test Behavior, Not Implementation ](https://testing.googleblog.com/2013/08/testing-on-toilet-test-behavior-not.html)
 - [Writing BDD Test Scenarios](https://www.departmentofproduct.com/blog/writing-bdd-test-scenarios/)
+- Book: [Unit Testing Principles, Practices, and Patterns](https://www.amazon.com/gp/product/1617296279/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1617296279&linkCode=as2&tag=vkhorikov-20&linkId=2081de4b1cb7564cb9f95526533c3dae)
 
 ### Load Testing
 
