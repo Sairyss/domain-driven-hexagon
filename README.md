@@ -967,7 +967,7 @@ Automatic load testing tools can simulate that load by making a lot of concurren
 
 Example tools:
 
-- [Artillery](https://www.npmjs.com/package/artillery) is a load testing tool for based on NodeJS.
+- [Artillery](https://www.npmjs.com/package/artillery) is a load testing tool based on NodeJS.
 
 Read more:
 
