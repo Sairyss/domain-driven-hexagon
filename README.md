@@ -959,7 +959,15 @@ Read more:
 
 ### Load Testing
 
-For projects with a bigger user base you might want to implement some kind of [load testing](https://en.wikipedia.org/wiki/Load_testing) to see how program behaves with a lot of concurrent users. [Artillery](https://www.npmjs.com/package/artillery) is a nice tool for that based on NodeJS. Though, there are plenty of other tools to choose from.
+For projects with a bigger user base you might want to implement some kind of [load testing](https://en.wikipedia.org/wiki/Load_testing) to see how program behaves with a lot of concurrent users.
+
+Load testing is a great way to minimize performance risks, because it ensures an API can handle an expected load. By simulating traffic to an API in development, businesses can identify bottlenecks before they reach production environments. These bottlenecks can be difficult to find in development environments in the absence of a production load.
+
+Automatic load testing tools can simulate that load by making a lot of concurrent requests to an API and measure response times and error rates.
+
+Example tools:
+
+- [Artillery](https://www.npmjs.com/package/artillery) is a load testing tool for based on NodeJS.
 
 Read more:
 
