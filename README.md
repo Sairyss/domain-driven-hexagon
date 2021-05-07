@@ -46,6 +46,8 @@ Though patterns and principles presented here are **framework/language agnostic*
 
   - [Error Handling](#Error-Handling)
   - [Testing](#Testing)
+    - [Load Testing](#Load-Testing)
+    - [Fuzz Testing](#Fuzz-Testing)
   - [Configuration](#Configuration)
   - [Logging](#Logging)
   - [Health monitoring](#Health-monitoring)
@@ -962,6 +964,33 @@ For projects with a bigger user base you might want to implement some kind of [l
 Read more:
 
 - [Top 6 Tools for API & Load Testing](https://medium.com/@Dickson_Mwendia/top-6-tools-for-api-load-testing-7ff51d1ac1e8).
+
+### Fuzz Testing
+
+[Fuzzing or fuzz testing](https://en.wikipedia.org/wiki/Fuzzing) is an automated software testing technique that involves providing invalid, unexpected, or random data as inputs to a computer program.
+
+Fuzzing is a common method hackers use to find vulnerabilities of the system. For example:
+
+- JavaScript injections can be executed if input is not sanitized properly, so a malicious JS code can end up in a database and then gets executed in a browser when somebody reads that data.
+- SQL injection attacks can occur if data is not sanitized properly, so hackers can get access to a database (though modern ORM libraries can protect from that kind of attacks when used properly).
+- Sending weird unicode characters, emojis etc. can crash your application.
+
+There are a lot of examples of a problems like this, for example [sending a certain character could crash and disable access to apps on an iPhone](https://www.theverge.com/2018/2/15/17015654/apple-iphone-crash-ios-11-bug-imessage).
+
+Sanitizing and validating input data is very important. But sometimes we make mistakes of not sanitizing/validating data properly, opening application to certain vulnerabilities.
+
+Automated Fuzz testing tools can prevent such vulnerabilities. Those tools contain a list of strings that are usually sent by hackers, like malicious code snippets, SQL queries, unicode symbols etc. (for example: [Big List of Naughty Strings](https://github.com/minimaxir/big-list-of-naughty-strings/)), which helps test most common cases of different injection attacks.
+
+Fuzz testing is a nice addition to typical testing methods described above and potentially can find serious security vulnerabilities or defects.
+
+Example tools:
+
+- [Artillery Fuzzer](https://www.npmjs.com/package/artillery-plugin-fuzzer) is a plugin for [Artillery](https://www.npmjs.com/package/artillery) to perform Fuzz testing.
+- [sqlmap](https://github.com/sqlmapproject/sqlmap) - an open source penetration testing tool that automates the process of detecting and exploiting SQL injection flaws
+
+Read more:
+
+- [Fuzz Testing(Fuzzing) Tutorial: What is, Types, Tools & Example](https://www.guru99.com/fuzz-testing.html)
 
 ## Configuration
 
