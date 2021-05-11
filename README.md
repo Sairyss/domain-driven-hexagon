@@ -906,7 +906,7 @@ It also has some downsides:
 - It goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, this approach continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors.
 - It adds extra complexity. Exception cases returned somewhere deep inside application have to be handled by functions in upper layers until it reaches controllers which may add a lot of extra `if` statements.
 
-For most projects this approach may be an overkill. Use it only if you really need it and know what you are doing.
+For most projects this approach may be an overkill. Use it only if you really need it and know what you are doing (unless you're using a language like [Rust](<https://en.wikipedia.org/wiki/Rust_(programming_language)>) which has this functionality built-in).
 
 Read more:
 
