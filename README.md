@@ -405,7 +405,7 @@ To have a better understanding on domain events and implementation read this:
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
-For integration events in distributed systems here are some useful patterns:
+For integration events in distributed systems here are some patterns that may be useful in some cases:
 
 - [The Outbox Pattern](https://www.kamilgrzybek.com/design/the-outbox-pattern/)
 - [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
