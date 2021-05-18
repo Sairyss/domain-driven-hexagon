@@ -870,6 +870,7 @@ Consider adding optional `metadata` object to exceptions (if language doesn't su
 ### Other recommendations
 
 - If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters.
+- You can use "Problem Details for HTTP APIs" standard for returned exceptions, described in [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807). Read more about this standard: [REST API Error Handling - Problem Details Response](https://blog.restcase.com/rest-api-error-handling-problem-details-response/)
 
 Example files:
 
