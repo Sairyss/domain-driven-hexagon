@@ -930,7 +930,7 @@ To solve this and get the most out of your tests, prefer _`Black Box`_ testing (
 
 > Tests that are independent of implementation details are easier to maintain since they don't need to be changed each time you make a change to the implementation.
 
-Try to avoid _White Box_ testing when possible. However, there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation when it is required to reduce combinations of testing conditions, for example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time, in this case _White Box_ test may be appropriate.
+Try to avoid _White Box_ testing when possible. However, it's worth mentioning that there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation when it is required to reduce combinations of testing conditions, for example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time, in this case _White Box_ test may be appropriate.
 
 Use _White Box_ testing only when it is really needed and as an addition to _Black Box_ testing, not the other way around.
 
