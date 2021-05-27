@@ -926,17 +926,11 @@ Testing module/use-case internal structures (creating a test for every file/clas
 
 Use case requirements may change mid work, your understanding of a problem may evolve or you may start noticing new patterns that emerge during development, in other words, you start noticing a "big picture", which may lead to refactoring. For example: imagine that you defined a _`White box`_ test for a class, and while developing this class you start noticing that it does too much and should be separated into two classes. Now you'll also have to refactor your unit test. After some time, while implementing a new feature, you notice that this new feature uses some code from that class you defined before, so you decide to separate that code and make it reusable, creating a third class (which originally was one), which leads to changing your unit tests yet again, every time you refactor. Use case requirements, input, output or behavior never changed, but unit tests had to be changed multiple times. This is inefficient and time consuming.
 
-To solve this and get the most out of your tests, prefer _`Black Box`_ testing ([Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API, for example `createUser()` method that is called by the user), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
+To solve this and get the most out of your tests, prefer _`Black Box`_ testing ([Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
 
 > Tests that are independent of implementation details are easier to maintain since they don't need to be changed each time you make a change to the implementation.
 
-Try to avoid _White Box_ testing when possible. Though, there are cases when _White Box_ testing may be needed, for example:
-
-- High complexity in implementation details that are hard to cover using _Black Box_ testing.
-- There is a need to increase code coverage.
-- Sometimes it makes more sense to create a separate _White Box_ unit test for a class with specific logic than cluttering a _Black Box_ test file with those test cases.
-- Some parts of the code can't be properly tested by _Black Box_ testing.
-- etc.
+Try to avoid _White Box_ testing when possible. However, there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation when it is required to reduce combinations of testing conditions, for example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time, in this case _White Box_ test may be appropriate.
 
 Use _White Box_ testing only when it is really needed and as an addition to _Black Box_ testing, not the other way around.
 
