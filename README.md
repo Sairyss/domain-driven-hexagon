@@ -900,18 +900,26 @@ class User {
 }
 ```
 
-This approach has its advantages and may work nicely in some languages, especially in functional languages which support `Either` type natively, but is not widely used in TypeScript/Javascript world.
+This approach has its advantages each and may work nicely in some languages, especially in functional languages which support `Either` type natively, but is not widely used in TypeScript/Javascript world.
 
-It also has some downsides:
+Advantages:
 
-- It goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, this approach continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors.
+- Explicitly shows type of each exception that a method can return so you can handle it accordingly.
+- Complex domains may have a lot of exceptions that need special handling and are part of a business logic (like seat already booked, choose another one). In those cases explicit error types may be useful.
+- Makes error tracing easier.
+
+Downsides:
+
+- If used incorrectly, i.e for technical (connection failed) or validation (incorrect input) errors, It may cause some security issues and goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, this approach continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors, so it's generally better to throw in those cases.
 - It adds extra complexity. Exception cases returned somewhere deep inside application have to be handled by functions in upper layers until it reaches controllers which may add a lot of extra `if` statements.
+- More boilerplate code.
 
-For most projects this approach may be an overkill. Use it only if you really need it and know what you are doing (unless you're using a language like [Rust](<https://en.wikipedia.org/wiki/Rust_(programming_language)>) which has this functionality built-in).
+In most applications it makes more sense to just throw an exception and notify a user immediately. Use `Result`/`Either` error types carefully and if you really need it and know what you are doing (unless you're using a language like [Rust](<https://en.wikipedia.org/wiki/Rust_(programming_language)>) which has this functionality built-in).
 
 Read more:
 
 - ["Secure by Design" Chapter 9.2: Handling failures without exceptions](https://livebook.manning.com/book/secure-by-design/chapter-9/51)
+- [Flexible Error Handling w/ the Result Class](https://khalilstemmler.com/articles/enterprise-typescript-nodejs/handling-errors-result-class/)
 
 ## Testing
 
@@ -930,7 +938,7 @@ To solve this and get the most out of your tests, prefer _`Black Box`_ testing (
 
 > Tests that are independent of implementation details are easier to maintain since they don't need to be changed each time you make a change to the implementation.
 
-Try to avoid _White Box_ testing when possible. However, it's worth mentioning that there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation when it is required to reduce combinations of testing conditions, for example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time, in this case _White Box_ test may be appropriate.
+Try to avoid _White Box_ testing when possible. However, it's worth mentioning that there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation when it is required to reduce combinations of testing conditions, for example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time, in this case _White Box_ tests may be appropriate.
 
 Use _White Box_ testing only when it is really needed and as an addition to _Black Box_ testing, not the other way around.
 
