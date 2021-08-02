@@ -168,7 +168,7 @@ _More building blocks may be added if needed._
 
 ## Application Services
 
-Are also called "Workflow Services", "User Cases", "Interactors" etc.
+Are also called "Workflow Services", "Use Cases", "Interactors" etc.
 These services orchestrate the steps required to fulfill the commands imposed by the client.
 
 - Typically used to orchestrate how the outside world interacts with your application and performs tasks required by the end users.
