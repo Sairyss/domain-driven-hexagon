@@ -828,17 +828,17 @@ Read more:
 
 ### Exception types
 
-Consider extending `Error` object to make custom exception types for different situations. For example: `DomainException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
+Consider extending `Error` object to make custom generic exception types for different situations. For example: `DomainException`, `ValidationException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default. Also, you can create domain-specific exceptions for different use-cases, like `NotEnoughFundsError` or `SeatIsAlreadyBookedError`.
 
-Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc.
+Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc. A better approach is to create custom error codes for your app, like `code: 'WALLET.NOT_ENOUGH_FUNDS'` etc.
 
-When used in HTTP context, for returning proper status code back to user an `instanceof` check can be performed in exception interceptor or in a controller and appropriate HTTP exception can be returned depending on exception type.
+When used in HTTP context, for returning proper status code back to user an `instanceof` or a `switch/case` check against the custom code can be performed in exception interceptor or in a controller and appropriate HTTP exception can be returned depending on exception type/code.
 
 Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - notice how custom exceptions are converted to nest.js exceptions.
 
-Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name` string is used instead. Exception `name` enum types can be stored in a separate file so they can be reused on a receiving side: [exception.types.ts](src/core/exceptions/exception.types.ts).
+Adding a `name` or `code` string with type name or a custom status code for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name`/`code` string is used instead. `name` or `code` enum types can be stored in a separate file so they can be shared and reused on a receiving side: [exception.types.ts](src/core/exceptions/exception.types.ts).
 
-When using microservices, all exception types can be packed into a library and reused in each microservice for consistency.
+When using microservices, exception types/enums/codes can be packed into a library and reused in each microservice for consistency.
 
 ### Differentiate between programmer errors and operational errors
 
@@ -849,18 +849,6 @@ For example:
 - Operational errors can happen when validation error is thrown by validating user input, it means that input body is incorrect and a `400 Bad Request` exception should be returned to the user with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this case user can fix the input body and retry the request.
 - On the other hand, programmer error means something unexpected occurs in the program. For example, when exception happens on a new domain object creation, sometimes it can mean that a class is not used as intended and some rule is violated, for example a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, only a programmer can, so it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
 
-### Error Serialization
-
-By default, in NodeJS Error objects serialize to JSON with output like this:
-
-```typescript
-{
-  name: 'ValidationError';
-}
-```
-
-Consider serializing errors by creating a `toJSON()` method so it can be easily sent to other processes as a plain object.
-
 ### Error metadata
 
 Consider adding optional `metadata` object to exceptions (if language doesn't support anything similar by default) and pass some useful technical information about the error when throwing. This will make debugging easier.
@@ -869,8 +857,9 @@ Consider adding optional `metadata` object to exceptions (if language doesn't su
 
 ### Other recommendations
 
-- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters.
+- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters. Also, it is usually better to store all localization in a single place, for example, having a single file/folder for all messages that need translation, and then import them where needed. It is easier to add new translations when all of your messages are in one place rather then scattered across the app.
 - You can use "Problem Details for HTTP APIs" standard for returned exceptions, described in [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807). Read more about this standard: [REST API Error Handling - Problem Details Response](https://blog.restcase.com/rest-api-error-handling-problem-details-response/)
+- By default in NodeJS Error objects are not serialized properly when sending plain objects to external processes. Consider creating a `toJSON()` method so it can be easily sent to other processes as a plain object. (see example in [exception.base.ts](src/core/exceptions/exception.base.ts)). But keep in mind not to return a stack trace when in production.
 
 Example files:
 
@@ -890,12 +879,12 @@ There is an alternative approach of not throwing exceptions, but returning some 
 ```typescript
 class User {
   // ...
-  public createUser(): Either<User, EmailInvalidException> {
+  public createUser(): Result<User, EmailInvalidException> {
     // ...code for creating a user
     if (invalidEmail) {
-      return EmailInvalidException; // <- returning instead of throwing
+      return Result.err(EmailInvalidException); // <- returning instead of throwing
     }
-    return User;
+    return Result.ok(User);
   }
 }
 ```
@@ -910,7 +899,7 @@ Advantages:
 
 Downsides:
 
-- If used incorrectly, i.e for technical (connection failed) or validation (incorrect input) errors, It may cause some security issues and goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, this approach continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors, so it's generally better to throw in those cases.
+- If used incorrectly, i.e for technical (connection failed) errors, It may cause some security issues and goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, returning exception continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors, so it's generally better to throw in those cases rather then returning an error.
 - It adds extra complexity. Exception cases returned somewhere deep inside application have to be handled by functions in upper layers until it reaches controllers which may add a lot of extra `if` statements.
 - More boilerplate code.
 
