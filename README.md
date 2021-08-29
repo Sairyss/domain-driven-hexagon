@@ -1064,31 +1064,34 @@ Read more:
 
 ## Folder and File Structure
 
-So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
+So instead of using typical layered style when an entire application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
-A lot of people tend to do the same thing as before: create a separate folders/files for services, controllers etc and keep all module's use-cases logic there, making those controllers and services bloated with responsibilities. This is the same approach that makes navigation harder.
+A lot of people tend to do the same thing as before: create one big service/controller for a module and keep all logic for module's use cases there, making those controllers and services hundreds of lines long, which is hard to navigate and makes merge conflicts a nightmare to manage. Or create one `commands` or `interfaces` folder and store all unrelated to each other commands/interfaces in there. This is the same approach that makes navigation harder. Every time you need to change something, instead of having all related files in the same place, you have to jump folders to find where the related files are.
 
-Using this approach, every time something in a service changes, we might have to go to another folder to change controllers, and then go to dtos folder to change the corresponding dto etc.
+It would be more logical to separate every module by components and have all related files close together. For example, check out [create-user](src/modules/user/use-cases/create-user) folder. It has most of the files that it needs inside the same folder: a controller, service, command etc. Now if a use-case changes, most of the changes are usually made in a single use-case component, not everywhere across the module.
 
-It would be more logical to separate every module by components and have all the related files close together. Now if a use-case changes, those changes are usually made in a single use-case component, not everywhere across the module.
+And shared files, like domain objects (entities/aggregates), repositories, shared dtos and interfaces etc are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier. Check [user](src/modules/user) module for more examples.
 
-This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside of that component) are stored close together, in a single use-case folder. Check user [use-cases](src/modules/user/use-cases) folder for examples.
-
-And shared files (like domain objects, repositories etc) are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier. Check [user](src/modules/user) folder for an example.
+This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside of that component) are stored close together, in a single use-case folder.
 
 > The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
 
 Keep in mind that this project's folder/file structure is an example and might not work for everyone. Main recommendations here are:
 
 - Separate you application into modules;
-- Keep files that change together close to each other (Common Closure Principle);
-- Group files by their behavior that changes together, not by type of functionality that file provides;
+- Keep files that change together close to each other (_Common Closure Principle_);
+- Group files by their behavior that changes together, not by a type of functionality that file provides;
 - Keep files that are reused by multiple components apart;
 - Respect boundaries in your code, keeping files together doesn't mean inner layers can import outer layers;
 - Try to avoid a lot of nested folders;
 - [Move files around until it feels right](https://dev.to/dance2die/move-files-around-until-it-feels-right-2lek).
 
 There are different approaches to file/folder structuring, like explicitly separating each layer into a corresponding folder. This defines boundaries more clearly but is harder to navigate. Choose what suits better for the project/personal preference.
+
+- Read more:
+
+- [Out with the Onion, in with Vertical Slices](https://medium.com/@jacobcunningham/out-with-the-onion-in-with-vertical-slices-c3edfdafe118)
+- [Vertical Slice Architecture](https://jimmybogard.com/vertical-slice-architecture/)
 
 ## File names
 
