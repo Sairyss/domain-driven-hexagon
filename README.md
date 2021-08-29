@@ -412,7 +412,7 @@ Out-of-process communications (calling microservices, external apis) are called 
 
 Integration Events should be published **after** saving aggregates data to the persistent database.
 
-To handle integration events in microservices you may need an external message broker / event bus like [RabbitMQ](https://www.rabbitmq.com/) or [Kafka](https://kafka.apache.org/) together with patterns like [Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture) and [Sagas](https://microservices.io/patterns/data/saga.html) to maintain [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency).
+To handle integration events in microservices you may need an external message broker / event bus like [RabbitMQ](https://www.rabbitmq.com/) or [Kafka](https://kafka.apache.org/) together with patterns like [Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html), [Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture) and [Sagas](https://microservices.io/patterns/data/saga.html) to maintain [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency).
 
 Read more:
 
