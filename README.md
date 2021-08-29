@@ -676,7 +676,7 @@ One controller per trigger type can be used to have a more clear separation. For
 
 ## DTOs
 
-Data Transfer Object ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object)) is an object that carries data between processes. This is a contract between your API and clients.
+Data Transfer Object ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object)) is an object that carries data between processes. It defines a contract between your API and clients.
 
 ### Request DTOs
 
@@ -694,7 +694,10 @@ Examples:
 Output data returned to a user.
 
 - Using Response DTOs ensures clients only receive data described in DTOs contract, not everything that your model/entity owns (which may result in data leaks).
-- It also to some extent protects your clients from internal data structure changes that may happen in your API.
+
+Using DTOs protects your clients from internal data structure changes that may happen in your API. When internal data models change (like renaming variables or splitting tables), they can still be mapped to match a corresponding DTO to maintain compatibility for anyone using your API.
+
+When updating DTO interfaces, a new version of API can be created by prefixing an endpoint with a version number, for example: `v2/users`. This will make transition painless by preventing breaking compatibility for users that are slow to update their apps that uses your API.
 
 Examples:
 
