@@ -970,11 +970,13 @@ Automatic load testing tools can simulate that load by making a lot of concurren
 
 Example tools:
 
+- [k6](https://github.com/grafana/k6)
 - [Artillery](https://www.npmjs.com/package/artillery) is a load testing tool based on NodeJS.
 
-Read more:
+More info:
 
 - [Top 6 Tools for API & Load Testing](https://medium.com/@Dickson_Mwendia/top-6-tools-for-api-load-testing-7ff51d1ac1e8).
+- [Getting started with API Load Testing (Stress, Spike, Load, Soak)](https://www.youtube.com/watch?v=r-Jte8Y8zag)
 
 ### Fuzz Testing
 
