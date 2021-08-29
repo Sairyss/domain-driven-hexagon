@@ -27,6 +27,7 @@ Though patterns and principles presented here are **framework/language agnostic*
     - [Entities](#Entities)
     - [Aggregates](#Aggregates)
     - [Domain Events](#Domain-Events)
+    - [Integration Events](#Integration-Events)
     - [Domain Services](#Domain-Services)
     - [Value Objects](#Value-Objects)
     - [Enforcing invariants of Domain Objects](#Enforcing-invariants-of-Domain-Objects)
@@ -372,48 +373,54 @@ Read more:
 
 ## Domain Events
 
-Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of.
+Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of. Domain events are just messages pushed to a domain event dispatcher in the same process.
 
 For example, if a user buys something, you may want to:
 
-- Send confirmation email to that user;
-- Send notification to a corporate slack channel;
-- Notify shipping department;
-- Perform other side effects that are not concern of an original buy operation domain.
+- Update his shopping cart;
+- Withdraw money from his wallet;
+- Create a new shipping order;
+- Perform other domain operations that are not a concern of an aggregate that executes a "buy" command.
 
 Typical approach that is usually used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
 
-A better approach would be publishing a `Domain Event`. Any side effect operations can be performed just by subscribing to a concrete `Domain Event` and creating as many event handlers as needed, without glueing any unrelated code to original domain's service that sends an event.
-
-Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
+A better approach would be publishing a `Domain Event`. If executing a command related to one aggregate instance requires additional domain rules to be run on one or more additional aggregates, you can design and implement those side effects to be triggered by domain events. Propagation of state changes across multiple aggregates within the same domain model can be performed by subscribing to a concrete `Domain Event` and creating as many event handlers as needed. This prevents coupling between aggregates.
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-There may be different ways on implementing Domain Events, for example using some kind of internal event bus/emitter, like [Event Emitter](https://www.tutorialspoint.com/nodejs/nodejs_event_emitter.htm), or using patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or slightly modified [Observer](https://refactoring.guru/design-patterns/observer).
+All changes done by Domain Events across multiple aggregates should be saved in a single database transaction. When using [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) all events will be stored to the database in a single transaction and then "replayed" on aggregates.
+
+**Note**: this project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) is that it has no option to `await` for all events to finish, which is useful when making all events a part of a transaction.
+
+There may be different ways on implementing Domain Events, for example using some kind of internal event bus/emitter or using patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or slightly modified [Observer](https://refactoring.guru/design-patterns/observer).
 
 Examples:
 
 - [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
-- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Domain Event Handler that executes actions and side-effects when a domain event is raised (in this case, user is created). Domain event handlers belong to Application layer.
-- [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all events for execution right before or right after persisting transaction.
-
-Events can be published right before or right after insert/update/delete transaction, chose any option that is better for a particular project:
-
-- Before: to make side-effects part of that transaction. If any event fails all changes should be reverted.
-- After: to persist transaction even if some event fails. This makes side-effects independent, but in that case [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency) should be implemented.
-
-Both options have pros and cons.
-
-**Note**: this project uses custom implementation for Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) is that event emitter executes events immediately when called instead of when we want it (before/after transaction), and also has no option to `await` for all events to finish, which might be useful when making those events a part of transaction.
+- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Domain Event Handler that executes actions and side-effects when a domain event is raised (in this case, user is created).
+- [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution before persisting transaction.
 
 To have a better understanding on domain events and implementation read this:
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
+## Integration Events
+
+Out-of-process communications (calling microservices, external apis) are called `Integration Events`. If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
+
+Integration Events should be published **after** saving aggregates data to the persistent database.
+
+To handle integration events in microservices you may need an external message broker / event bus like [RabbitMQ](https://www.rabbitmq.com/) or [Kafka](https://kafka.apache.org/) together with patterns like [Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture) and [Sagas](https://microservices.io/patterns/data/saga.html) to maintain [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency).
+
+Read more:
+
+- [Domain Events vs. Integration Events in Domain-Driven Design and microservices architectures](https://devblogs.microsoft.com/cesardelatorre/domain-events-vs-integration-events-in-domain-driven-design-and-microservices-architectures/)
+
 For integration events in distributed systems here are some patterns that may be useful in some cases:
 
+- [Saga distributed transactions](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga)
 - [The Outbox Pattern](https://www.kamilgrzybek.com/design/the-outbox-pattern/)
 - [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
 
