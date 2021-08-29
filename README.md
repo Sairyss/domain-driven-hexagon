@@ -231,12 +231,14 @@ This principle is called [Command–Query Separation(CQS)](https://en.wikipedia.
 
 - `Commands` are used for state-changing actions, like creating new user and saving it to the database. Create, Update and Delete operations are considered as state-changing.
 
-Data retrieval is responsibility of `Queries`, so `Command` methods should not return anything. There are some options on how to achieve this:
+Data retrieval is responsibility of `Queries`, so `Command` methods should not return business data.
+
+Some CQS purists may say that a `Command` shouldn't return anything at all. But you will need at least an ID of a created item to access it later, so how can you do that? There are some options on how to achieve this:
 
 - Letting consumer of a command generate a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) on a client-side (more info here: [CQS versus server generated IDs](https://blog.ploeh.dk/2014/08/11/cqs-versus-server-generated-ids/));
 - Returning some kind of a redirect location instead of creating a new resource on POST request (described here: [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)).
 
-Though, violating a `Command` CQS rule and returning a bare minimum (like `ID` of created item or a confirmation message) may simplify things for most APIs.
+Though, violating this rule and returning some metadata (like `ID` of created item or a confirmation message) is a more practical approach than following dogmas.
 
 **Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
@@ -250,15 +252,20 @@ Queries are usually just a data retrieval operation and have no business logic i
 
 Example of query bypassing application/domain layers completely: [find-user-by-email.http.controller.ts](src/modules/user/use-cases/find-user-by-email/find-user-by-email.http.controller.ts)
 
+**Note**: Some simple cases may not need a `Query` object, like find query may only need an ID so there may be no point in creating an object for that.
+
 ---
 
-**Note**: Some simple cases may not need a `Command`/`Query` object, like find query or delete command may only need an ID so there is no point in creating an object for that.
+Following CQS from the start will facilitate separating write and read models into different databases (CQRS), if someday in the future the need for it arises.
 
-Read more about CQS:
+NestJS also provides a nice package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)
+
+Read more about CQS and CQRS:
 
 - [Martin Fowler blog](https://martinfowler.com/bliki/CommandQuerySeparation.html)
 - [Command Query Segregation](https://khalilstemmler.com/articles/oop-design-principles/command-query-segregation/).
 - [Exposing CQRS Through a RESTful API](https://www.infoq.com/articles/rest-api-on-cqrs/)
+- [What is the CQRS pattern?](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 
 ---
 
