@@ -2,6 +2,7 @@ import { Controller, Delete, Inject, Param } from '@nestjs/common';
 import { routes } from '@config/app.routes';
 import { removeUserSymbol } from '@modules/user/user.providers';
 import { DeleteUserService } from './delete-user.service';
+import { DeleteUserCommand } from './delete-user.command';
 
 @Controller()
 export class DeleteUserHttpController {
@@ -12,6 +13,7 @@ export class DeleteUserHttpController {
 
   @Delete(routes.user.delete)
   async deleteUser(@Param('id') id: string): Promise<void> {
-    await this.service.delete(id);
+    const command = new DeleteUserCommand({ userId: id });
+    await this.service.delete(command);
   }
 }

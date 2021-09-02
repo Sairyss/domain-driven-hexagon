@@ -1,21 +1,13 @@
-import {
-  Address,
-  AddressProps,
-} from '../../domain/value-objects/address.value-object';
-import { Email } from '../../domain/value-objects/email.value-object';
+import { AddressProps } from '../../domain/value-objects/address.value-object';
 
-export interface CreateUserProps {
-  email: string;
-  address: AddressProps;
-}
-
+// Command is a plain object with properties
 export class CreateUserCommand {
-  constructor(props: CreateUserProps) {
-    this.email = new Email(props.email);
-    this.address = new Address(props.address);
+  constructor(props: CreateUserCommand) {
+    this.email = props.email;
+    this.address = props.address;
   }
 
-  readonly email: Email;
+  readonly email: string;
 
-  readonly address: Address;
+  readonly address: AddressProps;
 }

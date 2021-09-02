@@ -239,7 +239,7 @@ Some CQS purists may say that a `Command` shouldn't return anything at all. But 
 - Letting consumer of a command generate a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) on a client-side (more info here: [CQS versus server generated IDs](https://blog.ploeh.dk/2014/08/11/cqs-versus-server-generated-ids/));
 - Returning some kind of a redirect location instead of creating a new resource on POST request (described here: [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)).
 
-Though, violating this rule and returning some metadata (like `ID` of created item or a confirmation message) is a more practical approach than following dogmas.
+Though, violating this rule and returning some metadata (like `ID` of a created item or a confirmation message) is a more practical approach than following dogmas.
 
 **Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
