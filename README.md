@@ -1095,13 +1095,13 @@ There are different approaches to file/folder structuring, like explicitly separ
 
 Examples:
 
-- [Commands](src/modules/user/commands) folder contains all state changing use cases and each use case inside it contains everything it needs: controller, service, dto, command etc.
+- [Commands](src/modules/user/commands) folder contains all state changing use cases and each use case inside it contains most of the things that it needs: controller, service, dto, command etc.
 - [Queries](src/modules/user/queries) folder is structured in the same way as commands but contains data retrieval use cases.
 
-* Read more:
+Read more:
 
-* [Out with the Onion, in with Vertical Slices](https://medium.com/@jacobcunningham/out-with-the-onion-in-with-vertical-slices-c3edfdafe118)
-* [Vertical Slice Architecture](https://jimmybogard.com/vertical-slice-architecture/)
+- [Out with the Onion, in with Vertical Slices](https://medium.com/@jacobcunningham/out-with-the-onion-in-with-vertical-slices-c3edfdafe118)
+- [Vertical Slice Architecture](https://jimmybogard.com/vertical-slice-architecture/)
 
 ## File names
 
