@@ -198,7 +198,7 @@ Use cases are, simply said, list of actions required from an application.
 
 </details>
 
-Example file: [create-user.service.ts](src/modules/user/use-cases/create-user/create-user.service.ts)
+Example file: [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts)
 
 More about services:
 
@@ -240,7 +240,7 @@ Though, violating this rule and returning some metadata, like `ID` of a created 
 
 **Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
-Example of command object: [create-user.command.ts](src/modules/user/use-cases/create-user/create-user.command.ts)
+Example of command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
 
 ### Queries
 
@@ -248,7 +248,7 @@ Example of command object: [create-user.command.ts](src/modules/user/use-cases/c
 
 Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it should be done in a corresponding application service.
 
-Example of query bypassing application/domain layers completely: [find-user-by-email.http.controller.ts](src/modules/user/use-cases/find-user-by-email/find-user-by-email.http.controller.ts)
+Example of query bypassing application/domain layers completely: [find-user-by-email.http.controller.ts](src/modules/user/queries/find-user-by-email/find-user-by-email.http.controller.ts)
 
 **Note**: Some simple cases may not need a `Query` object, like find query may only need an ID so there may be no point in creating an object for that.
 
@@ -661,7 +661,7 @@ Read more:
 
 # Interface Adapters
 
-Interface adapters (also called driving/primary adapters) are user-facing interfaces that take input data from the user and repackage it in a form that is convenient for the use cases(services) and entities. Then they take the output from those use cases and entities and repackage it in a form that is convenient for displaying it back for the user. User can be either a person using an application or another server.
+Interface adapters (also called driving/primary adapters) are user-facing interfaces that take input data from the user and repackage it in a form that is convenient for the use cases(services/command handlers) and entities. Then they take the output from those use cases and entities and repackage it in a form that is convenient for displaying it back for the user. User can be either a person using an application or another server.
 
 Contains `Controllers` and `Request`/`Response` DTOs (can also contain `Views`, like backend-generated HTML templates, if required).
 
@@ -673,9 +673,9 @@ Contains `Controllers` and `Request`/`Response` DTOs (can also contain `Views`, 
 
 One controller per trigger type can be used to have a more clear separation. For example:
 
-- [create-user.http.controller.ts](src/modules/user/use-cases/create-user/create-user.http.controller.ts) for http requests ([NestJS Controllers](https://docs.nestjs.com/controllers)),
-- [create-user.cli.controller.ts](src/modules/user/use-cases/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
-- [create-user.event.controller.ts](src/modules/user/use-cases/create-user/create-user.event.controller.ts) for external events ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
+- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) for http requests ([NestJS Controllers](https://docs.nestjs.com/controllers)),
+- [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
+- [create-user.event.controller.ts](src/modules/user/commands/create-user/create-user.event.controller.ts) for external events ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
 - etc.
 
 ---
@@ -692,7 +692,7 @@ Input data sent by a user.
 
 Examples:
 
-- [create-user.request.dto.ts](src/modules/user/use-cases/create-user/create-user.request.dto.ts)
+- [create-user.request.dto.ts](src/modules/user/commands/create-user/create-user.request.dto.ts)
 - [create.user.interface.ts](src/interface-adapters/interfaces/user/create.user.interface.ts)
 
 ### Response DTOs
@@ -1071,9 +1071,9 @@ Read more:
 
 So instead of using typical layered style when an entire application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
-A lot of people tend to do the same thing as before: create one big service/controller for a module and keep all logic for module's use cases there, making those controllers and services hundreds of lines long, which is hard to navigate and makes merge conflicts a nightmare to manage. Or create one `commands` or `interfaces` folder and store all unrelated to each other commands/interfaces in there. This is the same approach that makes navigation harder. Every time you need to change something, instead of having all related files in the same place, you have to jump folders to find where the related files are.
+A lot of people tend to do the same thing as before: create one big service/controller for a module and keep all logic for module's use cases there, making those controllers and services hundreds of lines long, which is hard to navigate and makes merge conflicts a nightmare to manage. Or they create a folder for each file type, like `interfaces` or `services` folder and store all unrelated to each other interfaces/services in there. This is the same approach that makes navigation harder. Every time you need to change something, instead of having all related files in the same place, you have to jump folders to find where the related files are.
 
-It would be more logical to separate every module by components and have all related files close together. For example, check out [create-user](src/modules/user/use-cases/create-user) folder. It has most of the files that it needs inside the same folder: a controller, service, command etc. Now if a use-case changes, most of the changes are usually made in a single use-case component, not everywhere across the module.
+It would be more logical to separate every module by components and have all related files close together. For example, check out [create-user](src/modules/user/commands/create-user) folder. It has most of the files that it needs inside the same folder: a controller, service, command etc. Now if a use-case changes, most of the changes are usually made in a single component (folder), not everywhere across the module.
 
 And shared files, like domain objects (entities/aggregates), repositories, shared dtos and interfaces etc are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier. Check [user](src/modules/user) module for more examples.
 
@@ -1093,10 +1093,15 @@ Keep in mind that this project's folder/file structure is an example and might n
 
 There are different approaches to file/folder structuring, like explicitly separating each layer into a corresponding folder. This defines boundaries more clearly but is harder to navigate. Choose what suits better for the project/personal preference.
 
-- Read more:
+Examples:
 
-- [Out with the Onion, in with Vertical Slices](https://medium.com/@jacobcunningham/out-with-the-onion-in-with-vertical-slices-c3edfdafe118)
-- [Vertical Slice Architecture](https://jimmybogard.com/vertical-slice-architecture/)
+- [Commands](src/modules/user/commands) folder contains all state changing use cases and each use case inside it contains everything it needs: controller, service, dto, command etc.
+- [Queries](src/modules/user/queries) folder is structured in the same way as commands but contains data retrieval use cases.
+
+* Read more:
+
+* [Out with the Onion, in with Vertical Slices](https://medium.com/@jacobcunningham/out-with-the-onion-in-with-vertical-slices-c3edfdafe118)
+* [Vertical Slice Architecture](https://jimmybogard.com/vertical-slice-architecture/)
 
 ## File names
 
@@ -1167,7 +1172,7 @@ Use [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://
 Example files:
 
 - [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts) - notice `@ApiProperty()` decorators. This is [NestJS Swagger](https://docs.nestjs.com/openapi/types-and-parameters) module.
-- [create-user.http.controller.ts](src/modules/user/use-cases/create-user/create-user.http.controller.ts) - notice `@ApiOperation()` and `@ApiResponse()` decorators.
+- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) - notice `@ApiOperation()` and `@ApiResponse()` decorators.
 
 Read more:
 
