@@ -234,12 +234,9 @@ This principle is called [Command–Query Separation(CQS)](https://en.wikipedia.
 
 Data retrieval is responsibility of `Queries`, so `Command` methods should not return business data.
 
-Some CQS purists may say that a `Command` shouldn't return anything at all. But you will need at least an ID of a created item to access it later, so how can you do that? There are some options on how to achieve this:
+Some CQS purists may say that a `Command` shouldn't return anything at all. But you will need at least an ID of a created item to access it later. To achieve that you can let clients generate a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) (more info here: [CQS versus server generated IDs](https://blog.ploeh.dk/2014/08/11/cqs-versus-server-generated-ids/)).
 
-- Letting consumer of a command generate a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) on a client-side (more info here: [CQS versus server generated IDs](https://blog.ploeh.dk/2014/08/11/cqs-versus-server-generated-ids/));
-- Returning some kind of a redirect location instead of creating a new resource on POST request (described here: [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)).
-
-Though, violating this rule and returning some metadata (like `ID` of a created item or a confirmation message) is a more practical approach than following dogmas.
+Though, violating this rule and returning some metadata, like `ID` of a created item, redirect link, confirmation message, status, or other metadata is a more practical approach than following dogmas.
 
 **Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
@@ -257,16 +254,18 @@ Example of query bypassing application/domain layers completely: [find-user-by-e
 
 ---
 
-Following CQS from the start will facilitate separating write and read models into different databases (CQRS), if someday in the future the need for it arises.
+By enforcing `Command` and `Query` separation, the code becomes simpler to understand. One changes something, another just retrieves data.
 
-NestJS also provides a nice package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)
+Also, following CQS from the start will facilitate separating write and read models into different databases (CQRS) if someday in the future the need for it arises.
+
+**Note**: NestJS provides a nice package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs). Basically instead of `Services` you will use `Command Handlers` and instead of passing commands/queries directly to methods this package proposes a command/query bus. Choose the solution that suits better for your needs.
 
 Read more about CQS and CQRS:
 
-- [Martin Fowler blog](https://martinfowler.com/bliki/CommandQuerySeparation.html)
 - [Command Query Segregation](https://khalilstemmler.com/articles/oop-design-principles/command-query-segregation/).
 - [Exposing CQRS Through a RESTful API](https://www.infoq.com/articles/rest-api-on-cqrs/)
 - [What is the CQRS pattern?](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+- [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)
 
 ---
 
