@@ -39,24 +39,24 @@ export abstract class TypeormRepositoryBase<
 
   async save(entity: Entity): Promise<Entity> {
     const ormEntity = this.mapper.toOrmEntity(entity);
+    await DomainEvents.publishEvents(entity.id, this.logger);
     const result = await this.repository.save(ormEntity);
     this.logger.debug(
       `[Entity persisted]: ${this.tableName} ${entity.id.value}`,
     );
-    await DomainEvents.publishEvents(entity.id, this.logger);
     return this.mapper.toDomainEntity(result);
   }
 
   async saveMultiple(entities: Entity[]): Promise<Entity[]> {
     const ormEntities = entities.map(entity => this.mapper.toOrmEntity(entity));
-    const result = await this.repository.save(ormEntities);
-    this.logger.debug(
-      `[Multiple entities persisted]: ${entities.length} ${this.tableName}`,
-    );
     await Promise.all(
       entities.map(entity =>
         DomainEvents.publishEvents(entity.id, this.logger),
       ),
+    );
+    const result = await this.repository.save(ormEntities);
+    this.logger.debug(
+      `[Multiple entities persisted]: ${entities.length} ${this.tableName}`,
     );
     return result.map(entity => this.mapper.toDomainEntity(entity));
   }
@@ -125,9 +125,9 @@ export abstract class TypeormRepositoryBase<
   }
 
   async delete(entity: Entity): Promise<Entity> {
+    await DomainEvents.publishEvents(entity.id, this.logger);
     await this.repository.remove(this.mapper.toOrmEntity(entity));
     this.logger.debug(`[Entity deleted]: ${this.tableName} ${entity.id.value}`);
-    await DomainEvents.publishEvents(entity.id, this.logger);
     return entity;
   }
 }

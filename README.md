@@ -27,6 +27,7 @@ Though patterns and principles presented here are **framework/language agnostic*
     - [Entities](#Entities)
     - [Aggregates](#Aggregates)
     - [Domain Events](#Domain-Events)
+    - [Integration Events](#Integration-Events)
     - [Domain Services](#Domain-Services)
     - [Value Objects](#Value-Objects)
     - [Enforcing invariants of Domain Objects](#Enforcing-invariants-of-Domain-Objects)
@@ -168,7 +169,7 @@ _More building blocks may be added if needed._
 
 ## Application Services
 
-Are also called "Workflow Services", "User Cases", "Interactors" etc.
+Are also called "Workflow Services", "Use Cases", "Interactors" etc.
 These services orchestrate the steps required to fulfill the commands imposed by the client.
 
 - Typically used to orchestrate how the outside world interacts with your application and performs tasks required by the end users.
@@ -197,7 +198,7 @@ Use cases are, simply said, list of actions required from an application.
 
 </details>
 
-Example file: [create-user.service.ts](src/modules/user/use-cases/create-user/create-user.service.ts)
+Example file: [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts)
 
 More about services:
 
@@ -231,16 +232,15 @@ This principle is called [Command–Query Separation(CQS)](https://en.wikipedia.
 
 - `Commands` are used for state-changing actions, like creating new user and saving it to the database. Create, Update and Delete operations are considered as state-changing.
 
-Data retrieval is responsibility of `Queries`, so `Command` methods should not return anything. There are some options on how to achieve this:
+Data retrieval is responsibility of `Queries`, so `Command` methods should not return business data.
 
-- Letting consumer of a command generate a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) on a client-side (more info here: [CQS versus server generated IDs](https://blog.ploeh.dk/2014/08/11/cqs-versus-server-generated-ids/));
-- Returning some kind of a redirect location instead of creating a new resource on POST request (described here: [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)).
+Some CQS purists may say that a `Command` shouldn't return anything at all. But you will need at least an ID of a created item to access it later. To achieve that you can let clients generate a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) (more info here: [CQS versus server generated IDs](https://blog.ploeh.dk/2014/08/11/cqs-versus-server-generated-ids/)).
 
-Though, violating a `Command` CQS rule and returning a bare minimum (like `ID` of created item or a confirmation message) may simplify things for most APIs.
+Though, violating this rule and returning some metadata, like `ID` of a created item, redirect link, confirmation message, status, or other metadata is a more practical approach than following dogmas.
 
 **Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
-Example of command object: [create-user.command.ts](src/modules/user/use-cases/create-user/create-user.command.ts)
+Example of command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
 
 ### Queries
 
@@ -248,17 +248,24 @@ Example of command object: [create-user.command.ts](src/modules/user/use-cases/c
 
 Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it should be done in a corresponding application service.
 
-Example of query bypassing application/domain layers completely: [find-user-by-email.http.controller.ts](src/modules/user/use-cases/find-user-by-email/find-user-by-email.http.controller.ts)
+Example of query bypassing application/domain layers completely: [find-user-by-email.http.controller.ts](src/modules/user/queries/find-user-by-email/find-user-by-email.http.controller.ts)
+
+**Note**: Some simple cases may not need a `Query` object, like find query may only need an ID so there may be no point in creating an object for that.
 
 ---
 
-**Note**: Some simple cases may not need a `Command`/`Query` object, like find query or delete command may only need an ID so there is no point in creating an object for that.
+By enforcing `Command` and `Query` separation, the code becomes simpler to understand. One changes something, another just retrieves data.
 
-Read more about CQS:
+Also, following CQS from the start will facilitate separating write and read models into different databases (CQRS) if someday in the future the need for it arises.
 
-- [Martin Fowler blog](https://martinfowler.com/bliki/CommandQuerySeparation.html)
+**Note**: NestJS provides a nice package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs). Basically instead of `Services` you will use `Command Handlers` and instead of passing commands/queries directly to methods this package proposes a command/query bus. Choose the solution that suits better for your needs.
+
+Read more about CQS and CQRS:
+
 - [Command Query Segregation](https://khalilstemmler.com/articles/oop-design-principles/command-query-segregation/).
 - [Exposing CQRS Through a RESTful API](https://www.infoq.com/articles/rest-api-on-cqrs/)
+- [What is the CQRS pattern?](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+- [CQRS and REST: the perfect match](https://lostechies.com/jimmybogard/2016/06/01/cqrs-and-rest-the-perfect-match/)
 
 ---
 
@@ -365,48 +372,54 @@ Read more:
 
 ## Domain Events
 
-Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of.
+Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of. Domain events are just messages pushed to a domain event dispatcher in the same process.
 
 For example, if a user buys something, you may want to:
 
-- Send confirmation email to that user;
-- Send notification to a corporate slack channel;
-- Notify shipping department;
-- Perform other side effects that are not concern of an original buy operation domain.
+- Update his shopping cart;
+- Withdraw money from his wallet;
+- Create a new shipping order;
+- Perform other domain operations that are not a concern of an aggregate that executes a "buy" command.
 
 Typical approach that is usually used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
 
-A better approach would be publishing a `Domain Event`. Any side effect operations can be performed just by subscribing to a concrete `Domain Event` and creating as many event handlers as needed, without glueing any unrelated code to original domain's service that sends an event.
-
-Domain events are just messages pushed to a domain event dispatcher in the same process. Out-of-process communications (like microservices) are called [Integration Events](https://arleypadua.medium.com/domain-events-vs-integration-events-5eb29a34fdbc). If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
+A better approach would be publishing a `Domain Event`. If executing a command related to one aggregate instance requires additional domain rules to be run on one or more additional aggregates, you can design and implement those side effects to be triggered by domain events. Propagation of state changes across multiple aggregates within the same domain model can be performed by subscribing to a concrete `Domain Event` and creating as many event handlers as needed. This prevents coupling between aggregates.
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-There may be different ways on implementing Domain Events, for example using some kind of internal event bus/emitter, like [Event Emitter](https://www.tutorialspoint.com/nodejs/nodejs_event_emitter.htm), or using patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or slightly modified [Observer](https://refactoring.guru/design-patterns/observer).
+All changes done by Domain Events across multiple aggregates should be saved in a single database transaction. When using [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) all events will be stored to the database in a single transaction and then "replayed" on aggregates.
+
+**Note**: this project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) is that it has no option to `await` for all events to finish, which is useful when making all events a part of a transaction.
+
+There may be different ways on implementing Domain Events, for example using some kind of internal event bus/emitter or using patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or slightly modified [Observer](https://refactoring.guru/design-patterns/observer).
 
 Examples:
 
 - [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
-- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Domain Event Handler that executes actions and side-effects when a domain event is raised (in this case, user is created). Domain event handlers belong to Application layer.
-- [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all events for execution right before or right after persisting transaction.
-
-Events can be published right before or right after insert/update/delete transaction, chose any option that is better for a particular project:
-
-- Before: to make side-effects part of that transaction. If any event fails all changes should be reverted.
-- After: to persist transaction even if some event fails. This makes side-effects independent, but in that case [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency) should be implemented.
-
-Both options have pros and cons.
-
-**Note**: this project uses custom implementation for Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) is that event emitter executes events immediately when called instead of when we want it (before/after transaction), and also has no option to `await` for all events to finish, which might be useful when making those events a part of transaction.
+- [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Domain Event Handler that executes actions and side-effects when a domain event is raised (in this case, user is created).
+- [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution before persisting transaction.
 
 To have a better understanding on domain events and implementation read this:
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
+## Integration Events
+
+Out-of-process communications (calling microservices, external apis) are called `Integration Events`. If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
+
+Integration Events should be published **after** saving aggregates data to the persistent database.
+
+To handle integration events in microservices you may need an external message broker / event bus like [RabbitMQ](https://www.rabbitmq.com/) or [Kafka](https://kafka.apache.org/) together with patterns like [Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html), [Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture) and [Sagas](https://microservices.io/patterns/data/saga.html) to maintain [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency).
+
+Read more:
+
+- [Domain Events vs. Integration Events in Domain-Driven Design and microservices architectures](https://devblogs.microsoft.com/cesardelatorre/domain-events-vs-integration-events-in-domain-driven-design-and-microservices-architectures/)
+
 For integration events in distributed systems here are some patterns that may be useful in some cases:
 
+- [Saga distributed transactions](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga)
 - [The Outbox Pattern](https://www.kamilgrzybek.com/design/the-outbox-pattern/)
 - [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
 
@@ -648,7 +661,7 @@ Read more:
 
 # Interface Adapters
 
-Interface adapters (also called driving/primary adapters) are user-facing interfaces that take input data from the user and repackage it in a form that is convenient for the use cases(services) and entities. Then they take the output from those use cases and entities and repackage it in a form that is convenient for displaying it back for the user. User can be either a person using an application or another server.
+Interface adapters (also called driving/primary adapters) are user-facing interfaces that take input data from the user and repackage it in a form that is convenient for the use cases(services/command handlers) and entities. Then they take the output from those use cases and entities and repackage it in a form that is convenient for displaying it back for the user. User can be either a person using an application or another server.
 
 Contains `Controllers` and `Request`/`Response` DTOs (can also contain `Views`, like backend-generated HTML templates, if required).
 
@@ -660,16 +673,16 @@ Contains `Controllers` and `Request`/`Response` DTOs (can also contain `Views`, 
 
 One controller per trigger type can be used to have a more clear separation. For example:
 
-- [create-user.http.controller.ts](src/modules/user/use-cases/create-user/create-user.http.controller.ts) for http requests ([NestJS Controllers](https://docs.nestjs.com/controllers)),
-- [create-user.cli.controller.ts](src/modules/user/use-cases/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
-- [create-user.event.controller.ts](src/modules/user/use-cases/create-user/create-user.event.controller.ts) for external events ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
+- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) for http requests ([NestJS Controllers](https://docs.nestjs.com/controllers)),
+- [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
+- [create-user.event.controller.ts](src/modules/user/commands/create-user/create-user.event.controller.ts) for external events ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
 - etc.
 
 ---
 
 ## DTOs
 
-Data Transfer Object ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object)) is an object that carries data between processes. This is a contract between your API and clients.
+Data Transfer Object ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object)) is an object that carries data between processes. It defines a contract between your API and clients.
 
 ### Request DTOs
 
@@ -679,7 +692,7 @@ Input data sent by a user.
 
 Examples:
 
-- [create-user.request.dto.ts](src/modules/user/use-cases/create-user/create-user.request.dto.ts)
+- [create-user.request.dto.ts](src/modules/user/commands/create-user/create-user.request.dto.ts)
 - [create.user.interface.ts](src/interface-adapters/interfaces/user/create.user.interface.ts)
 
 ### Response DTOs
@@ -687,7 +700,10 @@ Examples:
 Output data returned to a user.
 
 - Using Response DTOs ensures clients only receive data described in DTOs contract, not everything that your model/entity owns (which may result in data leaks).
-- It also to some extent protects your clients from internal data structure changes that may happen in your API.
+
+Using DTOs protects your clients from internal data structure changes that may happen in your API. When internal data models change (like renaming variables or splitting tables), they can still be mapped to match a corresponding DTO to maintain compatibility for anyone using your API.
+
+When updating DTO interfaces, a new version of API can be created by prefixing an endpoint with a version number, for example: `v2/users`. This will make transition painless by preventing breaking compatibility for users that are slow to update their apps that uses your API.
 
 Examples:
 
@@ -828,17 +844,17 @@ Read more:
 
 ### Exception types
 
-Consider extending `Error` object to make custom exception types for different situations. For example: `DomainException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
+Consider extending `Error` object to make custom generic exception types for different situations. For example: `DomainException`, `ValidationException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default. Also, you can create domain-specific exceptions for different use-cases, like `NotEnoughFundsError` or `SeatIsAlreadyBookedError`.
 
-Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc.
+Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc. A better approach is to create custom error codes for your app, like `code: 'WALLET.NOT_ENOUGH_FUNDS'` etc.
 
-When used in HTTP context, for returning proper status code back to user an `instanceof` check can be performed in exception interceptor or in a controller and appropriate HTTP exception can be returned depending on exception type.
+When used in HTTP context, for returning proper status code back to user an `instanceof` or a `switch/case` check against the custom code can be performed in exception interceptor or in a controller and appropriate HTTP exception can be returned depending on exception type/code.
 
 Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - notice how custom exceptions are converted to nest.js exceptions.
 
-Adding a `name` string with type name for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name` string is used instead. Exception `name` enum types can be stored in a separate file so they can be reused on a receiving side: [exception.types.ts](src/core/exceptions/exception.types.ts).
+Adding a `name` or `code` string with type name or a custom status code for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name`/`code` string is used instead. `name` or `code` enum types can be stored in a separate file so they can be shared and reused on a receiving side: [exception.types.ts](src/core/exceptions/exception.types.ts).
 
-When using microservices, all exception types can be packed into a library and reused in each microservice for consistency.
+When using microservices, exception types/enums/codes can be packed into a library and reused in each microservice for consistency.
 
 ### Differentiate between programmer errors and operational errors
 
@@ -849,18 +865,6 @@ For example:
 - Operational errors can happen when validation error is thrown by validating user input, it means that input body is incorrect and a `400 Bad Request` exception should be returned to the user with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this case user can fix the input body and retry the request.
 - On the other hand, programmer error means something unexpected occurs in the program. For example, when exception happens on a new domain object creation, sometimes it can mean that a class is not used as intended and some rule is violated, for example a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, only a programmer can, so it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
 
-### Error Serialization
-
-By default, in NodeJS Error objects serialize to JSON with output like this:
-
-```typescript
-{
-  name: 'ValidationError';
-}
-```
-
-Consider serializing errors by creating a `toJSON()` method so it can be easily sent to other processes as a plain object.
-
 ### Error metadata
 
 Consider adding optional `metadata` object to exceptions (if language doesn't support anything similar by default) and pass some useful technical information about the error when throwing. This will make debugging easier.
@@ -869,8 +873,9 @@ Consider adding optional `metadata` object to exceptions (if language doesn't su
 
 ### Other recommendations
 
-- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters.
+- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters. Also, it is usually better to store all localization in a single place, for example, having a single file/folder for all messages that need translation, and then import them where needed. It is easier to add new translations when all of your messages are in one place rather then scattered across the app.
 - You can use "Problem Details for HTTP APIs" standard for returned exceptions, described in [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807). Read more about this standard: [REST API Error Handling - Problem Details Response](https://blog.restcase.com/rest-api-error-handling-problem-details-response/)
+- By default in NodeJS Error objects are not serialized properly when sending plain objects to external processes. Consider creating a `toJSON()` method so it can be easily sent to other processes as a plain object. (see example in [exception.base.ts](src/core/exceptions/exception.base.ts)). But keep in mind not to return a stack trace when in production.
 
 Example files:
 
@@ -890,12 +895,12 @@ There is an alternative approach of not throwing exceptions, but returning some 
 ```typescript
 class User {
   // ...
-  public createUser(): Either<User, EmailInvalidException> {
+  public createUser(): Result<User, EmailInvalidException> {
     // ...code for creating a user
     if (invalidEmail) {
-      return EmailInvalidException; // <- returning instead of throwing
+      return Result.err(EmailInvalidException); // <- returning instead of throwing
     }
-    return User;
+    return Result.ok(User);
   }
 }
 ```
@@ -910,7 +915,7 @@ Advantages:
 
 Downsides:
 
-- If used incorrectly, i.e for technical (connection failed) or validation (incorrect input) errors, It may cause some security issues and goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, this approach continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors, so it's generally better to throw in those cases.
+- If used incorrectly, i.e for technical (connection failed) errors, It may cause some security issues and goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, returning exception continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors, so it's generally better to throw in those cases rather then returning an error.
 - It adds extra complexity. Exception cases returned somewhere deep inside application have to be handled by functions in upper layers until it reaches controllers which may add a lot of extra `if` statements.
 - More boilerplate code.
 
@@ -970,11 +975,13 @@ Automatic load testing tools can simulate that load by making a lot of concurren
 
 Example tools:
 
+- [k6](https://github.com/grafana/k6)
 - [Artillery](https://www.npmjs.com/package/artillery) is a load testing tool based on NodeJS.
 
-Read more:
+More info:
 
 - [Top 6 Tools for API & Load Testing](https://medium.com/@Dickson_Mwendia/top-6-tools-for-api-load-testing-7ff51d1ac1e8).
+- [Getting started with API Load Testing (Stress, Spike, Load, Soak)](https://www.youtube.com/watch?v=r-Jte8Y8zag)
 
 ### Fuzz Testing
 
@@ -1062,31 +1069,39 @@ Read more:
 
 ## Folder and File Structure
 
-So instead of using typical layered style when all application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
+So instead of using typical layered style when an entire application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
-A lot of people tend to do the same thing as before: create a separate folders/files for services, controllers etc and keep all module's use-cases logic there, making those controllers and services bloated with responsibilities. This is the same approach that makes navigation harder.
+A lot of people tend to do the same thing as before: create one big service/controller for a module and keep all logic for module's use cases there, making those controllers and services hundreds of lines long, which is hard to navigate and makes merge conflicts a nightmare to manage. Or they create a folder for each file type, like `interfaces` or `services` folder and store all unrelated to each other interfaces/services in there. This is the same approach that makes navigation harder. Every time you need to change something, instead of having all related files in the same place, you have to jump folders to find where the related files are.
 
-Using this approach, every time something in a service changes, we might have to go to another folder to change controllers, and then go to dtos folder to change the corresponding dto etc.
+It would be more logical to separate every module by components and have all related files close together. For example, check out [create-user](src/modules/user/commands/create-user) folder. It has most of the files that it needs inside the same folder: a controller, service, command etc. Now if a use-case changes, most of the changes are usually made in a single component (folder), not everywhere across the module.
 
-It would be more logical to separate every module by components and have all the related files close together. Now if a use-case changes, those changes are usually made in a single use-case component, not everywhere across the module.
+And shared files, like domain objects (entities/aggregates), repositories, shared dtos and interfaces etc are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier. Check [user](src/modules/user) module for more examples.
 
-This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside of that component) are stored close together, in a single use-case folder. Check user [use-cases](src/modules/user/use-cases) folder for examples.
-
-And shared files (like domain objects, repositories etc) are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier. Check [user](src/modules/user) folder for an example.
+This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside of that component) are stored close together, in a single use-case folder.
 
 > The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
 
 Keep in mind that this project's folder/file structure is an example and might not work for everyone. Main recommendations here are:
 
 - Separate you application into modules;
-- Keep files that change together close to each other (Common Closure Principle);
-- Group files by their behavior that changes together, not by type of functionality that file provides;
+- Keep files that change together close to each other (_Common Closure Principle_);
+- Group files by their behavior that changes together, not by a type of functionality that file provides;
 - Keep files that are reused by multiple components apart;
 - Respect boundaries in your code, keeping files together doesn't mean inner layers can import outer layers;
 - Try to avoid a lot of nested folders;
 - [Move files around until it feels right](https://dev.to/dance2die/move-files-around-until-it-feels-right-2lek).
 
 There are different approaches to file/folder structuring, like explicitly separating each layer into a corresponding folder. This defines boundaries more clearly but is harder to navigate. Choose what suits better for the project/personal preference.
+
+Examples:
+
+- [Commands](src/modules/user/commands) folder contains all state changing use cases and each use case inside it contains most of the things that it needs: controller, service, dto, command etc.
+- [Queries](src/modules/user/queries) folder is structured in the same way as commands but contains data retrieval use cases.
+
+Read more:
+
+- [Out with the Onion, in with Vertical Slices](https://medium.com/@jacobcunningham/out-with-the-onion-in-with-vertical-slices-c3edfdafe118)
+- [Vertical Slice Architecture](https://jimmybogard.com/vertical-slice-architecture/)
 
 ## File names
 
@@ -1157,7 +1172,7 @@ Use [OpenAPI](https://swagger.io/specification/) (Swagger) or [GraphQL](https://
 Example files:
 
 - [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts) - notice `@ApiProperty()` decorators. This is [NestJS Swagger](https://docs.nestjs.com/openapi/types-and-parameters) module.
-- [create-user.http.controller.ts](src/modules/user/use-cases/create-user/create-user.http.controller.ts) - notice `@ApiOperation()` and `@ApiResponse()` decorators.
+- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) - notice `@ApiOperation()` and `@ApiResponse()` decorators.
 
 Read more:
 
