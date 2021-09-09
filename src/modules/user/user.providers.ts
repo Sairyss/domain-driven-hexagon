@@ -1,7 +1,7 @@
 import { Provider } from '@nestjs/common';
 import { UserRepository } from './database/user.repository';
 import { CreateUserService } from './commands/create-user/create-user.service';
-import { DeleteUserService } from './commands/remove-user/delete-user.service';
+import { DeleteUserService } from './commands/delete-user/delete-user.service';
 
 /* Constructing providers to avoid having framework decorators
    in application core. */

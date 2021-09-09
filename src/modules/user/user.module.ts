@@ -4,7 +4,7 @@ import { UserOrmEntity } from './database/user.orm-entity';
 import { UserRepository } from './database/user.repository';
 import { CreateUserHttpController } from './commands/create-user/create-user.http.controller';
 import { FindUserByEmailHttpController } from './queries/find-user-by-email/find-user-by-email.http.controller';
-import { DeleteUserHttpController } from './commands/remove-user/delete-user.controller';
+import { DeleteUserHttpController } from './commands/delete-user/delete-user.controller';
 import { createUserProvider, removeUserProvider } from './user.providers';
 
 @Module({
