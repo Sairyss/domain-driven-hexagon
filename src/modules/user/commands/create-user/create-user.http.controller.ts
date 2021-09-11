@@ -5,7 +5,7 @@ import { createUserSymbol } from '@modules/user/user.providers';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserCommand } from './create-user.command';
 import { CreateUserService } from './create-user.service';
-import { CreateUserRequest } from './create-user.request.dto';
+import { CreateUserHttpRequest } from './create-user.request.dto';
 
 @Controller()
 export class CreateUserHttpController {
@@ -27,7 +27,7 @@ export class CreateUserHttpController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
   })
-  async create(@Body() body: CreateUserRequest): Promise<IdResponse> {
+  async create(@Body() body: CreateUserHttpRequest): Promise<IdResponse> {
     const command = new CreateUserCommand(body);
 
     const id = await this.createUser.createUser(command);

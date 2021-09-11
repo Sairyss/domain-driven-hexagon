@@ -14,6 +14,7 @@ import { QueryParams } from 'src/core/ports/repository.ports';
 import { UserOrmEntity } from './user.orm-entity';
 import { UserRepositoryPort } from './user.repository.interface';
 import { UserOrmMapper } from './user.orm-mapper';
+import { FindUsersQuery } from '../queries/find-users/find-users.query';
 
 @Injectable()
 export class UserRepository
@@ -58,6 +59,12 @@ export class UserRepository
     return false;
   }
 
+  async findUsers(query: FindUsersQuery): Promise<UserEntity[]> {
+    const users = await this.repository.find({ where: query });
+
+    return users.map(this.mapper.toDomainEntity);
+  }
+
   // Used to construct a query
   protected prepareQuery(
     params: QueryParams<UserProps>,
@@ -65,6 +72,18 @@ export class UserRepository
     const where: QueryParams<UserOrmEntity> = {};
     if (params.id) {
       where.id = params.id.value;
+    }
+    if (params.createdAt) {
+      where.createdAt = params.createdAt.value;
+    }
+    if (params.address?.country) {
+      where.country = params.address.country;
+    }
+    if (params.address?.street) {
+      where.street = params.address.street;
+    }
+    if (params.address?.postalCode) {
+      where.postalCode = params.address.postalCode;
     }
     return where;
   }

@@ -8,14 +8,14 @@ export class UserOrmEntity extends TypeormEntityBase {
   }
 
   @Column({ unique: true })
-  email!: string;
+  email: string;
 
   @Column()
-  country!: string;
+  country: string;
 
   @Column()
-  postalCode!: string;
+  postalCode: string;
 
   @Column()
-  street!: string;
+  street: string;
 }

@@ -8,16 +8,16 @@ export abstract class TypeormEntityBase {
   }
 
   @PrimaryColumn({ update: false })
-  id!: string;
+  id: string;
 
   @CreateDateColumn({
     type: 'timestamptz',
     update: false,
   })
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamptz',
   })
-  updatedAt!: Date;
+  updatedAt: Date;
 }

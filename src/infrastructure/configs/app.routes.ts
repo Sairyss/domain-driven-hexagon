@@ -1,4 +1,4 @@
-const usersRoot = '/user';
+const usersRoot = '/users';
 
 export const routes = {
   user: {

@@ -15,21 +15,27 @@ export class CreateUserRequest implements CreateUser {
   })
   @MaxLength(320)
   @IsEmail()
-  email!: string;
+  readonly email: string;
 
   @ApiProperty({ example: 'France', description: 'Country of residence' })
   @MaxLength(50)
   @IsString()
   @IsAlpha()
-  country!: string;
+  readonly country: string;
 
   @ApiProperty({ example: '28566', description: 'Postal code' })
   @MaxLength(10)
   @IsAlphanumeric()
-  postalCode!: string;
+  readonly postalCode: string;
 
   @ApiProperty({ example: 'Grande Rue', description: 'Street' })
   @MaxLength(50)
   @IsAlphanumeric()
-  street!: string;
+  readonly street: string;
 }
+
+export class CreateUserHttpRequest extends CreateUserRequest
+  implements CreateUser {}
+
+export class CreateUserMessageRequest extends CreateUserRequest
+  implements CreateUser {}

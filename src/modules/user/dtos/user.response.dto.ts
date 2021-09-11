@@ -43,3 +43,5 @@ export class UserResponse extends ResponseBase implements User {
   })
   street: string;
 }
+
+export class UserHttpResponse extends UserResponse implements User {}

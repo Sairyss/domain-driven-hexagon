@@ -39,6 +39,7 @@ module.exports = {
     'import/no-cycle': 'off',
     'consistent-return': 'off',
     'no-underscore-dangle': 'off',
+    'max-classes-per-file': 'off',
 
     // Eslint errors
     'no-restricted-syntax': [
