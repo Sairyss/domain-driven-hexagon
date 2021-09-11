@@ -240,9 +240,9 @@ Though, violating this rule and returning some metadata, like `ID` of a created 
 
 All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction. This means that inside a single process, one command/request to your application must execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used.
 
-**Note**: `Command` is not the same as [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
+**Note**: `Command` is not the same as [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects that carry data between layers.
 
-Example of command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
+Example of a command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
 
 ### Queries
 
@@ -250,9 +250,9 @@ Example of command object: [create-user.command.ts](src/modules/user/commands/cr
 
 Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it should be done in a corresponding application service.
 
-Example of query bypassing application/domain layers completely: [find-user-by-email.http.controller.ts](src/modules/user/queries/find-user-by-email/find-user-by-email.http.controller.ts)
+Example of a query object: [find-users.query.ts](src/modules/user/queries/find-users/find-users.query.ts)
 
-**Note**: Some simple cases may not need a `Query` object, like find query may only need an ID so there may be no point in creating an object for that.
+Example of query bypassing application/domain layers completely: [find-users.http.controller.ts](src/modules/user/queries/find-users/find-users.http.controller.ts)
 
 ---
 
@@ -682,14 +682,15 @@ One controller per trigger type can be used to have a more clear separation. For
 
 - [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) for http requests ([NestJS Controllers](https://docs.nestjs.com/controllers)),
 - [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
-- [create-user.event.controller.ts](src/modules/user/commands/create-user/create-user.event.controller.ts) for external events ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
+- [create-user.message.controller.ts](src/modules/user/commands/create-user/create-user.message.controller.ts) for external messages ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
 - etc.
 
 ---
 
 ## DTOs
 
-Data Transfer Object ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object)) is an object that carries data between processes. It defines a contract between your API and clients.
+Data that comes from external applications should be represented by a special type of classes - Data Transfer Objects ([DTO](https://en.wikipedia.org/wiki/Data_transfer_object) for short).
+Data Transfer Object is an object that carries data between processes. It defines a contract between your API and clients.
 
 ### Request DTOs
 
@@ -708,17 +709,27 @@ Output data returned to a user.
 
 - Using Response DTOs ensures clients only receive data described in DTOs contract, not everything that your model/entity owns (which may result in data leaks).
 
-Using DTOs protects your clients from internal data structure changes that may happen in your API. When internal data models change (like renaming variables or splitting tables), they can still be mapped to match a corresponding DTO to maintain compatibility for anyone using your API.
-
-When updating DTO interfaces, a new version of API can be created by prefixing an endpoint with a version number, for example: `v2/users`. This will make transition painless by preventing breaking compatibility for users that are slow to update their apps that uses your API.
-
 Examples:
 
 - [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts)
 - [user.interface.ts](src/interface-adapters/interfaces/user/user.interface.ts)
 
+---
+
+Using DTOs protects your clients from internal data structure changes that may happen in your API. When internal data models change (like renaming variables or splitting tables), they can still be mapped to match a corresponding DTO to maintain compatibility for anyone using your API.
+
+When updating DTO interfaces, a new version of API can be created by prefixing an endpoint with a version number, for example: `v2/users`. This will make transition painless by preventing breaking compatibility for users that are slow to update their apps that uses your API.
+
+You may have noticed that our [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts) contains the same properties as [create-user.request.dto.ts](src/modules/user/commands/create-user/create-user.request.dto.ts).
+So why do we need DTOs if we already have Command objects that carry properties? Shouldn't we just have one class to avoid duplication?
+
+> Because commands and DTOs are different things, they tackle different problems. Commands are serializable method calls - calls of the methods in the domain model. Whereas DTOs are the data contracts. The main reason to introduce this separate layer with data contracts is to provide backward compatibility for the clients of your API. Without the DTOs, the API will have breaking changes with every modification of the domain model.
+
+More info on this subject here: [Are CQRS commands part of the domain model?](https://enterprisecraftsmanship.com/posts/cqrs-commands-part-domain-model/) (read "_Commands vs DTOs_" section).
+
 ### Additional recommendations:
 
+- DTOs should be data-oriented, not object-oriented. Its properties should be mostly primitives. We are not modeling anything here, just sending flat data around.
 - When returning a `Response` prefer _whitelisting_ properties over _blacklisting_. This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
 - Interfaces for `Request`/`Response` objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating git submodule or a separate package for sharing interfaces.
 - `Request`/`Response` DTO classes may be a good place to use validation and sanitization decorators like [class-validator](https://www.npmjs.com/package/class-validator) and [class-sanitizer](https://www.npmjs.com/package/class-sanitizer) (make sure that all validation errors are gathered first and only then return them to the user, this is called [Notification pattern](https://martinfowler.com/eaaDev/Notification.html). Class-validator does this by default).
@@ -1370,9 +1381,10 @@ Read more:
 
 ## Blogs
 
-- [Martin Fowler](https://martinfowler.com/)
-- [Kamil Grzybek](https://www.kamilgrzybek.com/)
+- [Vladimir Khorikov](https://enterprisecraftsmanship.com/)
 - [Khalil Stemmler](https://khalilstemmler.com)
+- [Kamil Grzybek](https://www.kamilgrzybek.com/)
+- [Martin Fowler](https://martinfowler.com/)
 - [Herberto Graca](https://herbertograca.com/)
 
 ## Videos
