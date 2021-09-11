@@ -240,7 +240,7 @@ Though, violating this rule and returning some metadata, like `ID` of a created 
 
 All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction. This means that inside a single process, one command/request to your application must execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used.
 
-**Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
+**Note**: `Command` is not the same as [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
 Example of command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
 
@@ -260,7 +260,7 @@ By enforcing `Command` and `Query` separation, the code becomes simpler to under
 
 Also, following CQS from the start will facilitate separating write and read models into different databases (CQRS) if someday in the future the need for it arises.
 
-**Note**: NestJS provides a package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs). Basically instead of `Services` you will use `Command Handlers` and instead of passing commands/queries directly to methods this package proposes a command/query bus + an event bus for events. But it is important to keep in mind that this package doesn't provide any consistency for emitted events (neither does [Node.js Event Emitter](https://nodejs.dev/learn/the-nodejs-event-emitter)) so it must be used carefully and will probably require some additional tools or patterns to maintain consistency. More info in [Domain Events](#Domain-Events) and [Integration Events](#Integration-Events) sections below.
+**Note**: NestJS provides a package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs). Basically if offers to use `Command Handlers` and instead of passing commands/queries directly to methods this package proposes a command/query bus + an event bus for events. But it is important to keep in mind that this package doesn't provide any consistency for emitted events (neither does [Node.js Event Emitter](https://nodejs.dev/learn/the-nodejs-event-emitter)) since there is no way to `await` for events to finish. More info in [Domain Events](#Domain-Events) and [Integration Events](#Integration-Events) sections below.
 
 Read more about CQS and CQRS:
 

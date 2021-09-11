@@ -28,14 +28,7 @@ export class CreateUserHttpController {
     status: HttpStatus.BAD_REQUEST,
   })
   async create(@Body() body: CreateUserRequest): Promise<IdResponse> {
-    const command = new CreateUserCommand({
-      email: body.email,
-      address: {
-        country: body.country,
-        postalCode: body.postalCode,
-        street: body.street,
-      },
-    });
+    const command = new CreateUserCommand(body);
 
     const id = await this.createUser.createUser(command);
 

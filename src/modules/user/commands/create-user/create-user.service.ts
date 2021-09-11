@@ -20,7 +20,11 @@ export class CreateUserService {
 
     const user = new UserEntity({
       email: new Email(command.email),
-      address: new Address(command.address),
+      address: new Address({
+        country: command.country,
+        postalCode: command.postalCode,
+        street: command.street,
+      }),
     });
 
     user.someBusinessLogic();

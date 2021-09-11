@@ -1,13 +1,17 @@
-import { AddressProps } from '../../domain/value-objects/address.value-object';
-
 // Command is a plain object with properties
 export class CreateUserCommand {
   constructor(props: CreateUserCommand) {
     this.email = props.email;
-    this.address = props.address;
+    this.country = props.country;
+    this.postalCode = props.postalCode;
+    this.street = props.street;
   }
 
   readonly email: string;
 
-  readonly address: AddressProps;
+  readonly country: string;
+
+  readonly postalCode: string;
+
+  readonly street: string;
 }
