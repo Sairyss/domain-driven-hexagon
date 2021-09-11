@@ -1,10 +1,15 @@
-import { Provider } from '@nestjs/common';
+import { Logger, Provider } from '@nestjs/common';
 import { UserRepository } from './database/user.repository';
 import { CreateUserService } from './commands/create-user/create-user.service';
 import { DeleteUserService } from './commands/delete-user/delete-user.service';
 
 /* Constructing providers to avoid having framework decorators
-   in application core. */
+   like @Injectable() or @Inject() inside application core.
+   Though if you want to simplify things using those decorators
+   is acceptable since they are not very intrusive.
+   Choose how "pure" your application core / domain has to be 
+   depending on your needs.
+*/
 
 export const createUserSymbol = Symbol('createUser');
 
@@ -24,4 +29,13 @@ export const removeUserProvider: Provider = {
     return new DeleteUserService(userRepo);
   },
   inject: [UserRepository],
+};
+
+export const createUserCliLoggerSymbol = Symbol('createUserCliLoggerSymbol');
+
+export const createUserCliLoggerProvider: Provider = {
+  provide: createUserCliLoggerSymbol,
+  useFactory: (): Logger => {
+    return new Logger('create-user-cli');
+  },
 };

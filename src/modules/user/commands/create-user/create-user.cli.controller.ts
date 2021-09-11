@@ -1,4 +1,7 @@
-import { createUserSymbol } from '@modules/user/user.providers';
+import {
+  createUserCliLoggerSymbol,
+  createUserSymbol,
+} from '@modules/user/user.providers';
 import { Inject } from '@nestjs/common';
 import { Command, Console } from 'nestjs-console';
 import { Logger } from 'src/core/ports/logger.port';
@@ -14,6 +17,7 @@ export class CreateUserCliController {
   constructor(
     @Inject(createUserSymbol)
     private readonly service: CreateUserService,
+    @Inject(createUserCliLoggerSymbol)
     private readonly logger: Logger,
   ) {}
 
@@ -36,6 +40,6 @@ export class CreateUserCliController {
 
     const id = await this.service.createUser(command);
 
-    this.logger.log('User created:', id);
+    this.logger.log('User created:', id.value);
   }
 }

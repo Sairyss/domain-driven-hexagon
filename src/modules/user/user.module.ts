@@ -5,7 +5,11 @@ import { UserRepository } from './database/user.repository';
 import { CreateUserHttpController } from './commands/create-user/create-user.http.controller';
 import { FindUserByEmailHttpController } from './queries/find-user-by-email/find-user-by-email.http.controller';
 import { DeleteUserHttpController } from './commands/delete-user/delete-user.controller';
-import { createUserProvider, removeUserProvider } from './user.providers';
+import {
+  createUserCliLoggerProvider,
+  createUserProvider,
+  removeUserProvider,
+} from './user.providers';
 import { CreateUserCliController } from './commands/create-user/create-user.cli.controller';
 
 @Module({
@@ -20,6 +24,7 @@ import { CreateUserCliController } from './commands/create-user/create-user.cli.
     createUserProvider,
     removeUserProvider,
     CreateUserCliController,
+    createUserCliLoggerProvider,
   ],
 })
 export class UserModule {}
