@@ -238,6 +238,8 @@ Some CQS purists may say that a `Command` shouldn't return anything at all. But 
 
 Though, violating this rule and returning some metadata, like `ID` of a created item, redirect link, confirmation message, status, or other metadata is a more practical approach than following dogmas.
 
+All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction. This means that inside a single process, one command/request to your application must execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used.
+
 **Note**: `Command` has nothing to do with [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects with data.
 
 Example of command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
@@ -258,7 +260,7 @@ By enforcing `Command` and `Query` separation, the code becomes simpler to under
 
 Also, following CQS from the start will facilitate separating write and read models into different databases (CQRS) if someday in the future the need for it arises.
 
-**Note**: NestJS provides a nice package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs). Basically instead of `Services` you will use `Command Handlers` and instead of passing commands/queries directly to methods this package proposes a command/query bus. Choose the solution that suits better for your needs.
+**Note**: NestJS provides a package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs). Basically instead of `Services` you will use `Command Handlers` and instead of passing commands/queries directly to methods this package proposes a command/query bus + an event bus for events. But it is important to keep in mind that this package doesn't provide any consistency for emitted events (neither does [Node.js Event Emitter](https://nodejs.dev/learn/the-nodejs-event-emitter)) so it must be used carefully and will probably require some additional tools or patterns to maintain consistency. More info in [Domain Events](#Domain-Events) and [Integration Events](#Integration-Events) sections below.
 
 Read more about CQS and CQRS:
 
@@ -372,7 +374,7 @@ Read more:
 
 ## Domain Events
 
-Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of. Domain events are just messages pushed to a domain event dispatcher in the same process.
+Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of. Domain events are just messages pushed to an in-memory domain event dispatcher.
 
 For example, if a user buys something, you may want to:
 
@@ -383,19 +385,21 @@ For example, if a user buys something, you may want to:
 
 Typical approach that is usually used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
 
-A better approach would be publishing a `Domain Event`. If executing a command related to one aggregate instance requires additional domain rules to be run on one or more additional aggregates, you can design and implement those side effects to be triggered by domain events. Propagation of state changes across multiple aggregates within the same domain model can be performed by subscribing to a concrete `Domain Event` and creating as many event handlers as needed. This prevents coupling between aggregates.
+An alternative approach would be publishing a `Domain Event`. If executing a command related to one aggregate instance requires additional domain rules to be run on one or more additional aggregates, you can design and implement those side effects to be triggered by Domain Events. Propagation of state changes across multiple aggregates within the same domain model can be performed by subscribing to a concrete `Domain Event` and creating as many event handlers as needed. This prevents coupling between aggregates.
 
-Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
+When using [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) all events will be stored to the database in a single transaction and then "replayed" on aggregates.
 
-All changes done by Domain Events across multiple aggregates should be saved in a single database transaction. When using [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) all events will be stored to the database in a single transaction and then "replayed" on aggregates.
+If _Event Sourcing_ is not used, Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-**Note**: this project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) is that it has no option to `await` for all events to finish, which is useful when making all events a part of a transaction.
+All changes done by Domain Events (or by anything else) across multiple aggregates should be saved in a single database transaction to maintain consistency. Patterns like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar can help with that.
 
-There may be different ways on implementing Domain Events, for example using some kind of internal event bus/emitter or using patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or slightly modified [Observer](https://refactoring.guru/design-patterns/observer).
+**Note**: this project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
+
+There are multiple ways on implementing an event bus for Domain Events, for example by using ideas from patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or [Observer](https://refactoring.guru/design-patterns/observer).
 
 Examples:
 
-- [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events.
+- [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events. Keep in mind that this is just a proof of concept example and may not be a best solution for a production application.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
 - [user-created.event-handler.ts](src/modules/domain-event-handlers/user-created.event-handler.ts) - this is an example of Domain Event Handler that executes actions and side-effects when a domain event is raised (in this case, user is created).
 - [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution before persisting transaction.
@@ -405,21 +409,24 @@ To have a better understanding on domain events and implementation read this:
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
+**Note**: keep in mind that while using only events for complex workflows with a lot of steps it will be hard to track everything that is happening across the application. One event may trigger another one, then another one, and so on. To track the entire workflow you'll have to go multiple places and search for an event handler for each step which is hard to maintain. In this cases using a service/orchestrator/mediator might be a preferred approach than only using events since you will have an entire workflow in one place. This might create some coupling, but is easier to maintain. Don't rely on events only, pick the right tool for the job.
+
 ## Integration Events
 
 Out-of-process communications (calling microservices, external apis) are called `Integration Events`. If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
 
-Integration Events should be published **after** saving aggregates data to the persistent database.
+Integration Events should be published only **after** all Domain Events finished executing and saving all changes to the database.
 
-To handle integration events in microservices you may need an external message broker / event bus like [RabbitMQ](https://www.rabbitmq.com/) or [Kafka](https://kafka.apache.org/) together with patterns like [Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html), [Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture) and [Sagas](https://microservices.io/patterns/data/saga.html) to maintain [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency).
+To handle integration events in microservices you may need an external message broker / event bus like [RabbitMQ](https://www.rabbitmq.com/) or [Kafka](https://kafka.apache.org/) together with patterns like [Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html), [Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture), [Sagas](https://microservices.io/patterns/data/saga.html) or a [Process Manager](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html) to maintain [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency).
 
 Read more:
 
 - [Domain Events vs. Integration Events in Domain-Driven Design and microservices architectures](https://devblogs.microsoft.com/cesardelatorre/domain-events-vs-integration-events-in-domain-driven-design-and-microservices-architectures/)
 
-For integration events in distributed systems here are some patterns that may be useful in some cases:
+For integration events in distributed systems here are some patterns that may be useful:
 
 - [Saga distributed transactions](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga)
+- [Saga vs. Process Manager](https://blog.devarchive.net/2015/11/saga-vs-process-manager.html)
 - [The Outbox Pattern](https://www.kamilgrzybek.com/design/the-outbox-pattern/)
 - [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
 
