@@ -14,14 +14,7 @@ export class CreateUserEventController {
 
   @MessagePattern('user.create') // <- Subscribe to microservice event
   async create(payload: CreateUserRequest): Promise<IdResponse> {
-    const command = new CreateUserCommand({
-      email: payload.email,
-      address: {
-        country: payload.country,
-        postalCode: payload.postalCode,
-        street: payload.street,
-      },
-    });
+    const command = new CreateUserCommand(payload);
 
     const id = await this.createUser.createUser(command);
 

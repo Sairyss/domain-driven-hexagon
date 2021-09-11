@@ -1,5 +1,41 @@
+import { createUserSymbol } from '@modules/user/user.providers';
+import { Inject } from '@nestjs/common';
+import { Command, Console } from 'nestjs-console';
+import { Logger } from 'src/core/ports/logger.port';
+import { CreateUserCommand } from './create-user.command';
+import { CreateUserService } from './create-user.service';
+
+// Allows creating a user using CLI
+@Console({
+  command: 'new',
+  description: 'A command to create a user',
+})
 export class CreateUserCliController {
-  async createUser(): Promise<void> {
-    // TODO: create user through CLI
+  constructor(
+    @Inject(createUserSymbol)
+    private readonly service: CreateUserService,
+    private readonly logger: Logger,
+  ) {}
+
+  @Command({
+    command: 'user <email> <country> <postalCode> <street>',
+    description: 'Create a user',
+  })
+  async createUser(
+    email: string,
+    country: string,
+    postalCode: string,
+    street: string,
+  ): Promise<void> {
+    const command = new CreateUserCommand({
+      email,
+      country,
+      postalCode,
+      street,
+    });
+
+    const id = await this.service.createUser(command);
+
+    this.logger.log('User created:', id);
   }
 }

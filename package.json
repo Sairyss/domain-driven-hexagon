@@ -38,6 +38,7 @@
     "class-validator": "^0.12.2",
     "dotenv": "^8.2.0",
     "nest-event": "^1.0.8",
+    "nestjs-console": "^7.0.0",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

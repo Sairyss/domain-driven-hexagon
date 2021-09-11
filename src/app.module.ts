@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NestEventModule } from 'nest-event';
 import { UserRepository } from '@modules/user/database/user.repository';
 import { UserOrmEntity } from '@modules/user/database/user.orm-entity';
+import { ConsoleModule } from 'nestjs-console';
 import { typeormConfig } from './infrastructure/configs/ormconfig';
 
 @Module({
@@ -11,6 +12,7 @@ import { typeormConfig } from './infrastructure/configs/ormconfig';
     TypeOrmModule.forRoot(typeormConfig),
     TypeOrmModule.forFeature([UserOrmEntity]),
     NestEventModule,
+    ConsoleModule,
     UserModule,
   ],
   controllers: [],

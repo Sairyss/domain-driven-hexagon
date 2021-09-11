@@ -6,6 +6,7 @@ import { CreateUserHttpController } from './commands/create-user/create-user.htt
 import { FindUserByEmailHttpController } from './queries/find-user-by-email/find-user-by-email.http.controller';
 import { DeleteUserHttpController } from './commands/delete-user/delete-user.controller';
 import { createUserProvider, removeUserProvider } from './user.providers';
+import { CreateUserCliController } from './commands/create-user/create-user.cli.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserOrmEntity])],
@@ -14,6 +15,11 @@ import { createUserProvider, removeUserProvider } from './user.providers';
     DeleteUserHttpController,
     FindUserByEmailHttpController,
   ],
-  providers: [UserRepository, createUserProvider, removeUserProvider],
+  providers: [
+    UserRepository,
+    createUserProvider,
+    removeUserProvider,
+    CreateUserCliController,
+  ],
 })
 export class UserModule {}
