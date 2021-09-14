@@ -18,7 +18,7 @@ export class CreateUserService {
       throw new ConflictException('User already exists');
     }
 
-    const user = new UserEntity({
+    const user = UserEntity.create({
       email: new Email(command.email),
       address: new Address({
         country: command.country,

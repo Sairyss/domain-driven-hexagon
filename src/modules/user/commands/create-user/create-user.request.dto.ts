@@ -1,10 +1,10 @@
 import { CreateUser } from 'src/interface-adapters/interfaces/user/create.user.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsAlpha,
   IsAlphanumeric,
   IsEmail,
   IsString,
+  Matches,
   MaxLength,
 } from 'class-validator';
 
@@ -20,7 +20,7 @@ export class CreateUserRequest implements CreateUser {
   @ApiProperty({ example: 'France', description: 'Country of residence' })
   @MaxLength(50)
   @IsString()
-  @IsAlpha()
+  @Matches(/^[a-zA-Z ]*$/)
   readonly country: string;
 
   @ApiProperty({ example: '28566', description: 'Postal code' })
@@ -30,7 +30,7 @@ export class CreateUserRequest implements CreateUser {
 
   @ApiProperty({ example: 'Grande Rue', description: 'Street' })
   @MaxLength(50)
-  @IsAlphanumeric()
+  @Matches(/^[a-zA-Z ]*$/)
   readonly street: string;
 }
 

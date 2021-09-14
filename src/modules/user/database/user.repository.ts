@@ -62,7 +62,7 @@ export class UserRepository
   async findUsers(query: FindUsersQuery): Promise<UserEntity[]> {
     const users = await this.repository.find({ where: query });
 
-    return users.map(this.mapper.toDomainEntity);
+    return users.map(user => this.mapper.toDomainEntity(user));
   }
 
   // Used to construct a query

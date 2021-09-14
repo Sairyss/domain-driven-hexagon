@@ -18,6 +18,7 @@ export class UserOrmMapper extends OrmMapper<UserEntity, UserOrmEntity> {
       country: props.address.country,
       postalCode: props.address.postalCode,
       street: props.address.street,
+      role: props.role,
     };
     return ormProps;
   }
@@ -26,6 +27,7 @@ export class UserOrmMapper extends OrmMapper<UserEntity, UserOrmEntity> {
     const id = new UUID(ormEntity.id);
     const props: UserProps = {
       email: new Email(ormEntity.email),
+      role: ormEntity.role,
       address: new Address({
         street: ormEntity.street,
         postalCode: ormEntity.postalCode,

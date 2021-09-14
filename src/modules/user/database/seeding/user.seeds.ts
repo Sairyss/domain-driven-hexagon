@@ -1,3 +1,4 @@
+import { UserRoles } from '@modules/user/domain/entities/user.types';
 import { NonFunctionProperties } from 'src/core/types';
 import { createdAtUpdatedAtMock } from 'src/infrastructure/mocks/generic-model-props.mock';
 import { UserOrmEntity } from '../user.orm-entity';
@@ -10,6 +11,7 @@ export const userSeeds: NonFunctionProperties<UserOrmEntity>[] = [
     country: 'London',
     postalCode: '23321',
     street: 'Abbey Road',
+    role: UserRoles.guest,
   },
   {
     ...createdAtUpdatedAtMock,
@@ -18,5 +20,6 @@ export const userSeeds: NonFunctionProperties<UserOrmEntity>[] = [
     country: 'Spain',
     postalCode: '28034',
     street: 'Plaza Mayor',
+    role: UserRoles.guest,
   },
 ];

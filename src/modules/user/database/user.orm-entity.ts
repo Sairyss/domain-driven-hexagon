@@ -1,5 +1,6 @@
 import { TypeormEntityBase } from 'src/infrastructure/database/base-classes/typeorm.entity.base';
 import { Column, Entity } from 'typeorm';
+import { UserRoles } from '../domain/entities/user.types';
 
 @Entity('user')
 export class UserOrmEntity extends TypeormEntityBase {
@@ -18,4 +19,7 @@ export class UserOrmEntity extends TypeormEntityBase {
 
   @Column()
   street: string;
+
+  @Column({ enum: UserRoles })
+  role: UserRoles;
 }

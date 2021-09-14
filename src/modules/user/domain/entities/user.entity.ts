@@ -3,35 +3,39 @@ import { UUID } from 'src/core/value-objects/uuid.value-object';
 import { UserCreatedDomainEvent } from '../events/user-created.domain-event';
 import { Address, AddressProps } from '../value-objects/address.value-object';
 import { Email } from '../value-objects/email.value-object';
+import { UpdateUserAddressProps, UserRoles } from './user.types';
 
-export interface UserProps {
+// Properties that are needed for a user creation
+export interface CreateUserProps {
   email: Email;
   address: Address;
 }
 
-export interface UpdateUserAddressProps {
-  country?: string;
-  postalCode?: string;
-  street?: string;
+// All properties that a User has
+export interface UserProps extends CreateUserProps {
+  role: UserRoles;
 }
 
 export class UserEntity extends AggregateRoot<UserProps> {
   protected readonly _id: UUID;
 
-  constructor(props: UserProps) {
-    super(props);
-    this._id = UUID.generate();
+  static create(createUser: CreateUserProps): UserEntity {
+    const id = UUID.generate();
+    // Setting a default role since it is not accepted during creation
+    const props: UserProps = { ...createUser, role: UserRoles.guest };
+    const user = new UserEntity({ id, props });
     /* adding "UserCreated" Domain Event that will be published
     eventually so an event handler somewhere may receive it and do an
     appropriate action */
-    this.addEvent(
+    user.addEvent(
       new UserCreatedDomainEvent({
-        aggregateId: this.id.value,
-        email: this.props.email.getRawProps(),
-        ...this.address.getRawProps(),
+        aggregateId: id.value,
+        email: props.email.getRawProps(),
+        ...props.address.getRawProps(),
         dateOccurred: Date.now(),
       }),
     );
+    return user;
   }
 
   /* Private properties and getters without a setter protects entity
@@ -44,6 +48,18 @@ export class UserEntity extends AggregateRoot<UserProps> {
 
   get email(): Email {
     return this.props.email;
+  }
+
+  get role(): UserRoles {
+    return this.props.role;
+  }
+
+  makeAdmin(): void {
+    this.props.role = UserRoles.admin;
+  }
+
+  makeModerator(): void {
+    this.props.role = UserRoles.moderator;
   }
 
   /* Update method only changes properties that we allow, in this

@@ -14,19 +14,32 @@ export interface BaseEntityProps {
   updatedAt: DateVO;
 }
 
+export interface CreateEntityProps<T> {
+  id: ID;
+  props: T;
+  createdAt?: DateVO;
+  updatedAt?: DateVO;
+}
+
 export abstract class Entity<EntityProps> {
-  constructor(props: EntityProps) {
+  constructor({
+    id,
+    createdAt,
+    updatedAt,
+    props,
+  }: CreateEntityProps<EntityProps>) {
+    this.setId(id);
     this.validateProps(props);
     const now = DateVO.now();
-    this._createdAt = now;
-    this._updatedAt = now;
+    this._createdAt = createdAt || now;
+    this._updatedAt = updatedAt || now;
     this.props = props;
   }
 
   protected readonly props: EntityProps;
 
   // ID is set in the entity to support different ID types
-  protected abstract readonly _id: ID;
+  protected abstract _id: ID;
 
   private readonly _createdAt: DateVO;
 
@@ -34,6 +47,10 @@ export abstract class Entity<EntityProps> {
 
   get id(): ID {
     return this._id;
+  }
+
+  private setId(id: ID): void {
+    this._id = id;
   }
 
   get createdAt(): DateVO {
