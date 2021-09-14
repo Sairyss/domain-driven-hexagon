@@ -105,9 +105,9 @@ export abstract class Entity<EntityProps> {
   }
 
   /**
-   * Convert to plain object. Mostly for debugging and testing purposes.
+   * Convert an Entity to a plain object.
    */
-  public toObject(): unknown {
+  public toObject(): EntityProps & BaseEntityProps {
     const propsCopy = convertPropsToObject(this.props);
 
     const result = {
@@ -119,7 +119,7 @@ export abstract class Entity<EntityProps> {
     return Object.freeze(result);
   }
 
-  private validateProps(props: EntityProps) {
+  private validateProps(props: EntityProps): void {
     const maxProps = 50;
 
     if (Guard.isEmpty(props)) {
@@ -132,7 +132,7 @@ export abstract class Entity<EntityProps> {
     }
     if (Object.keys(props).length > maxProps) {
       throw new ArgumentOutOfRangeException(
-        `Entity props should not have more then ${maxProps} properties`,
+        `Entity props should not have more than ${maxProps} properties`,
       );
     }
   }
