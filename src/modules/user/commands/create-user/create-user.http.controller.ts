@@ -11,7 +11,7 @@ import { CreateUserHttpRequest } from './create-user.request.dto';
 export class CreateUserHttpController {
   constructor(
     @Inject(createUserSymbol)
-    private readonly createUser: CreateUserService,
+    private readonly service: CreateUserService,
   ) {}
 
   @Post(routes.user.root)
@@ -30,7 +30,7 @@ export class CreateUserHttpController {
   async create(@Body() body: CreateUserHttpRequest): Promise<IdResponse> {
     const command = new CreateUserCommand(body);
 
-    const id = await this.createUser.createUser(command);
+    const id = await this.service.createUser(command);
 
     return new IdResponse(id.value);
   }

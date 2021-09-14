@@ -9,14 +9,14 @@ import { CreateUserService } from './create-user.service';
 export class CreateUserMessageController {
   constructor(
     @Inject(createUserSymbol)
-    private readonly createUser: CreateUserService,
+    private readonly service: CreateUserService,
   ) {}
 
   @MessagePattern('user.create') // <- Subscribe to a microservice message
   async create(message: CreateUserMessageRequest): Promise<IdResponse> {
     const command = new CreateUserCommand(message);
 
-    const id = await this.createUser.createUser(command);
+    const id = await this.service.createUser(command);
 
     return new IdResponse(id.value);
   }

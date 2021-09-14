@@ -11,7 +11,7 @@ export class FindUsersHttpController {
 
   /* Since this is a simple query with no additional business
      logic involved, it bypasses application's core completely 
-     and retrieves user directly from repository.
+     and retrieves users directly from a repository.
    */
   @Get(routes.user.root)
   async findUsers(
