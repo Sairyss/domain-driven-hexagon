@@ -22,7 +22,12 @@ export class UserEntity extends AggregateRoot<UserProps> {
     appropriate action, like sending confirmation email, adding user
     to mailing list, send notification to slack etc */
     this.addEvent(
-      new UserCreatedDomainEvent(this.id, this.props.email, this.address),
+      new UserCreatedDomainEvent({
+        aggregateId: this.id.value,
+        email: this.props.email.getRawProps(),
+        ...this.address.getRawProps(),
+        dateOccurred: Date.now(),
+      }),
     );
   }
 

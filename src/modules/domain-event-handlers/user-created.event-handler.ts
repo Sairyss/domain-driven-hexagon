@@ -1,5 +1,6 @@
 import { EmailService } from '@modules/email/email.service';
 import { UserCreatedDomainEvent } from '@modules/user/domain/events/user-created.domain-event';
+import { Email } from '@modules/user/domain/value-objects/email.value-object';
 import { DomainEventHandler, DomainEvents } from 'src/core/domain-events';
 
 export class OnUserCreatedDomainEvent implements DomainEventHandler {
@@ -13,7 +14,7 @@ export class OnUserCreatedDomainEvent implements DomainEventHandler {
   }
 
   async onUserCreated(event: UserCreatedDomainEvent): Promise<void> {
-    await this.email.send(event.email, 'Welcome message goes here');
+    await this.email.send(new Email(event.email), 'Welcome message goes here');
     /* Other side-effects can go here, or different event handlers can
     be created if needed */
   }
