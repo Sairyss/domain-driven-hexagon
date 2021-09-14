@@ -15,7 +15,7 @@ function isEntity(obj: unknown): obj is Entity<unknown> {
   );
 }
 
-function convertToRaw(item: any): any {
+function convertToPlainObject(item: any): any {
   if (ValueObject.isValueObject(item)) {
     return item.getRawProps();
   }
@@ -37,10 +37,10 @@ export function convertPropsToObject(props: any): any {
   for (const prop in propsCopy) {
     if (Array.isArray(propsCopy[prop])) {
       propsCopy[prop] = (propsCopy[prop] as Array<unknown>).map(item => {
-        return convertToRaw(item);
+        return convertToPlainObject(item);
       });
     }
-    propsCopy[prop] = convertToRaw(propsCopy[prop]);
+    propsCopy[prop] = convertToPlainObject(propsCopy[prop]);
   }
 
   return propsCopy;

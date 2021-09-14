@@ -38,18 +38,10 @@ export class UserEntity extends AggregateRoot<UserProps> {
     return user;
   }
 
-  /* Private properties and getters without a setter protects entity
-  from outside modifications by using assignment, for example:
-  "user.email = someOtherEmail". This technique only allows
-  updating value by using a dedicated 'update' method (see updateAddress below) */
-  get address(): Address {
-    return this.props.address;
-  }
-
-  get email(): Email {
-    return this.props.email;
-  }
-
+  /* You can create getters only for the properties that you need to access and leave the rest of the properties private to keep entity
+  encapsulated. To get all entity properties (for saving it to a
+  database or mapping a response) use .getPropsCopy() method
+  defined in a EntityBase parent class */
   get role(): UserRoles {
     return this.props.role;
   }

@@ -4,9 +4,9 @@ import { IdResponse } from '../dtos/id.response.dto';
 
 export class ResponseBase extends IdResponse {
   constructor(entity: BaseEntityProps) {
-    super(entity.id?.value as string);
-    this.createdAt = (entity.createdAt?.value as Date).toISOString();
-    this.updatedAt = (entity.updatedAt?.value as Date).toISOString();
+    super(entity.id.value);
+    this.createdAt = entity.createdAt.value.toISOString();
+    this.updatedAt = entity.updatedAt.value.toISOString();
   }
 
   @ApiProperty({ example: '2020-11-24T17:43:15.970Z' })

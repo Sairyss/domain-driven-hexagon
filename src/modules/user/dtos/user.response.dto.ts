@@ -13,10 +13,11 @@ export class UserResponse extends ResponseBase implements User {
        (avoid blacklisting, which will return everything
         but blacklisted items, which can lead to a data leak).
     */
-    this.email = user.email.value;
-    this.country = user.address.country;
-    this.postalCode = user.address.postalCode;
-    this.street = user.address.street;
+    const props = user.getPropsCopy();
+    this.email = props.email.value;
+    this.country = props.address.country;
+    this.postalCode = props.address.postalCode;
+    this.street = props.address.street;
   }
 
   @ApiProperty({

@@ -105,16 +105,18 @@ export abstract class Entity<EntityProps> {
   }
 
   /**
-   * Convert an Entity to a plain object.
+   * Convert an Entity and all sub-entities/Value Objects it
+   * contains to a plain object with primitive types. Can be
+   * useful when logging an entity during testing/debugging
    */
-  public toObject(): EntityProps & BaseEntityProps {
-    const propsCopy = convertPropsToObject(this.props);
+  public toObject(): unknown {
+    const plainProps = convertPropsToObject(this.props);
 
     const result = {
       id: this._id.value,
       createdAt: this._createdAt.value,
       updatedAt: this._updatedAt.value,
-      ...propsCopy,
+      ...plainProps,
     };
     return Object.freeze(result);
   }
