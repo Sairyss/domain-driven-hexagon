@@ -1,4 +1,5 @@
 import { AggregateRoot } from 'src/core/base-classes/aggregate-root.base';
+import { UUID } from 'src/core/value-objects/uuid.value-object';
 import { UserCreatedDomainEvent } from '../events/user-created.domain-event';
 import { Address, AddressProps } from '../value-objects/address.value-object';
 import { Email } from '../value-objects/email.value-object';
@@ -15,12 +16,14 @@ export interface UpdateUserAddressProps {
 }
 
 export class UserEntity extends AggregateRoot<UserProps> {
+  protected readonly _id: UUID;
+
   constructor(props: UserProps) {
     super(props);
+    this._id = UUID.generate();
     /* adding "UserCreated" Domain Event that will be published
     eventually so an event handler somewhere may receive it and do an
-    appropriate action, like sending confirmation email, adding user
-    to mailing list, send notification to slack etc */
+    appropriate action */
     this.addEvent(
       new UserCreatedDomainEvent({
         aggregateId: this.id.value,

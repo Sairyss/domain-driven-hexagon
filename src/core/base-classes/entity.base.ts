@@ -17,7 +17,6 @@ export interface BaseEntityProps {
 export abstract class Entity<EntityProps> {
   constructor(props: EntityProps) {
     this.validateProps(props);
-    this._id = ID.generate();
     const now = DateVO.now();
     this._createdAt = now;
     this._updatedAt = now;
@@ -26,7 +25,8 @@ export abstract class Entity<EntityProps> {
 
   protected readonly props: EntityProps;
 
-  private readonly _id: ID;
+  // ID is set in the entity to support different ID types
+  protected abstract readonly _id: ID;
 
   private readonly _createdAt: DateVO;
 

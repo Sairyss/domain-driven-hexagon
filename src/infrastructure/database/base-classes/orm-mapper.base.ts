@@ -10,13 +10,18 @@ export type OrmEntityProps<OrmEntity> = Omit<
   'id' | 'createdAt' | 'updatedAt'
 >;
 
+export interface EntityProps<EntityProps> {
+  id: ID;
+  props: EntityProps;
+}
+
 export abstract class OrmMapper<Entity extends BaseEntityProps, OrmEntity> {
   constructor(
     private entityConstructor: new (...args: any[]) => Entity,
     private ormEntityConstructor: new (...args: any[]) => OrmEntity,
   ) {}
 
-  protected abstract toDomainProps(ormEntity: OrmEntity): unknown;
+  protected abstract toDomainProps(ormEntity: OrmEntity): EntityProps<unknown>;
 
   protected abstract toOrmProps(entity: Entity): OrmEntityProps<OrmEntity>;
 
@@ -35,21 +40,24 @@ export abstract class OrmMapper<Entity extends BaseEntityProps, OrmEntity> {
     });
   }
 
-  /** Tricking TypeScript to do mapping from OrmEntity to Entity's protected/private properties.
-   * This is done to avoid public setters or accepting all props through constructor.
-   * Public setters may corrupt Entity's state. Accepting every property through constructor may
-   * conflict with some pre-defined business rules that are validated at object creation.
-   * Never use this trick in domain layer. Normally private properties should never be assigned directly.
+  /** Tricking TypeScript to do mapping from OrmEntity to Entity's 
+   protected/private properties.
+   This is done to avoid public setters or accepting all props through a
+   constructor. Public setters may corrupt Entity's state. Accepting
+   every property through constructor may conflict with some pre-defined
+   business rules that are validated at object creation.
+   Never use this trick in domain layer. Normally private properties
+   should never be assigned directly.
    */
   private assignPropsToEntity<Props>(
-    entityProps: Props,
+    { id, props }: EntityProps<Props>,
     ormEntity: OrmEntity,
   ): Entity {
     const entityCopy: any = Object.create(this.entityConstructor.prototype);
     const ormEntityBase: TypeormEntityBase = (ormEntity as unknown) as TypeormEntityBase;
 
-    entityCopy.props = entityProps;
-    entityCopy._id = new ID(ormEntityBase.id);
+    entityCopy.props = props;
+    entityCopy._id = id;
     entityCopy._createdAt = new DateVO(ormEntityBase.createdAt);
     entityCopy._updatedAt = new DateVO(ormEntityBase.updatedAt);
 

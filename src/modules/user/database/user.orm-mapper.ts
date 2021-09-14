@@ -1,4 +1,6 @@
+import { UUID } from 'src/core/value-objects/uuid.value-object';
 import {
+  EntityProps,
   OrmEntityProps,
   OrmMapper,
 } from 'src/infrastructure/database/base-classes/orm-mapper.base';
@@ -20,7 +22,8 @@ export class UserOrmMapper extends OrmMapper<UserEntity, UserOrmEntity> {
     return ormProps;
   }
 
-  protected toDomainProps(ormEntity: UserOrmEntity): UserProps {
+  protected toDomainProps(ormEntity: UserOrmEntity): EntityProps<UserProps> {
+    const id = new UUID(ormEntity.id);
     const props: UserProps = {
       email: new Email(ormEntity.email),
       address: new Address({
@@ -29,6 +32,6 @@ export class UserOrmMapper extends OrmMapper<UserEntity, UserOrmEntity> {
         country: ormEntity.country,
       }),
     };
-    return props;
+    return { id, props };
   }
 }
