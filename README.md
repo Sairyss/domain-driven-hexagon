@@ -240,7 +240,9 @@ Though, violating this rule and returning some metadata, like `ID` of a created 
 
 All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction. This means that inside a single process, one command/request to your application must execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used.
 
-**Note**: `Command` is not the same as [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object invokes a CQS Command. Both `Commands` and `Queries` in this example are just simple objects that carry data between layers.
+**Note**: `Command` is not the same as [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object executes some state-changing action. Both `Commands` and `Queries` in this example are just simple objects that carry data between layers.
+
+A `Command` describes a single action, it does not perform it.
 
 Example of a command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
 
@@ -248,7 +250,7 @@ Example of a command object: [create-user.command.ts](src/modules/user/commands/
 
 - `Query` is used for retrieving data and should not make any state changes (like writes to the database, files etc).
 
-Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it should be done in a corresponding application service.
+Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it can be done in a application/domain layer.
 
 Example of a query object: [find-users.query.ts](src/modules/user/queries/find-users/find-users.query.ts)
 
