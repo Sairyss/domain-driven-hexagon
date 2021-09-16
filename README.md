@@ -238,7 +238,7 @@ Some CQS purists may say that a `Command` shouldn't return anything at all. But 
 
 Though, violating this rule and returning some metadata, like `ID` of a created item, redirect link, confirmation message, status, or other metadata is a more practical approach than following dogmas.
 
-All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction. This means that inside a single process, one command/request to your application must execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used.
+All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction (if you are using a single database). This means that inside a single process, one command/request to your application usually should execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used.
 
 **Note**: `Command` is not the same as [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object executes some state-changing action. Both `Commands` and `Queries` in this example are just simple objects that carry data between layers.
 
@@ -389,11 +389,9 @@ Typical approach that is usually used involves executing all this logic in a ser
 
 An alternative approach would be publishing a `Domain Event`. If executing a command related to one aggregate instance requires additional domain rules to be run on one or more additional aggregates, you can design and implement those side effects to be triggered by Domain Events. Propagation of state changes across multiple aggregates within the same domain model can be performed by subscribing to a concrete `Domain Event` and creating as many event handlers as needed. This prevents coupling between aggregates.
 
-When using [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) all events will be stored to the database in a single transaction and then "replayed" on aggregates.
+Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-If _Event Sourcing_ is not used, Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
-
-All changes done by Domain Events (or by anything else) across multiple aggregates should be saved in a single database transaction to maintain consistency. Patterns like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar can help with that.
+All changes done by Domain Events (or by anything else) across multiple aggregates in a single process should be saved in a single database transaction to maintain consistency. Patterns like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar can help with that.
 
 **Note**: this project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
 
@@ -412,6 +410,8 @@ To have a better understanding on domain events and implementation read this:
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
 **Note**: keep in mind that while using only events for complex workflows with a lot of steps it will be hard to track everything that is happening across the application. One event may trigger another one, then another one, and so on. To track the entire workflow you'll have to go multiple places and search for an event handler for each step which is hard to maintain. In this cases using a service/orchestrator/mediator might be a preferred approach than only using events since you will have an entire workflow in one place. This might create some coupling, but is easier to maintain. Don't rely on events only, pick the right tool for the job.
+
+**Note**: keep in mind that if you are using [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) with a single stream per aggregate you most likely will not be able to save all events across multiple aggregates in a single transaction. In this case saving events across multiple aggregates should be treated differently (for example by using [Sagas](https://microservices.io/patterns/data/saga.html) with compensating events or a [Process Manager](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html) or something similar).
 
 ## Integration Events
 
