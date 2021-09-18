@@ -2,6 +2,7 @@ import { FindConditions, ObjectLiteral, Repository } from 'typeorm';
 import { ID } from 'src/core/value-objects/id.value-object';
 import { DomainEvents } from 'src/core/domain-events';
 import { Logger } from 'src/core/ports/logger.port';
+import { AggregateRoot } from 'src/core/base-classes/aggregate-root.base';
 import {
   QueryParams,
   FindManyPaginatedParams,
@@ -10,7 +11,6 @@ import {
 } from '../../../core/ports/repository.ports';
 import { NotFoundException } from '../../../core/exceptions';
 import { OrmMapper } from './orm-mapper.base';
-import { BaseEntityProps } from '../../../core/base-classes/entity.base';
 
 export type WhereCondition<OrmEntity> =
   | FindConditions<OrmEntity>[]
@@ -19,7 +19,7 @@ export type WhereCondition<OrmEntity> =
   | string;
 
 export abstract class TypeormRepositoryBase<
-  Entity extends BaseEntityProps,
+  Entity extends AggregateRoot<unknown>,
   EntityProps,
   OrmEntity
 > implements RepositoryPort<Entity, EntityProps> {
