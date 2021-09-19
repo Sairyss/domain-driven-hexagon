@@ -10,6 +10,9 @@ import { UserEntity } from '../../domain/entities/user.entity';
 
 export class CreateUserService extends CommandHandler<UnitOfWork> {
   protected async execute(command: CreateUserCommand): Promise<ID> {
+    /* Use a repository provided by UnitOfWork to include everything 
+       (including changes caused by Domain Events) into one 
+       atomic database transaction */
     const userRepo: UserRepositoryPort = this.unitOfWork.getUserRepository(
       command.correlationId,
     );
