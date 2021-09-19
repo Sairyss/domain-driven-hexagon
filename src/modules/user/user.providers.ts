@@ -1,5 +1,5 @@
 import { Logger, Provider } from '@nestjs/common';
-import { CreateUserUoW } from '@src/infrastructure/database/units-of-work';
+import { UnitOfWork } from '@src/infrastructure/database/unit-of-work';
 import { UserRepository } from './database/user.repository';
 import { CreateUserService } from './commands/create-user/create-user.service';
 import { DeleteUserService } from './commands/delete-user/delete-user.service';
@@ -17,10 +17,7 @@ export const createUserSymbol = Symbol('createUser');
 export const createUserProvider: Provider = {
   provide: createUserSymbol,
   useFactory: (): CreateUserService => {
-    // Initiating UnitOfWork and injecting a transactional repository
-    CreateUserUoW.init();
-    const userRepo = CreateUserUoW.getUserRepository();
-    return new CreateUserService(userRepo);
+    return new CreateUserService(new UnitOfWork());
   },
   inject: [UserRepository],
 };

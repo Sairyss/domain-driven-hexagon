@@ -12,5 +12,6 @@ export const typeormConfig: TypeOrmModuleOptions = {
   database: process.env.DB_NAME,
   entities: [],
   autoLoadEntities: true,
+  connectTimeoutMS: 2000,
   logging: ['error', 'migration', 'schema'],
 };

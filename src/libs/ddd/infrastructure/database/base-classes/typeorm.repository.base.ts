@@ -40,7 +40,11 @@ export abstract class TypeormRepositoryBase<
   async save(entity: Entity): Promise<Entity> {
     const ormEntity = this.mapper.toOrmEntity(entity);
     const result = await this.repository.save(ormEntity);
-    await DomainEvents.publishEvents(entity.id, this.logger);
+    await DomainEvents.publishEvents(
+      entity.id,
+      this.logger,
+      this.correlationId,
+    );
     this.logger.debug(
       `[Entity persisted]: ${this.tableName} ${entity.id.value}`,
     );
@@ -52,7 +56,7 @@ export abstract class TypeormRepositoryBase<
     const result = await this.repository.save(ormEntities);
     await Promise.all(
       entities.map(entity =>
-        DomainEvents.publishEvents(entity.id, this.logger),
+        DomainEvents.publishEvents(entity.id, this.logger, this.correlationId),
       ),
     );
     this.logger.debug(
@@ -126,8 +130,28 @@ export abstract class TypeormRepositoryBase<
 
   async delete(entity: Entity): Promise<Entity> {
     await this.repository.remove(this.mapper.toOrmEntity(entity));
-    await DomainEvents.publishEvents(entity.id, this.logger);
+    await DomainEvents.publishEvents(
+      entity.id,
+      this.logger,
+      this.correlationId,
+    );
     this.logger.debug(`[Entity deleted]: ${this.tableName} ${entity.id.value}`);
     return entity;
+  }
+
+  protected correlationId?: string;
+
+  setCorrelationId(correlationId: string): this {
+    this.correlationId = correlationId;
+    this.setContext();
+    return this;
+  }
+
+  private setContext() {
+    if (this.correlationId) {
+      this.logger.setContext(`${this.constructor.name}:${this.correlationId}`);
+    } else {
+      this.logger.setContext(this.constructor.name);
+    }
   }
 }

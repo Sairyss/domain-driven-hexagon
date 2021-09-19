@@ -38,7 +38,11 @@ export class DomainEvents {
     }
   }
 
-  public static async publishEvents(id: ID, logger: Logger): Promise<void> {
+  public static async publishEvents(
+    id: ID,
+    logger: Logger,
+    correlationId?: string,
+  ): Promise<void> {
     const aggregate = this.findAggregateByID(id);
 
     if (aggregate) {
@@ -47,6 +51,10 @@ export class DomainEvents {
           logger.debug(
             `[Domain Event published]: ${event.constructor.name} ${aggregate.id.value}`,
           );
+          if (correlationId && !event.correlationId) {
+            // eslint-disable-next-line no-param-reassign
+            event.correlationId = correlationId;
+          }
           return this.publish(event);
         }),
       );
