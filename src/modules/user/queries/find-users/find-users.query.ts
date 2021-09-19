@@ -6,9 +6,9 @@ export class FindUsersQuery {
     this.street = props.street;
   }
 
-  readonly country: string;
+  readonly country?: string;
 
-  readonly postalCode: string;
+  readonly postalCode?: string;
 
-  readonly street: string;
+  readonly street?: string;
 }

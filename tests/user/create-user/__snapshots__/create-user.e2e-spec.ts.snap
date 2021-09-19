@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create a user Creating a user happy path 1`] = `
+Object {
+  "id": Any<String>,
+}
+`;
+
+exports[`Create a user Creating a user happy path 2`] = `
+Array [
+  Object {
+    "country": "England",
+    "createdAt": Any<String>,
+    "email": "john.doe@gmail.com",
+    "id": Any<String>,
+    "postalCode": "29145",
+    "street": "Road Avenue",
+    "updatedAt": Any<String>,
+  },
+]
+`;

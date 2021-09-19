@@ -1,4 +1,26 @@
-_**This repo is work in progress**_
+## September update:
+
+There are a lot of updates to this repo lately:
+
+Added more code examples:
+
+- Added UnitOfWork
+- All Domain Events can now be executed in a single database transaction using a UnitOfWork
+- Added Wallet module to show an example of using a UnitOfWork together with Domain Events
+- Added BDD tests example
+
+Refactoring:
+
+- Refactored Domain Events and Domain Events Handlers
+- Commands are now plain objects
+- Moved generic files to /libs directory
+- Refactored Entity/Aggregate creation
+- More small changes
+
+Updates in readme and code:
+
+- My opinion on some topics evolve over time so readme and code gets updated constantly.
+- Added more resources and topics to readme
 
 # Domain-Driven Hexagon
 
@@ -976,7 +998,12 @@ Behavioral tests can be divided in two parts:
 
 **Note**: some people try to make e2e tests faster by using in-memory or embedded databases (like [sqlite3](https://www.npmjs.com/package/sqlite3)). This makes tests faster, but reduces the reliability of those tests and should be avoided. Read more: [Don't use In-Memory Databases for Tests](https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/).
 
-Example files: // TODO
+For BDD tests [Cucumber](https://cucumber.io/) with [Gherkin](https://cucumber.io/docs/gherkin/reference/) syntax can give a structure and meaning to your tests. This way even people not involved in a development can define steps needed for testing. In node.js world [jest-cucumber](https://www.npmjs.com/package/jest-cucumber) is a nice package to achieve that.
+
+Example files:
+
+- [create-user.feature](tests/user/create-user/create-user.feature) - feature file that contains Gherkin steps
+- [create-user.e2e-spec.ts](tests/user/create-user/create-user.e2e-spec.ts) - spec file that executes Gherkin steps
 
 Read more:
 

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from 'src/modules/user/user.module';
+import { UserModule } from '@modules/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NestEventModule } from 'nest-event';
 import { ConsoleModule } from 'nestjs-console';

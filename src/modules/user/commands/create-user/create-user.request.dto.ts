@@ -1,4 +1,4 @@
-import { CreateUser } from 'src/interface-adapters/interfaces/user/create.user.interface';
+import { CreateUser } from '@src/interface-adapters/interfaces/user/create.user.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsAlphanumeric,

@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { CreateUserUoW } from 'src/infrastructure/database/units-of-work';
+import { CreateUserUoW } from '@src/infrastructure/database/units-of-work';
 import { WalletRepository } from './database/wallet.repository';
 import { CreateWalletWhenUserIsCreatedDomainEventHandler } from './application/event-handlers/create-wallet-when-user-is-created.domain-event-handler';
 

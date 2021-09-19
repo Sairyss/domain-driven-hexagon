@@ -6,7 +6,7 @@ import {
   Matches,
   IsOptional,
 } from 'class-validator';
-import { FindUsers } from 'src/interface-adapters/interfaces/user/find-users.interface';
+import { FindUsers } from '@src/interface-adapters/interfaces/user/find-users.interface';
 
 export class FindUsersRequest implements FindUsers {
   @ApiProperty({ example: 'France', description: 'Country of residence' })

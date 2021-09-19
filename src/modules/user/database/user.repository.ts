@@ -4,13 +4,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   UserEntity,
   UserProps,
-} from 'src/modules/user/domain/entities/user.entity';
+} from '@modules/user/domain/entities/user.entity';
 import { NotFoundException } from '@libs/exceptions';
 import {
   TypeormRepositoryBase,
   WhereCondition,
 } from '@libs/ddd/infrastructure/database/base-classes/typeorm.repository.base';
 import { QueryParams } from '@libs/ddd/domain/ports/repository.ports';
+import { removeUndefinedProps } from '@src/libs/utils/remove-undefined-props.util';
 import { UserOrmEntity } from './user.orm-entity';
 import { UserRepositoryPort } from './user.repository.port';
 import { UserOrmMapper } from './user.orm-mapper';
@@ -60,8 +61,8 @@ export class UserRepository
   }
 
   async findUsers(query: FindUsersQuery): Promise<UserEntity[]> {
-    const users = await this.repository.find({ where: query });
-
+    const where: QueryParams<UserOrmEntity> = removeUndefinedProps(query);
+    const users = await this.repository.find({ where });
     return users.map(user => this.mapper.toDomainEntity(user));
   }
 

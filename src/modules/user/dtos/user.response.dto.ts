@@ -1,6 +1,6 @@
 import { UserEntity } from '@modules/user/domain/entities/user.entity';
 import { ResponseBase } from '@libs/ddd/interface-adapters/base-classes/response.base';
-import { User } from 'src/interface-adapters/interfaces/user/user.interface';
+import { User } from '@src/interface-adapters/interfaces/user/user.interface';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserResponse extends ResponseBase implements User {

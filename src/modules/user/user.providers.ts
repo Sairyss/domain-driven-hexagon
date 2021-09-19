@@ -1,5 +1,5 @@
 import { Logger, Provider } from '@nestjs/common';
-import { CreateUserUoW } from 'src/infrastructure/database/units-of-work';
+import { CreateUserUoW } from '@src/infrastructure/database/units-of-work';
 import { UserRepository } from './database/user.repository';
 import { CreateUserService } from './commands/create-user/create-user.service';
 import { DeleteUserService } from './commands/delete-user/delete-user.service';
