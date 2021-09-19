@@ -12,8 +12,7 @@ export const createWalletWhenUserIsCreatedProvider: Provider = {
      * are saved in a single transaction (or rolled back in case of failure).
      */
     CreateUserUoW.init();
-    const walletOrmRepo = CreateUserUoW.getWalletRepository();
-    const walletRepo = new WalletRepository(walletOrmRepo);
+    const walletRepo = CreateUserUoW.getWalletRepository();
     const eventHandler = new OnUserCreatedDomainEventHandler(walletRepo);
     eventHandler.listen();
     return eventHandler;
