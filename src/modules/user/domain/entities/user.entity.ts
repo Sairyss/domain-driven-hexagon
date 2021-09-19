@@ -19,10 +19,10 @@ export interface UserProps extends CreateUserProps {
 export class UserEntity extends AggregateRoot<UserProps> {
   protected readonly _id: UUID;
 
-  static create(createUser: CreateUserProps): UserEntity {
+  static create(create: CreateUserProps): UserEntity {
     const id = UUID.generate();
-    // Setting a default role since it is not accepted during creation
-    const props: UserProps = { ...createUser, role: UserRoles.guest };
+    /* Setting a default role since we are not accepting it during creation. */
+    const props: UserProps = { ...create, role: UserRoles.guest };
     const user = new UserEntity({ id, props });
     /* adding "UserCreated" Domain Event that will be published
     eventually so an event handler somewhere may receive it and do an
@@ -32,7 +32,6 @@ export class UserEntity extends AggregateRoot<UserProps> {
         aggregateId: id.value,
         email: props.email.getRawProps(),
         ...props.address.getRawProps(),
-        dateOccurred: Date.now(),
       }),
     );
     return user;
@@ -63,6 +62,8 @@ export class UserEntity extends AggregateRoot<UserProps> {
       ...this.props.address,
       ...props,
     } as AddressProps);
+
+    // Note: AddressUpdatedDomainEvent can be emitted here if needed.
   }
 
   someBusinessLogic(): void {

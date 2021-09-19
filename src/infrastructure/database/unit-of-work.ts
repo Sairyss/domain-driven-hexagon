@@ -7,10 +7,6 @@ import { WalletRepository } from '@modules/wallet/database/wallet.repository';
 export class UnitOfWork extends UnitOfWorkOrm {
   // Add new repositories below to use this generic UnitOfWork
 
-  init(): string {
-    return UnitOfWork.init();
-  }
-
   // Convert TypeOrm Repository to a Domain Repository
   getUserRepository(correlationId: string): UserRepository {
     return new UserRepository(

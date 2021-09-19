@@ -1,19 +1,18 @@
 import { Logger } from '@nestjs/common';
 import { EntityTarget, getConnection, QueryRunner, Repository } from 'typeorm';
-import { nanoid } from 'nanoid';
 
 export class UnitOfWorkOrm {
   private static queryRunners: Map<string, QueryRunner> = new Map();
 
   /**
-   * Create a connection pool and get its ID.
-   * ID is used for correlation purposes (to use a correct query runner, correlate logs etc)
+   * Creates a connection pool with a specified ID.
    */
-  static init(): string {
+  static init(correlationId: string): void {
+    if (!correlationId) {
+      throw new Error('Correlation ID must be provided');
+    }
     const queryRunner = getConnection().createQueryRunner();
-    const correlationId = nanoid(8);
     this.queryRunners.set(correlationId, queryRunner);
-    return correlationId;
   }
 
   static getQueryRunner(correlationId: string): QueryRunner {
@@ -47,7 +46,7 @@ export class UnitOfWorkOrm {
     const logger = new Logger(`${this.name}:${correlationId}`);
     logger.debug(`[Starting transaction]`);
     const queryRunner = this.getQueryRunner(correlationId);
-    await queryRunner.startTransaction();
+    await queryRunner.startTransaction('SERIALIZABLE');
     let result: T;
     try {
       result = await callback();

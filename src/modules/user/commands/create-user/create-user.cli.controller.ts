@@ -38,7 +38,7 @@ export class CreateUserCliController {
       street,
     });
 
-    const id = await this.service.execute(command);
+    const id = await this.service.executeUnitOfWork(command);
 
     this.logger.log('User created:', id.value);
   }

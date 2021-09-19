@@ -30,7 +30,7 @@ export class CreateUserHttpController {
   async create(@Body() body: CreateUserHttpRequest): Promise<IdResponse> {
     const command = new CreateUserCommand(body);
 
-    const id = await this.service.execute(command);
+    const id = await this.service.executeUnitOfWork(command);
 
     return new IdResponse(id.value);
   }

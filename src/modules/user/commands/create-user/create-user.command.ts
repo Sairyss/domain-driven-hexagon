@@ -1,6 +1,12 @@
+import {
+  Command,
+  CommandProps,
+} from '@src/libs/ddd/domain/base-classes/command.base';
+
 // Command is a plain object with properties
-export class CreateUserCommand {
-  constructor(props: CreateUserCommand) {
+export class CreateUserCommand extends Command {
+  constructor(props: CommandProps<CreateUserCommand>) {
+    super(props);
     this.email = props.email;
     this.country = props.country;
     this.postalCode = props.postalCode;

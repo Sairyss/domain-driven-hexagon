@@ -4,16 +4,15 @@ import { ConflictException } from '@libs/exceptions';
 import { Address } from '@modules/user/domain/value-objects/address.value-object';
 import { Email } from '@modules/user/domain/value-objects/email.value-object';
 import { UnitOfWork } from '@src/infrastructure/database/unit-of-work';
+import { CommandHandler } from '@src/libs/ddd/domain/base-classes/command-handler.base';
 import { CreateUserCommand } from './create-user.command';
 import { UserEntity } from '../../domain/entities/user.entity';
 
-export class CreateUserService {
-  constructor(private readonly unitOfWork: UnitOfWork) {}
-
-  async create(
-    command: CreateUserCommand,
-    userRepo: UserRepositoryPort,
-  ): Promise<ID> {
+export class CreateUserService extends CommandHandler<UnitOfWork> {
+  protected async execute(command: CreateUserCommand): Promise<ID> {
+    const userRepo: UserRepositoryPort = this.unitOfWork.getUserRepository(
+      command.correlationId,
+    );
     // user uniqueness guard
     if (await userRepo.exists(command.email)) {
       throw new ConflictException('User already exists');
@@ -33,16 +32,5 @@ export class CreateUserService {
     const created = await userRepo.save(user);
 
     return created.id;
-  }
-
-  async execute(command: CreateUserCommand): Promise<ID> {
-    const correlationId = this.unitOfWork.init();
-    const userRepo: UserRepositoryPort = this.unitOfWork.getUserRepository(
-      correlationId,
-    );
-    // Wrapping user creation in a UnitOfWork so events get included in a transaction
-    return UnitOfWork.execute(correlationId, async () =>
-      this.create(command, userRepo),
-    );
   }
 }

@@ -16,7 +16,7 @@ export class CreateUserMessageController {
   async create(message: CreateUserMessageRequest): Promise<IdResponse> {
     const command = new CreateUserCommand(message);
 
-    const id = await this.service.execute(command);
+    const id = await this.service.executeUnitOfWork(command);
 
     return new IdResponse(id.value);
   }
