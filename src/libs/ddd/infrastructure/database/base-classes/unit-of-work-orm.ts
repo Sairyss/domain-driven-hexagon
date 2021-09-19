@@ -52,15 +52,20 @@ export class UnitOfWorkOrm {
     try {
       result = await callback();
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      logger.debug(`[Error]: ${error.message}`);
+      try {
+        await queryRunner.rollbackTransaction();
+      } finally {
+        await this.finish(correlationId);
+      }
       logger.debug(`[Transaction rolled back]`);
-      await this.finish(correlationId);
+      logger.debug(`[Error]: ${error.message}`);
       throw error;
     }
-
-    await queryRunner.commitTransaction();
-    await this.finish(correlationId);
+    try {
+      await queryRunner.commitTransaction();
+    } finally {
+      await this.finish(correlationId);
+    }
 
     logger.debug(`[Transaction committed]`);
 
@@ -69,7 +74,10 @@ export class UnitOfWorkOrm {
 
   static async finish(correlationId: string): Promise<void> {
     const queryRunner = this.getQueryRunner(correlationId);
-    queryRunner.release();
-    this.queryRunners.delete(correlationId);
+    try {
+      await queryRunner.release();
+    } finally {
+      this.queryRunners.delete(correlationId);
+    }
   }
 }
