@@ -12,7 +12,7 @@ import {
 } from 'src/infrastructure/database/base-classes/typeorm.repository.base';
 import { QueryParams } from 'src/core/ports/repository.ports';
 import { UserOrmEntity } from './user.orm-entity';
-import { UserRepositoryPort } from './user.repository.interface';
+import { UserRepositoryPort } from './user.repository.port';
 import { UserOrmMapper } from './user.orm-mapper';
 import { FindUsersQuery } from '../queries/find-users/find-users.query';
 
@@ -29,7 +29,7 @@ export class UserRepository
     super(
       userRepository,
       new UserOrmMapper(UserEntity, UserOrmEntity),
-      new Logger('user-repository'),
+      new Logger('UserRepository'),
     );
   }
 

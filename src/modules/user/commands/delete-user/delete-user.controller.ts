@@ -14,6 +14,6 @@ export class DeleteUserHttpController {
   @Delete(routes.user.delete)
   async deleteUser(@Param('id') id: string): Promise<void> {
     const command = new DeleteUserCommand({ userId: id });
-    await this.service.delete(command);
+    await this.service.execute(command);
   }
 }

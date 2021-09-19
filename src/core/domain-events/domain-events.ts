@@ -12,7 +12,7 @@ export type EventCallback = (event: DomainEvent) => Promise<void>;
 
 type EventName = string;
 
-type DomainEventClass = new (...args: never[]) => DomainEvent;
+export type DomainEventClass = new (...args: never[]) => DomainEvent;
 
 @final
 export class DomainEvents {
