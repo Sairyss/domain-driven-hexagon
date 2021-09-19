@@ -4,8 +4,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   TypeormRepositoryBase,
   WhereCondition,
-} from 'src/infrastructure/database/base-classes/typeorm.repository.base';
-import { QueryParams } from 'src/core/ports/repository.ports';
+} from '@libs/ddd/infrastructure/database/base-classes/typeorm.repository.base';
+import { QueryParams } from '@libs/ddd/domain/ports/repository.ports';
 import { WalletOrmEntity } from './wallet.orm-entity';
 import { WalletEntity, WalletProps } from '../domain/entities/wallet.entity';
 import { WalletRepositoryPort } from './wallet.repository.port';

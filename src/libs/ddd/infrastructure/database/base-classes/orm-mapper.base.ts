@@ -1,9 +1,9 @@
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AggregateRoot } from 'src/core/base-classes/aggregate-root.base';
-import { CreateEntityProps } from 'src/core/base-classes/entity.base';
-import { DateVO } from 'src/core/value-objects/date.value-object';
-import { ID } from 'src/core/value-objects/id.value-object';
+import { AggregateRoot } from '@libs/ddd/domain/base-classes/aggregate-root.base';
+import { CreateEntityProps } from '@libs/ddd/domain/base-classes/entity.base';
+import { DateVO } from '@libs/ddd/domain/value-objects/date.value-object';
+import { ID } from '@libs/ddd/domain/value-objects/id.value-object';
 import { TypeormEntityBase } from './typeorm.entity.base';
 
 export type OrmEntityProps<OrmEntity> = Omit<

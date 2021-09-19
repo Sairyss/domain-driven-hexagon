@@ -1,6 +1,6 @@
-import { ValueObject } from 'src/core/base-classes/value-object.base';
-import { Guard } from 'src/core/guard';
-import { ArgumentOutOfRangeException } from '@exceptions';
+import { ValueObject } from '@libs/ddd/domain/base-classes/value-object.base';
+import { Guard } from '@libs/ddd/domain/guard';
+import { ArgumentOutOfRangeException } from '@libs/exceptions';
 
 /** Note: Every property in address Value Object can be
  * it's own Value Object if needed.

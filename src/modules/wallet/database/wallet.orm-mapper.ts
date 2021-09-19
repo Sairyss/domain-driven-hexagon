@@ -1,9 +1,9 @@
-import { UUID } from 'src/core/value-objects/uuid.value-object';
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import {
   EntityProps,
   OrmEntityProps,
   OrmMapper,
-} from 'src/infrastructure/database/base-classes/orm-mapper.base';
+} from '@libs/ddd/infrastructure/database/base-classes/orm-mapper.base';
 import { WalletEntity, WalletProps } from '../domain/entities/wallet.entity';
 import { WalletOrmEntity } from './wallet.orm-entity';
 

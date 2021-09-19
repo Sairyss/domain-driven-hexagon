@@ -1,7 +1,7 @@
 import { AggregateRoot } from '../base-classes/aggregate-root.base';
 import { Logger } from '../ports/logger.port';
 import { DomainEvent } from '.';
-import { final } from '../decorators/final.decorator';
+import { final } from '../../../decorators/final.decorator';
 import { ID } from '../value-objects/id.value-object';
 
 export interface EventHandler {

@@ -5,12 +5,12 @@ import {
   UserEntity,
   UserProps,
 } from 'src/modules/user/domain/entities/user.entity';
-import { NotFoundException } from '@exceptions';
+import { NotFoundException } from '@libs/exceptions';
 import {
   TypeormRepositoryBase,
   WhereCondition,
-} from 'src/infrastructure/database/base-classes/typeorm.repository.base';
-import { QueryParams } from 'src/core/ports/repository.ports';
+} from '@libs/ddd/infrastructure/database/base-classes/typeorm.repository.base';
+import { QueryParams } from '@libs/ddd/domain/ports/repository.ports';
 import { UserOrmEntity } from './user.orm-entity';
 import { UserRepositoryPort } from './user.repository.port';
 import { UserOrmMapper } from './user.orm-mapper';

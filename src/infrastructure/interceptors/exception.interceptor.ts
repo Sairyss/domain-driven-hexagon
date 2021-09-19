@@ -14,7 +14,7 @@ import {
   ConflictException,
   NotFoundException,
   DomainException,
-} from '@exceptions';
+} from '@libs/exceptions';
 
 export class ExceptionInterceptor implements NestInterceptor {
   intercept(

@@ -1,5 +1,5 @@
 import { BaseEntityProps } from '../base-classes/entity.base';
-import { DeepPartial } from '../types';
+import { DeepPartial } from '../../../types';
 import { ID } from '../value-objects/id.value-object';
 
 /*  Most of repositories will probably need generic 

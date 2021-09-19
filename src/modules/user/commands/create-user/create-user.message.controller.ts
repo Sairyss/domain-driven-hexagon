@@ -1,7 +1,7 @@
 import { createUserSymbol } from '@modules/user/user.providers';
 import { Inject } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IdResponse } from 'src/interface-adapters/dtos/id.response.dto';
+import { IdResponse } from '@libs/ddd/interface-adapters/dtos/id.response.dto';
 import { CreateUserCommand } from './create-user.command';
 import { CreateUserMessageRequest } from './create-user.request.dto';
 import { CreateUserService } from './create-user.service';

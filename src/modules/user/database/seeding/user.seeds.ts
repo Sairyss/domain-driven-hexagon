@@ -1,6 +1,6 @@
 import { UserRoles } from '@modules/user/domain/entities/user.types';
-import { NonFunctionProperties } from 'src/core/types';
-import { createdAtUpdatedAtMock } from 'src/infrastructure/mocks/generic-model-props.mock';
+import { NonFunctionProperties } from '@libs/types';
+import { createdAtUpdatedAtMock } from '@libs/ddd/infrastructure/mocks/generic-model-props.mock';
 import { UserOrmEntity } from '../user.orm-entity';
 
 export const userSeeds: NonFunctionProperties<UserOrmEntity>[] = [

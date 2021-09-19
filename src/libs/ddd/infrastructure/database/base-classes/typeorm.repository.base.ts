@@ -1,15 +1,15 @@
 import { FindConditions, ObjectLiteral, Repository } from 'typeorm';
-import { ID } from 'src/core/value-objects/id.value-object';
-import { DomainEvents } from 'src/core/domain-events';
-import { Logger } from 'src/core/ports/logger.port';
-import { AggregateRoot } from 'src/core/base-classes/aggregate-root.base';
+import { ID } from '@libs/ddd/domain/value-objects/id.value-object';
+import { DomainEvents } from '@libs/ddd/domain/domain-events';
+import { Logger } from '@libs/ddd/domain/ports/logger.port';
+import { AggregateRoot } from '@libs/ddd/domain/base-classes/aggregate-root.base';
 import {
   QueryParams,
   FindManyPaginatedParams,
   RepositoryPort,
   DataWithPaginationMeta,
-} from '../../../core/ports/repository.ports';
-import { NotFoundException } from '../../../core/exceptions';
+} from '../../../domain/ports/repository.ports';
+import { NotFoundException } from '../../../../exceptions';
 import { OrmMapper } from './orm-mapper.base';
 
 export type WhereCondition<OrmEntity> =

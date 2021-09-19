@@ -1,10 +1,10 @@
 import { UserCreatedDomainEvent } from '@modules/user/domain/events/user-created.domain-event';
 import { WalletRepositoryPort } from '@modules/wallet/database/wallet.repository.port';
-import { DomainEventHandler } from 'src/core/domain-events';
-import { UUID } from 'src/core/value-objects/uuid.value-object';
-import { WalletEntity } from '../entities/wallet.entity';
+import { DomainEventHandler } from '@libs/ddd/domain/domain-events';
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
+import { WalletEntity } from '../../domain/entities/wallet.entity';
 
-export class OnUserCreatedDomainEventHandler extends DomainEventHandler {
+export class CreateWalletWhenUserIsCreatedDomainEventHandler extends DomainEventHandler {
   constructor(private readonly walletRepo: WalletRepositoryPort) {
     super(UserCreatedDomainEvent);
   }

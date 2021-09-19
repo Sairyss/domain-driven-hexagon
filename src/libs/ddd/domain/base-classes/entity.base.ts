@@ -2,7 +2,7 @@ import {
   ArgumentNotProvidedException,
   ArgumentInvalidException,
   ArgumentOutOfRangeException,
-} from '../exceptions';
+} from '../../../exceptions';
 import { Guard } from '../guard';
 import { convertPropsToObject } from '../utils';
 import { DateVO } from '../value-objects/date.value-object';

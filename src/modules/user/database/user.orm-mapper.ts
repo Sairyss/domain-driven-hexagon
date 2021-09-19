@@ -1,9 +1,9 @@
-import { UUID } from 'src/core/value-objects/uuid.value-object';
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import {
   EntityProps,
   OrmEntityProps,
   OrmMapper,
-} from 'src/infrastructure/database/base-classes/orm-mapper.base';
+} from '@libs/ddd/infrastructure/database/base-classes/orm-mapper.base';
 import { UserEntity, UserProps } from '../domain/entities/user.entity';
 import { Address } from '../domain/value-objects/address.value-object';
 import { Email } from '../domain/value-objects/email.value-object';

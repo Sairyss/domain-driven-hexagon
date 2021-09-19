@@ -4,7 +4,7 @@ import {
 } from '@modules/user/user.providers';
 import { Inject } from '@nestjs/common';
 import { Command, Console } from 'nestjs-console';
-import { Logger } from 'src/core/ports/logger.port';
+import { Logger } from '@libs/ddd/domain/ports/logger.port';
 import { CreateUserCommand } from './create-user.command';
 import { CreateUserService } from './create-user.service';
 

@@ -1,5 +1,5 @@
 import { UserEntity } from '@modules/user/domain/entities/user.entity';
-import { ResponseBase } from 'src/interface-adapters/base-classes/response.base';
+import { ResponseBase } from '@libs/ddd/interface-adapters/base-classes/response.base';
 import { User } from 'src/interface-adapters/interfaces/user/user.interface';
 import { ApiProperty } from '@nestjs/swagger';
 

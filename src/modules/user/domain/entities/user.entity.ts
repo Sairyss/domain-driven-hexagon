@@ -1,5 +1,5 @@
-import { AggregateRoot } from 'src/core/base-classes/aggregate-root.base';
-import { UUID } from 'src/core/value-objects/uuid.value-object';
+import { AggregateRoot } from '@libs/ddd/domain/base-classes/aggregate-root.base';
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { UserCreatedDomainEvent } from '../events/user-created.domain-event';
 import { Address, AddressProps } from '../value-objects/address.value-object';
 import { Email } from '../value-objects/email.value-object';

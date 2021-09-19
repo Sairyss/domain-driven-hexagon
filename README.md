@@ -399,10 +399,10 @@ There are multiple ways on implementing an event bus for Domain Events, for exam
 
 Examples:
 
-- [domain-events.ts](src/core/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events. Keep in mind that this is just a proof of concept example and may not be a best solution for a production application.
+- [domain-events.ts](src/libs/ddd/domain/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events. Keep in mind that this is just a proof of concept example and may not be a best solution for a production application.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
-- [on-user-created.event-handler.ts](src/modules/wallet/domain/event-handlers/on-user-created.event-handler.ts) - this is an example of Domain Event Handler that executes some actions when a domain event is raised (in this case, when user is created it also creates a wallet for that user).
-- [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution when it persists changes to an aggregate.
+- [create-wallet-when-user-is-created.domain-event-handler.ts](src/modules/wallet/application/event-handlers/create-wallet-when-user-is-created.domain-event-handler.ts) - this is an example of Domain Event Handler that executes some actions when a domain event is raised (in this case, when user is created it also creates a wallet for that user).
+- [typeorm.repository.base.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution when it persists changes to an aggregate.
 
 To have a better understanding on domain events and implementation read this:
 
@@ -595,7 +595,7 @@ Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain p
 
 For simple validation like checking for nulls, empty arrays, input length etc. a library of [guards](<https://en.wikipedia.org/wiki/Guard_(computer_science)>) can be created.
 
-Example file: [guard.ts](src/core/guard.ts)
+Example file: [guard.ts](src/libs/ddd/domain/guard.ts)
 
 Read more: [Refactoring: Guard Clauses](https://medium.com/better-programming/refactoring-guard-clauses-2ceeaa1a9da)
 
@@ -781,7 +781,7 @@ The data flow here looks something like this: repository receives a domain `Enti
 
 ### Examples
 
-This project contains abstract repository class that allows to make basic CRUD operations: [typeorm.repository.base.ts](src/infrastructure/database/base-classes/typeorm.repository.base.ts). This base class is then extended by a specific repository, and all specific operations that an entity may need is implemented in that specific repo: [user.repository.ts](src/modules/user/database/user.repository.ts).
+This project contains abstract repository class that allows to make basic CRUD operations: [typeorm.repository.base.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm.repository.base.ts). This base class is then extended by a specific repository, and all specific operations that an entity may need is implemented in that specific repo: [user.repository.ts](src/modules/user/database/user.repository.ts).
 
 ## Persistence models
 
@@ -872,7 +872,7 @@ When used in HTTP context, for returning proper status code back to user an `ins
 
 Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - notice how custom exceptions are converted to nest.js exceptions.
 
-Adding a `name` or `code` string with type name or a custom status code for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name`/`code` string is used instead. `name` or `code` enum types can be stored in a separate file so they can be shared and reused on a receiving side: [exception.types.ts](src/core/exceptions/exception.types.ts).
+Adding a `name` or `code` string with type name or a custom status code for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name`/`code` string is used instead. `name` or `code` enum types can be stored in a separate file so they can be shared and reused on a receiving side: [exception.types.ts](src/libs/exceptions/exception.types.ts).
 
 When using microservices, exception types/enums/codes can be packed into a library and reused in each microservice for consistency.
 
@@ -895,13 +895,13 @@ Consider adding optional `metadata` object to exceptions (if language doesn't su
 
 - If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters. Also, it is usually better to store all localization in a single place, for example, having a single file/folder for all messages that need translation, and then import them where needed. It is easier to add new translations when all of your messages are in one place rather then scattered across the app.
 - You can use "Problem Details for HTTP APIs" standard for returned exceptions, described in [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807). Read more about this standard: [REST API Error Handling - Problem Details Response](https://blog.restcase.com/rest-api-error-handling-problem-details-response/)
-- By default in NodeJS Error objects are not serialized properly when sending plain objects to external processes. Consider creating a `toJSON()` method so it can be easily sent to other processes as a plain object. (see example in [exception.base.ts](src/core/exceptions/exception.base.ts)). But keep in mind not to return a stack trace when in production.
+- By default in NodeJS Error objects are not serialized properly when sending plain objects to external processes. Consider creating a `toJSON()` method so it can be easily sent to other processes as a plain object. (see example in [exception.base.ts](src/libs/exceptions/exception.base.ts)). But keep in mind not to return a stack trace when in production.
 
 Example files:
 
-- [exception.base.ts](src/core/exceptions/exception.base.ts) - Exception abstract base class
-- [domain.exception.ts](src/core/exceptions/domain.exception.ts) - Domain Exception class example
-- Check [exceptions](src/core/exceptions) folder to see more examples (some of them are exceptions from other languages like C# or Java)
+- [exception.base.ts](src/libs/exceptions/exception.base.ts) - Exception abstract base class
+- [domain.exception.ts](src/libs/exceptions/domain.exception.ts) - Domain Exception class example
+- Check [exceptions](src/libs/exceptions) folder to see more examples (some of them are exceptions from other languages like C# or Java)
 
 Read more:
 
@@ -1319,7 +1319,7 @@ Main advantages of automatic code generation are:
 
 Consider creating a bunch of shared custom utility types for different situations.
 
-Some examples can be found in [types](src/core/types) folder.
+Some examples can be found in [types](src/libs/types) folder.
 
 ## Pre-push/pre-commit hooks
 
@@ -1335,7 +1335,7 @@ This can be achieved by making class `final`.
 
 **Note**: in TypeScript, unlike other languages, there is no default way to make class `final`. But there is a way around it using a custom decorator.
 
-Example file: [final.decorator.ts](src/core/decorators/final.decorator.ts)
+Example file: [final.decorator.ts](src/libs/decorators/final.decorator.ts)
 
 Read more:
 

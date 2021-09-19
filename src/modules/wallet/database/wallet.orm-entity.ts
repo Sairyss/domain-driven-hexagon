@@ -1,4 +1,4 @@
-import { TypeormEntityBase } from 'src/infrastructure/database/base-classes/typeorm.entity.base';
+import { TypeormEntityBase } from '@libs/ddd/infrastructure/database/base-classes/typeorm.entity.base';
 import { Column, Entity } from 'typeorm';
 
 @Entity('wallet')

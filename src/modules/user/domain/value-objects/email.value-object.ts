@@ -1,12 +1,12 @@
 import {
   DomainPrimitive,
   ValueObject,
-} from 'src/core/base-classes/value-object.base';
+} from '@libs/ddd/domain/base-classes/value-object.base';
 import {
   ArgumentInvalidException,
   ArgumentOutOfRangeException,
-} from '@exceptions';
-import { Guard } from 'src/core/guard';
+} from '@libs/exceptions';
+import { Guard } from '@libs/ddd/domain/guard';
 
 export class Email extends ValueObject<string> {
   constructor(value: string) {

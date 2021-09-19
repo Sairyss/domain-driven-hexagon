@@ -1,5 +1,5 @@
 import { Body, Controller, HttpStatus, Inject, Post } from '@nestjs/common';
-import { IdResponse } from 'src/interface-adapters/dtos/id.response.dto';
+import { IdResponse } from '@libs/ddd/interface-adapters/dtos/id.response.dto';
 import { routes } from '@config/app.routes';
 import { createUserSymbol } from '@modules/user/user.providers';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';

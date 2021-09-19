@@ -1,6 +1,6 @@
-import { ID } from 'src/core/value-objects/id.value-object';
+import { ID } from '@libs/ddd/domain/value-objects/id.value-object';
 import { UserRepositoryPort } from '@modules/user/database/user.repository.port';
-import { ConflictException } from '@exceptions';
+import { ConflictException } from '@libs/exceptions';
 import { Address } from '@modules/user/domain/value-objects/address.value-object';
 import { Email } from '@modules/user/domain/value-objects/email.value-object';
 import { CreateUserUoW } from 'src/infrastructure/database/units-of-work';

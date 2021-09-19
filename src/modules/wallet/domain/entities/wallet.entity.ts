@@ -1,6 +1,6 @@
-import { ArgumentOutOfRangeException } from '@exceptions';
-import { AggregateRoot } from 'src/core/base-classes/aggregate-root.base';
-import { UUID } from 'src/core/value-objects/uuid.value-object';
+import { ArgumentOutOfRangeException } from '@libs/exceptions';
+import { AggregateRoot } from '@libs/ddd/domain/base-classes/aggregate-root.base';
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 
 export interface CreateWalletProps {
   userId: UUID;

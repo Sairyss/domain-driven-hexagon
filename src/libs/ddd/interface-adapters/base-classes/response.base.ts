@@ -1,4 +1,4 @@
-import { BaseEntityProps } from 'src/core/base-classes/entity.base';
+import { BaseEntityProps } from '@libs/ddd/domain/base-classes/entity.base';
 import { ApiProperty } from '@nestjs/swagger';
 import { IdResponse } from '../dtos/id.response.dto';
 
