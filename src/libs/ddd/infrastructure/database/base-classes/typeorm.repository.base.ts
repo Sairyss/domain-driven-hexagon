@@ -29,7 +29,7 @@ export abstract class TypeormRepositoryBase<
     protected readonly logger: Logger,
   ) {}
 
-  protected abstract relations: string[] = [];
+  protected abstract relations: string[];
 
   protected tableName = this.repository.metadata.tableName;
 
