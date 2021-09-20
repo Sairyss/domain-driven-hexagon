@@ -65,8 +65,7 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
       } finally {
         await this.finish(correlationId);
       }
-      logger.debug(`[Transaction rolled back]`);
-      logger.debug(`[Error]: ${error.message}`);
+      logger.debug(`[Transaction rolled back] ${(error as Error).message}`);
       throw error;
     }
     try {
