@@ -1,14 +1,8 @@
 import { AggregateRoot } from '../base-classes/aggregate-root.base';
 import { Logger } from '../ports/logger.port';
-import { DomainEvent } from '.';
+import { DomainEvent, DomainEventHandler } from '.';
 import { final } from '../../../decorators/final.decorator';
 import { ID } from '../value-objects/id.value-object';
-
-export interface EventHandler {
-  subscribeTo(event: DomainEvent): void;
-}
-
-export type EventCallback = (event: DomainEvent) => Promise<void>;
 
 type EventName = string;
 
@@ -16,19 +10,19 @@ export type DomainEventClass = new (...args: never[]) => DomainEvent;
 
 @final
 export class DomainEvents {
-  private static subscribers: Map<EventName, EventCallback[]> = new Map();
+  private static subscribers: Map<EventName, DomainEventHandler[]> = new Map();
 
   private static aggregates: AggregateRoot<unknown>[] = [];
 
-  public static subscribe<T extends DomainEvent>(
+  public static subscribe<T extends DomainEventHandler>(
     event: DomainEventClass,
-    callback: (event: T) => Promise<void>,
+    eventHandler: T,
   ): void {
     const eventName: EventName = event.name;
     if (!this.subscribers.has(eventName)) {
       this.subscribers.set(eventName, []);
     }
-    this.subscribers.get(eventName)?.push(callback as EventCallback);
+    this.subscribers.get(eventName)?.push(eventHandler);
   }
 
   public static prepareForPublish(aggregate: AggregateRoot<unknown>): void {
@@ -46,16 +40,18 @@ export class DomainEvents {
     const aggregate = this.findAggregateByID(id);
 
     if (aggregate) {
+      logger.debug(
+        `[${aggregate.domainEvents.map(
+          event => event.constructor.name,
+        )}] published ${aggregate.id.value}`,
+      );
       await Promise.all(
         aggregate.domainEvents.map((event: DomainEvent) => {
-          logger.debug(
-            `[Domain Event published]: ${event.constructor.name} ${aggregate.id.value}`,
-          );
           if (correlationId && !event.correlationId) {
             // eslint-disable-next-line no-param-reassign
             event.correlationId = correlationId;
           }
-          return this.publish(event);
+          return this.publish(event, logger);
         }),
       );
       aggregate.clearEvents();
@@ -78,12 +74,23 @@ export class DomainEvents {
     this.aggregates.splice(index, 1);
   }
 
-  private static async publish(event: DomainEvent): Promise<void> {
+  private static async publish(
+    event: DomainEvent,
+    logger: Logger,
+  ): Promise<void> {
     const eventName: string = event.constructor.name;
 
     if (this.subscribers.has(eventName)) {
-      const callbacks: EventCallback[] = this.subscribers.get(eventName) || [];
-      await Promise.all(callbacks.map(callback => callback(event)));
+      const handlers: DomainEventHandler[] =
+        this.subscribers.get(eventName) || [];
+      await Promise.all(
+        handlers.map(handler => {
+          logger.debug(
+            `[${handler.constructor.name}] handling ${event.constructor.name} ${event.aggregateId}`,
+          );
+          return handler.handle(event);
+        }),
+      );
     }
   }
 }

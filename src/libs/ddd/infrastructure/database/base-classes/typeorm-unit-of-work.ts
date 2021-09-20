@@ -1,7 +1,16 @@
 import { Logger } from '@nestjs/common';
+import { UnitOfWorkPort } from '@src/libs/ddd/domain/ports/unit-of-work.port';
 import { EntityTarget, getConnection, QueryRunner, Repository } from 'typeorm';
 
-export class UnitOfWorkOrm {
+export class TypeormUnitOfWork implements UnitOfWorkPort {
+  init(correlationId: string): void {
+    return TypeormUnitOfWork.init(correlationId);
+  }
+
+  execute<T>(correlationId: string, callback: () => Promise<T>): Promise<T> {
+    return TypeormUnitOfWork.execute(correlationId, callback);
+  }
+
   private static queryRunners: Map<string, QueryRunner> = new Map();
 
   /**
@@ -71,7 +80,7 @@ export class UnitOfWorkOrm {
     return result;
   }
 
-  static async finish(correlationId: string): Promise<void> {
+  private static async finish(correlationId: string): Promise<void> {
     const queryRunner = this.getQueryRunner(correlationId);
     try {
       await queryRunner.release();

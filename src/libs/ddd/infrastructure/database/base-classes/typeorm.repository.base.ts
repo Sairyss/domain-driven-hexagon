@@ -46,7 +46,7 @@ export abstract class TypeormRepositoryBase<
       this.correlationId,
     );
     this.logger.debug(
-      `[Entity persisted]: ${this.tableName} ${entity.id.value}`,
+      `[${entity.constructor.name}] persisted ${entity.id.value}`,
     );
     return this.mapper.toDomainEntity(result);
   }
@@ -60,7 +60,7 @@ export abstract class TypeormRepositoryBase<
       ),
     );
     this.logger.debug(
-      `[Multiple entities persisted]: ${entities.length} ${this.tableName}`,
+      `[${entities}]: persisted ${entities.map(entity => entity.id)}`,
     );
     return result.map(entity => this.mapper.toDomainEntity(entity));
   }
@@ -135,7 +135,9 @@ export abstract class TypeormRepositoryBase<
       this.logger,
       this.correlationId,
     );
-    this.logger.debug(`[Entity deleted]: ${this.tableName} ${entity.id.value}`);
+    this.logger.debug(
+      `[${entity.constructor.name}] deleted ${entity.id.value}`,
+    );
     return entity;
   }
 

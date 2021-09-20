@@ -6,6 +6,6 @@ export abstract class DomainEventHandler {
   abstract handle(event: DomainEvent): Promise<void>;
 
   public listen(): void {
-    DomainEvents.subscribe(this.event, this.handle.bind(this));
+    DomainEvents.subscribe(this.event, this);
   }
 }

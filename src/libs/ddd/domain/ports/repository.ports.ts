@@ -73,4 +73,6 @@ export interface RepositoryPort<Entity, EntityProps>
     FindMany<Entity, EntityProps>,
     FindManyPaginated<Entity, EntityProps>,
     DeleteOne<Entity>,
-    SaveMultiple<Entity> {}
+    SaveMultiple<Entity> {
+  setCorrelationId(correlationId: string): this;
+}

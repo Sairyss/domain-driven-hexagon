@@ -10,10 +10,10 @@ export class CreateWalletWhenUserIsCreatedDomainEventHandler extends DomainEvent
     super(UserCreatedDomainEvent);
   }
 
-  // Do changes to other aggregates or prepare Integration Event for dispatching.
+  // Handle a Domain Event by perform changes to other aggregates (inside the same Domain).
   async handle(event: UserCreatedDomainEvent): Promise<void> {
     const walletRepo: WalletRepositoryPort = this.unitOfWork.getWalletRepository(
-      event.correlationId as string,
+      event.correlationId,
     );
     const wallet = WalletEntity.create({
       userId: new UUID(event.aggregateId),
