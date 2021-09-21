@@ -1,22 +1,15 @@
 import { Logger } from '@nestjs/common';
 import { UnitOfWorkPort } from '@src/libs/ddd/domain/ports/unit-of-work.port';
 import { EntityTarget, getConnection, QueryRunner, Repository } from 'typeorm';
+import { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
 
 export class TypeormUnitOfWork implements UnitOfWorkPort {
-  init(correlationId: string): void {
-    return TypeormUnitOfWork.init(correlationId);
-  }
-
-  execute<T>(correlationId: string, callback: () => Promise<T>): Promise<T> {
-    return TypeormUnitOfWork.execute(correlationId, callback);
-  }
-
-  private static queryRunners: Map<string, QueryRunner> = new Map();
+  private queryRunners: Map<string, QueryRunner> = new Map();
 
   /**
    * Creates a connection pool with a specified ID.
    */
-  static init(correlationId: string): void {
+  init(correlationId: string): void {
     if (!correlationId) {
       throw new Error('Correlation ID must be provided');
     }
@@ -24,7 +17,7 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
     this.queryRunners.set(correlationId, queryRunner);
   }
 
-  static getQueryRunner(correlationId: string): QueryRunner {
+  getQueryRunner(correlationId: string): QueryRunner {
     const queryRunner = this.queryRunners.get(correlationId);
     if (!queryRunner) {
       throw new Error(
@@ -34,7 +27,7 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
     return queryRunner;
   }
 
-  static getOrmRepository<Entity>(
+  getOrmRepository<Entity>(
     entity: EntityTarget<Entity>,
     correlationId: string,
   ): Repository<Entity> {
@@ -46,16 +39,16 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
    * Execute a UnitOfWork.
    * Database operations wrapped in a UnitOfWork will execute in a single
    * transactional operation, so everything gets saved or nothing.
-   * Make sure to generate and inject correct repositories for this to work.
    */
-  static async execute<T>(
+  async execute<T>(
     correlationId: string,
     callback: () => Promise<T>,
+    options?: { isolationLevel: IsolationLevel },
   ): Promise<T> {
-    const logger = new Logger(`${this.name}:${correlationId}`);
+    const logger = new Logger(`${this.constructor.name}:${correlationId}`);
     logger.debug(`[Starting transaction]`);
     const queryRunner = this.getQueryRunner(correlationId);
-    await queryRunner.startTransaction('SERIALIZABLE');
+    await queryRunner.startTransaction(options?.isolationLevel);
     let result: T;
     try {
       result = await callback();
@@ -79,7 +72,7 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
     return result;
   }
 
-  private static async finish(correlationId: string): Promise<void> {
+  private async finish(correlationId: string): Promise<void> {
     const queryRunner = this.getQueryRunner(correlationId);
     try {
       await queryRunner.release();

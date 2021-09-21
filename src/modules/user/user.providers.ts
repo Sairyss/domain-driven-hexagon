@@ -1,5 +1,5 @@
 import { Logger, Provider } from '@nestjs/common';
-import { UnitOfWork } from '@src/infrastructure/database/unit-of-work';
+import { UnitOfWork } from '@src/infrastructure/database/unit-of-work/unit-of-work';
 import { UserRepository } from './database/user.repository';
 import { CreateUserService } from './commands/create-user/create-user.service';
 import { DeleteUserService } from './commands/delete-user/delete-user.service';
@@ -16,10 +16,10 @@ export const createUserSymbol = Symbol('createUser');
 
 export const createUserProvider: Provider = {
   provide: createUserSymbol,
-  useFactory: (): CreateUserService => {
-    return new CreateUserService(new UnitOfWork());
+  useFactory: (unitOfWork: UnitOfWork): CreateUserService => {
+    return new CreateUserService(unitOfWork);
   },
-  inject: [UserRepository],
+  inject: [UnitOfWork],
 };
 
 export const removeUserSymbol = Symbol('removeUser');

@@ -2,7 +2,7 @@ import { UserCreatedDomainEvent } from '@modules/user/domain/events/user-created
 import { WalletRepositoryPort } from '@modules/wallet/database/wallet.repository.port';
 import { DomainEventHandler } from '@libs/ddd/domain/domain-events';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
-import { UnitOfWork } from '@src/infrastructure/database/unit-of-work';
+import { UnitOfWork } from '@src/infrastructure/database/unit-of-work/unit-of-work';
 import { WalletEntity } from '../../domain/entities/wallet.entity';
 
 export class CreateWalletWhenUserIsCreatedDomainEventHandler extends DomainEventHandler {

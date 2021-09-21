@@ -3,7 +3,7 @@ import { UserRepositoryPort } from '@modules/user/database/user.repository.port'
 import { ConflictException } from '@libs/exceptions';
 import { Address } from '@modules/user/domain/value-objects/address.value-object';
 import { Email } from '@modules/user/domain/value-objects/email.value-object';
-import { UnitOfWork } from '@src/infrastructure/database/unit-of-work';
+import { UnitOfWork } from '@src/infrastructure/database/unit-of-work/unit-of-work';
 import { CommandHandler } from '@src/libs/ddd/domain/base-classes/command-handler.base';
 import { CreateUserCommand } from './create-user.command';
 import { UserEntity } from '../../domain/entities/user.entity';

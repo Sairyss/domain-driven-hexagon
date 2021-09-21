@@ -5,8 +5,8 @@
 config:
   target: http://localhost:3000/v1
   phases:
-    - duration: 1
-      arrivalRate: 50
+    - duration: 2
+      arrivalRate: 150
   plugins:
     faker:
       locale: en

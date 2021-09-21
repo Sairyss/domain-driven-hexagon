@@ -7,6 +7,7 @@ import { WalletModule } from '@modules/wallet/wallet.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { typeormConfig } from './infrastructure/configs/ormconfig';
+import { UnitOfWorkModule } from './infrastructure/database/unit-of-work/unit-of-work.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { typeormConfig } from './infrastructure/configs/ormconfig';
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/infrastructure/schema.gql'),
     }),
+    UnitOfWorkModule,
     NestEventModule,
     ConsoleModule,
     UserModule,
