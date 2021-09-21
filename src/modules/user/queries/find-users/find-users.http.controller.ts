@@ -1,11 +1,11 @@
 import { Body, Controller, Get } from '@nestjs/common';
-import { routes } from '@config/app.routes';
+import { routesV1 } from '@config/app.routes';
 import { UserHttpResponse } from '@modules/user/dtos/user.response.dto';
 import { UserRepository } from '@modules/user/database/user.repository';
 import { FindUsersQuery } from './find-users.query';
 import { FindUsersHttpRequest } from './find-users.request.dto';
 
-@Controller()
+@Controller(routesV1.version)
 export class FindUsersHttpController {
   constructor(private readonly userRepo: UserRepository) {}
 
@@ -13,7 +13,7 @@ export class FindUsersHttpController {
      logic involved, it bypasses application's core completely 
      and retrieves users directly from a repository.
    */
-  @Get(routes.user.root)
+  @Get(routesV1.user.root)
   async findUsers(
     @Body() request: FindUsersHttpRequest,
   ): Promise<UserHttpResponse[]> {

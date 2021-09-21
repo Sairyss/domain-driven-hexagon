@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserOrmEntity } from './database/user.orm-entity';
 import { UserRepository } from './database/user.repository';
 import { CreateUserHttpController } from './commands/create-user/create-user.http.controller';
-import { DeleteUserHttpController } from './commands/delete-user/delete-user.controller';
+import { DeleteUserHttpController } from './commands/delete-user/delete-user.http-controller';
 import {
   createUserCliLoggerProvider,
   createUserProvider,
