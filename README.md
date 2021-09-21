@@ -8,6 +8,7 @@ Added more code examples:
 - All Domain Events can now be executed in a single database transaction using a UnitOfWork
 - Added Wallet module to show an example of using a UnitOfWork together with Domain Events
 - Added BDD tests example
+- Added GraphQL examples
 
 Refactoring:
 
@@ -698,7 +699,7 @@ Contains `Controllers` and `Request`/`Response` DTOs (can also contain `Views`, 
 
 ## Controllers
 
-- Controllers are used for parsing requests, triggering use cases and presenting the result back to the client.
+- Controller is a user-facing API that is used for parsing requests, triggering business logic and presenting the result back to the client.
 - One controller per use case is considered a good practice.
 - In [NestJS](https://docs.nestjs.com/) world controllers may be a good place to use [OpenAPI/Swagger decorators](https://docs.nestjs.com/openapi/operations) for documentation.
 
@@ -708,6 +709,14 @@ One controller per trigger type can be used to have a more clear separation. For
 - [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
 - [create-user.message.controller.ts](src/modules/user/commands/create-user/create-user.message.controller.ts) for external messages ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
 - etc.
+
+### Resolvers
+
+If you are using [GraphQL](https://graphql.org/) instead of controllers you will use [Resolvers](https://docs.nestjs.com/graphql/resolvers).
+
+Example files:
+
+- [create-user.graphql-resolver.ts](src/modules/user/commands/create-user/create-user.graphql-resolver.ts)
 
 ---
 

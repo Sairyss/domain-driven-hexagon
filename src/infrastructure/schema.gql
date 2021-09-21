@@ -1,0 +1,35 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type IdResponse {
+  id: String!
+}
+
+type UserResponse {
+  email: String!
+  country: String!
+  postalCode: String!
+  street: String!
+}
+
+type Query {
+  findUsers(input: FindUsersRequest!): UserResponse!
+}
+
+input FindUsersRequest {
+  country: String!
+  postalCode: String!
+  street: String!
+}
+
+type Mutation {
+  create(input: CreateUserRequest!): IdResponse!
+}
+
+input CreateUserRequest {
+  email: String!
+  country: String!
+  postalCode: String!
+  street: String!
+}

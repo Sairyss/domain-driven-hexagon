@@ -11,19 +11,33 @@ import {
 } from './user.providers';
 import { CreateUserCliController } from './commands/create-user/create-user.cli.controller';
 import { FindUsersHttpController } from './queries/find-users/find-users.http.controller';
+import { CreateUserMessageController } from './commands/create-user/create-user.message.controller';
+import { CreateUserGraphqlResolver } from './commands/create-user/create-user.graphql-resolver';
+import { FindUsersGraphqlResolver } from './queries/find-users/find-users.gralhql-resolver';
+
+const httpControllers = [
+  CreateUserHttpController,
+  DeleteUserHttpController,
+  FindUsersHttpController,
+];
+
+const messageControllers = [CreateUserMessageController];
+
+const cliControllers = [CreateUserCliController];
+
+const graphqlResolvers = [CreateUserGraphqlResolver, FindUsersGraphqlResolver];
+
+const repositories = [UserRepository];
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserOrmEntity])],
-  controllers: [
-    CreateUserHttpController,
-    DeleteUserHttpController,
-    FindUsersHttpController,
-  ],
+  controllers: [...httpControllers, ...messageControllers],
   providers: [
-    UserRepository,
+    ...cliControllers,
+    ...repositories,
+    ...graphqlResolvers,
     createUserProvider,
     removeUserProvider,
-    CreateUserCliController,
     createUserCliLoggerProvider,
   ],
 })

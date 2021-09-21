@@ -1,21 +1,23 @@
 import { createUserSymbol } from '@modules/user/user.providers';
-import { Controller, Inject } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { Inject } from '@nestjs/common';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { IdResponse } from '@libs/ddd/interface-adapters/dtos/id.response.dto';
 import { CreateUserCommand } from './create-user.command';
-import { CreateUserMessageRequest } from './create-user.request.dto';
+import { CreateUserRequest } from './create-user.request.dto';
 import { CreateUserService } from './create-user.service';
 
-@Controller()
-export class CreateUserMessageController {
+// If you are Using GraphQL you'll need a Resolver instead of a Controller
+
+@Resolver()
+export class CreateUserGraphqlResolver {
   constructor(
     @Inject(createUserSymbol)
     private readonly service: CreateUserService,
   ) {}
 
-  @MessagePattern('user.create') // <- Subscribe to a microservice message
-  async create(message: CreateUserMessageRequest): Promise<IdResponse> {
-    const command = new CreateUserCommand(message);
+  @Mutation(() => IdResponse)
+  async create(@Args('input') input: CreateUserRequest): Promise<IdResponse> {
+    const command = new CreateUserCommand(input);
 
     const id = await this.service.executeUnitOfWork(command);
 
