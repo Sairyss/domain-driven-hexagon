@@ -1,27 +1,18 @@
-import { Logger } from '@nestjs/common';
 import { UnitOfWorkPort } from '@src/libs/ddd/domain/ports/unit-of-work.port';
 import { EntityTarget, getConnection, QueryRunner, Repository } from 'typeorm';
 import { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
+import { Logger } from 'src/libs/ddd/domain/ports/logger.port';
 
 export class TypeormUnitOfWork implements UnitOfWorkPort {
-  private queryRunners: Map<string, QueryRunner> = new Map();
+  constructor(private readonly logger: Logger) {}
 
-  /**
-   * Creates a connection pool with a specified ID.
-   */
-  init(correlationId: string): void {
-    if (!correlationId) {
-      throw new Error('Correlation ID must be provided');
-    }
-    const queryRunner = getConnection().createQueryRunner();
-    this.queryRunners.set(correlationId, queryRunner);
-  }
+  private queryRunners: Map<string, QueryRunner> = new Map();
 
   getQueryRunner(correlationId: string): QueryRunner {
     const queryRunner = this.queryRunners.get(correlationId);
     if (!queryRunner) {
       throw new Error(
-        'Query runner not found. UnitOfWork must be initiated first. Use "UnitOfWork.init()" method.',
+        'Query runner not found. Incorrect correlationId or transaction is not started. To start a transaction wrap operations in a `execute` method.',
       );
     }
     return queryRunner;
@@ -37,28 +28,36 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
 
   /**
    * Execute a UnitOfWork.
-   * Database operations wrapped in a UnitOfWork will execute in a single
-   * transactional operation, so everything gets saved or nothing.
+   * Database operations wrapped in a `execute` method will run
+   * in a single transactional operation, so everything gets
+   * saved (including changes done by Domain Events) or nothing at all.
    */
   async execute<T>(
     correlationId: string,
     callback: () => Promise<T>,
     options?: { isolationLevel: IsolationLevel },
   ): Promise<T> {
-    const logger = new Logger(`${this.constructor.name}:${correlationId}`);
-    logger.debug(`[Starting transaction]`);
-    const queryRunner = this.getQueryRunner(correlationId);
+    if (!correlationId) {
+      throw new Error('Correlation ID must be provided');
+    }
+    this.logger.setContext(`${this.constructor.name}:${correlationId}`);
+    const queryRunner = getConnection().createQueryRunner();
+    this.queryRunners.set(correlationId, queryRunner);
+    this.logger.debug(`[Starting transaction]`);
     await queryRunner.startTransaction(options?.isolationLevel);
+    // const queryRunner = this.getQueryRunner(correlationId);
     let result: T;
     try {
       result = await callback();
     } catch (error) {
       try {
         await queryRunner.rollbackTransaction();
+        this.logger.debug(
+          `[Transaction rolled back] ${(error as Error).message}`,
+        );
       } finally {
         await this.finish(correlationId);
       }
-      logger.debug(`[Transaction rolled back] ${(error as Error).message}`);
       throw error;
     }
     try {
@@ -67,7 +66,7 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
       await this.finish(correlationId);
     }
 
-    logger.debug(`[Transaction committed]`);
+    this.logger.debug(`[Transaction committed]`);
 
     return result;
   }

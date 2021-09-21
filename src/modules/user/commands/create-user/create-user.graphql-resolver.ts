@@ -19,7 +19,7 @@ export class CreateUserGraphqlResolver {
   async create(@Args('input') input: CreateUserRequest): Promise<IdResponse> {
     const command = new CreateUserCommand(input);
 
-    const id = await this.service.executeUnitOfWork(command);
+    const id = await this.service.execute(command);
 
     return new IdResponse(id.value);
   }

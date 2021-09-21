@@ -261,7 +261,7 @@ Some CQS purists may say that a `Command` shouldn't return anything at all. But 
 
 Though, violating this rule and returning some metadata, like `ID` of a created item, redirect link, confirmation message, status, or other metadata is a more practical approach than following dogmas.
 
-All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction (if you are using a single database). This means that inside a single process, one command/request to your application usually should execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used. Example: [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how it extends a `CommandHandler<UnitOfWork>` and gets a transactional repository from `this.unitOfWork`.
+All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction (if you are using a single database). This means that inside a single process, one command/request to your application usually should execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used. Example: [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how it gets a transactional repository from `this.unitOfWork`.
 
 **Note**: `Command` is not the same as [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object executes some state-changing action. Both `Commands` and `Queries` in this example are just simple objects that carry data between layers.
 
@@ -414,7 +414,7 @@ An alternative approach would be publishing a `Domain Event`. If executing a com
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-All changes done by Domain Events (or by anything else) across multiple aggregates in a single process should be saved in a single database transaction to maintain consistency. Patterns like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar can help with that. Example: [src/modules/wallet/wallet.providers.ts](src/modules/wallet/wallet.providers.ts) - notice how `OnUserCreatedDomainEventHandler` has a factory for creating an instance of this class with included transactional repository.
+All changes done by Domain Events (or by anything else) across multiple aggregates in a single process should be saved in a single database transaction to maintain consistency. Patterns like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar can help with that.
 
 **Note**: this project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
 
@@ -426,6 +426,11 @@ Examples:
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
 - [create-wallet-when-user-is-created.domain-event-handler.ts](src/modules/wallet/application/event-handlers/create-wallet-when-user-is-created.domain-event-handler.ts) - this is an example of Domain Event Handler that executes some actions when a domain event is raised (in this case, when user is created it also creates a wallet for that user).
 - [typeorm.repository.base.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution when it persists changes to an aggregate.
+- [typeorm-unit-of-work.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm-unit-of-work.ts) - this ensures that everything is saved in a single transaction.
+- [unit-of-work.ts](src/infrastructure/database/unit-of-work/unit-of-work.ts) - here you create factories for specific Domain Repositories that are used in a transaction.
+- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - here we get a user repository from a `UnitOfWork` and execute a transaction.
+
+**Note**: Unit of work is not required for some operations (for example queries or operations that don't cause any side-effects in other aggregates) so you may skip using a unit of work in this cases and just use a regular repository injected through a constructor instead of a repository from a unit of work.
 
 To have a better understanding on domain events and implementation read this:
 

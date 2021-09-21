@@ -1,7 +1,7 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Logger, Module } from '@nestjs/common';
 import { UnitOfWork } from './unit-of-work';
 
-const unitOfWorkSingleton = new UnitOfWork();
+const unitOfWorkSingleton = new UnitOfWork(new Logger());
 
 const unitOfWorkSingletonProvider = {
   provide: UnitOfWork,
