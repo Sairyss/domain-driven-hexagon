@@ -40,7 +40,7 @@ defineFeature(feature, test => {
 
     when('I send a request to create a user', async () => {
       const res = await httpServer
-        .post('/users')
+        .post('/v1/users')
         .send(userDto)
         .expect(201);
       userId = res.body;
@@ -51,7 +51,7 @@ defineFeature(feature, test => {
     });
 
     and('I can see my user in a list of all users', async () => {
-      const res = await httpServer.get('/users').expect(200);
+      const res = await httpServer.get('/v1/users').expect(200);
 
       expect(res.body).toMatchSnapshot([snapshotBaseProps]);
       expect(res.body.some((item: UserResponse) => item.id === userId.id)).toBe(

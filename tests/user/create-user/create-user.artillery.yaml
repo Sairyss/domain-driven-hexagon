@@ -3,7 +3,7 @@
 # https://www.npmjs.com/package/artillery
 # https://www.npmjs.com/package/artillery-plugin-faker
 config:
-  target: http://localhost:3000
+  target: http://localhost:3000/v1
   phases:
     - duration: 1
       arrivalRate: 50

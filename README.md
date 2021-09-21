@@ -714,6 +714,8 @@ One controller per trigger type can be used to have a more clear separation. For
 
 If you are using [GraphQL](https://graphql.org/) instead of controllers you will use [Resolvers](https://docs.nestjs.com/graphql/resolvers).
 
+One of the main benefits of a layered architecture is separation of concerns. As you can see it doesn't matter if you use [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) or GraphQL, the only thing that changes is user-facing API layer (interface-adapters). All the application Core stays the same since it doesn't depend on technology you are using.
+
 Example files:
 
 - [create-user.graphql-resolver.ts](src/modules/user/commands/create-user/create-user.graphql-resolver.ts)
