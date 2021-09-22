@@ -253,7 +253,9 @@ This principle is called [Command–Query Separation(CQS)](https://en.wikipedia.
 
 ### Commands
 
-- `Commands` are used for state-changing actions, like creating new user and saving it to the database. Create, Update and Delete operations are considered as state-changing.
+`Command` is an object that signals user intent, for example `CreateUserCommand`. It describes a single action (but does not perform it).
+
+`Commands` are used for state-changing actions, like creating new user and saving it to the database. Create, Update and Delete operations are considered as state-changing.
 
 Data retrieval is responsibility of `Queries`, so `Command` methods should not return business data.
 
@@ -263,15 +265,15 @@ Though, violating this rule and returning some metadata, like `ID` of a created 
 
 All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction (if you are using a single database). This means that inside a single process, one command/request to your application usually should execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used. Example: [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how it gets a transactional repository from `this.unitOfWork`.
 
-**Note**: `Command` is not the same as [Command Pattern](https://refactoring.guru/design-patterns/command), it is just a convenient name to represent that this object executes some state-changing action. Both `Commands` and `Queries` in this example are just simple objects that carry data between layers.
-
-A `Command` describes a single action, it does not perform it.
+**Note**: `Command` is similar but not the same as described here: [Command Pattern](https://refactoring.guru/design-patterns/command). There are multiple definitions across the internet with similar but slightly different implementations.
 
 Example of a command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
 
 ### Queries
 
-- `Query` is used for retrieving data and should not make any state changes (like writes to the database, files etc).
+`Query` is similar to a `Command`. It signals user intent to find something and describes how to do it.
+
+`Query` is used for retrieving data and should not make any state changes (like writes to the database, files etc).
 
 Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it can be done in a application/domain layer.
 
