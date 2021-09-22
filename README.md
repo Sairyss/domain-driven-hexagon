@@ -385,10 +385,12 @@ Read more:
 
 All of this rules just come from the idea of creating a boundary around Aggregates. The boundary simplifies business model, as it forces us to consider each relationship very carefully, and within a well-defined set of rules.
 
+In summary, if you combine multiple related entities and value objects inside one root `Entity`, this root `Entity` becomes an `Aggregate Root`, and this cluster of related entities and value objects becomes an `Aggregate`.
+
 Example files:
 
 - [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts) - abstract base class.
-- [user.entity.ts](src/modules/user/domain/entities/user.entity.ts) - aggregate implementations are similar to `Entities`, with some additional rules described above.
+- [user.entity.ts](src/modules/user/domain/entities/user.entity.ts) - aggregates are just entities that have to follow a set of specific rules described above.
 
 Read more:
 
