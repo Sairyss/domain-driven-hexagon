@@ -2,6 +2,7 @@ import { UnitOfWorkPort } from '@src/libs/ddd/domain/ports/unit-of-work.port';
 import { EntityTarget, getConnection, QueryRunner, Repository } from 'typeorm';
 import { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
 import { Logger } from 'src/libs/ddd/domain/ports/logger.port';
+import { Result } from '@src/libs/ddd/domain/utils/result.util';
 
 export class TypeormUnitOfWork implements UnitOfWorkPort {
   constructor(private readonly logger: Logger) {}
@@ -12,7 +13,7 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
     const queryRunner = this.queryRunners.get(correlationId);
     if (!queryRunner) {
       throw new Error(
-        'Query runner not found. Incorrect correlationId or transaction is not started. To start a transaction wrap operations in a `execute` method.',
+        'Query runner not found. Incorrect correlationId or transaction is not started. To start a transaction wrap operations in a "execute" method.',
       );
     }
     return queryRunner;
@@ -46,18 +47,18 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
     this.logger.debug(`[Starting transaction]`);
     await queryRunner.startTransaction(options?.isolationLevel);
     // const queryRunner = this.getQueryRunner(correlationId);
-    let result: T;
+    let result: T | Result<T>;
     try {
       result = await callback();
-    } catch (error) {
-      try {
-        await queryRunner.rollbackTransaction();
-        this.logger.debug(
-          `[Transaction rolled back] ${(error as Error).message}`,
+      if (((result as unknown) as Result<T>)?.isErr) {
+        await this.rollbackTransaction<T>(
+          correlationId,
+          ((result as unknown) as Result.Err<T, Error>).error,
         );
-      } finally {
-        await this.finish(correlationId);
+        return result;
       }
+    } catch (error) {
+      await this.rollbackTransaction<T>(correlationId, error as Error);
       throw error;
     }
     try {
@@ -69,6 +70,18 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
     this.logger.debug(`[Transaction committed]`);
 
     return result;
+  }
+
+  private async rollbackTransaction<T>(correlationId: string, error: Error) {
+    const queryRunner = this.getQueryRunner(correlationId);
+    try {
+      await queryRunner.rollbackTransaction();
+      this.logger.debug(
+        `[Transaction rolled back] ${(error as Error).message}`,
+      );
+    } finally {
+      await this.finish(correlationId);
+    }
   }
 
   private async finish(correlationId: string): Promise<void> {

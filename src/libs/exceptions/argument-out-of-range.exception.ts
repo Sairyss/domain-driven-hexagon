@@ -1,5 +1,5 @@
 import { ExceptionBase } from './exception.base';
-import { Exceptions } from './exception.types';
+import { ExceptionCodes } from './exception.codes';
 
 /**
  * Used to indicate that an argument is out of allowed range
@@ -9,5 +9,5 @@ import { Exceptions } from './exception.types';
  * @extends {ExceptionBase}
  */
 export class ArgumentOutOfRangeException extends ExceptionBase {
-  readonly name = Exceptions.argumentOutOfRange;
+  readonly code = ExceptionCodes.argumentOutOfRange;
 }

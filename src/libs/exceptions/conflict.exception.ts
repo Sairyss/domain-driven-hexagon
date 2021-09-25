@@ -1,6 +1,6 @@
 import { ExceptionBase } from './exception.base';
-import { Exceptions } from './exception.types';
+import { ExceptionCodes } from './exception.codes';
 
 export class ConflictException extends ExceptionBase {
-  readonly name = Exceptions.conflict;
+  readonly code = ExceptionCodes.conflict;
 }

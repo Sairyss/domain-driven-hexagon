@@ -9,6 +9,7 @@ Added more code examples:
 - Added Wallet module to show an example of using a UnitOfWork together with Domain Events
 - Added BDD tests example
 - Added GraphQL examples
+- Added Domain Events
 
 Refactoring:
 
@@ -16,7 +17,7 @@ Refactoring:
 - Commands are now plain objects
 - Moved generic files to /libs directory
 - Refactored Entity/Aggregate creation
-- More small changes
+- And more
 
 Updates in readme and code:
 
@@ -54,6 +55,7 @@ Though patterns and principles presented here are **framework/language agnostic*
     - [Domain Services](#Domain-Services)
     - [Value Objects](#Value-Objects)
     - [Enforcing invariants of Domain Objects](#Enforcing-invariants-of-Domain-Objects)
+    - [Domain Errors](#Domain-Errors)
     - [Using libraries inside application's core](#Using-libraries-inside-applications-core)
   - [Interface Adapters](#Interface-Adapters)
     - [Controllers](#Controllers)
@@ -68,7 +70,7 @@ Though patterns and principles presented here are **framework/language agnostic*
 
 - [Other recommendations and best practices](#Other-recommendations-and-best-practices)
 
-  - [Error Handling](#Error-Handling)
+  - [Exceptions Handling](#Exceptions-Handling)
   - [Testing](#Testing)
     - [Load Testing](#Load-Testing)
     - [Fuzz Testing](#Fuzz-Testing)
@@ -177,6 +179,7 @@ This is the core of the system which is built using [DDD building blocks](https:
 - Aggregates
 - Domain Services
 - Value Objects
+- Domain Errors
 
 ### Application layer:
 
@@ -675,23 +678,61 @@ Read more about validation types described above:
 
 - ["Secure by Design" Chapter 4.3: Validation](https://livebook.manning.com/book/secure-by-design/chapter-4/109).
 
+## Domain Errors
+
+Exceptions are for exceptional situations. Complex domains usually have a lot of errors that are not exceptional, but a part of a business logic (like seat already booked, choose another one). Those errors may need special handling. In those cases returning explicit error types can be a better approach than throwing.
+
+Returning an error instead of throwing explicitly shows a type of each exception that a method can return so you can handle it accordingly. It can make an error handling and tracing easier.
+
+To help with that use some kind of a Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell). Unlike throwing exceptions, this approach allows to define types for every error and will force you to handle those cases explicitly instead of using `try/catch`. For example:
+
+```typescript
+if (await userRepo.exists(command.email)) {
+  return Result.err(new UserAlreadyExistsError()); // <- returning an Error
+}
+// else
+const user = await this.userRepo.create(user);
+return Result.ok(user);
+```
+
+[@badrap/result](https://www.npmjs.com/package/@badrap/result) - this is a nice npm package if you want to use a Result object.
+
+Returning errors instead of throwing them adds a bit of extra boilerplate code, but makes your application more robust and secure.
+
+**Note**: Distinguish between Domain Errors and Exceptions. Exceptions are usually thrown and not returned. If you return technical Exceptions (like connection failed, process out of memory etc), It may cause some security issues and goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, returning an exception continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors, so it's generally better to throw an Exception in those cases rather then returning it.
+
+Example files:
+
+- [user.errors.ts](src/modules/user/errors/user.errors.ts) - user errors
+- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how `Result.err(new UserAlreadyExistsError())` is returned instead of throwing it.
+- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) - in a user http controller we unwrap an error and decide what to do with it. If an error is `UserAlreadyExistsError` we throw a `Conflict Exception` which a user will receive as `409 - Conflict`. If an error is unknown we just throw it and NestJS will return it to the user as `500 - Internal Server Error`.
+- [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) - in a CLI controller we do not care about returning a correct status code so we just `.unwrap()` a result, which will just throw in case of an error.
+
+Read more:
+
+- ["Secure by Design" Chapter 9.2: Handling failures without exceptions](https://livebook.manning.com/book/secure-by-design/chapter-9/51)
+- [Flexible Error Handling w/ the Result Class](https://khalilstemmler.com/articles/enterprise-typescript-nodejs/handling-errors-result-class/)
+
 ## Using libraries inside application's core
 
-Whether or not to use libraries in application layer and especially domain layer is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like working with numbers).
+Whether or not to use libraries in application core and especially domain layer is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like working with numbers).
 
 Main recommendations to keep in mind is that libraries imported in application's core **shouldn't** expose:
 
 - Functionality to access any out-of-process resources (http calls, database access etc);
 - Functionality not relevant to domain (frameworks, technology details like ORMs, Logger etc).
 - Functionality that brings randomness (generating random IDs, timestamps etc) since this makes tests unpredictable (though in TypeScript world it is not that big of a deal since this can be mocked by a test library without using DI);
-- Frameworks can be a real nuisance because by definition they want to be in control. Isolate them within the adapters and keep our domain model clean of them.
 - If a library changes often or has a lot of dependencies of its own it most likely shouldn't be used in domain layer.
 
 To use such libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) or [facade](https://refactoring.guru/design-patterns/facade) patterns.
 
-We sometimes tolerate libraries in the center: libraries are not in control so they are less intrusive. But be careful with general purpose libraries that may scatter across many domain objects. It will be hard to replace those libraries if needed. Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
+We sometimes tolerate libraries in the center, but be careful with general purpose libraries that may scatter across many domain objects. It will be hard to replace those libraries if needed. Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
 
-Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer. In addition, try to minimize usage of dependencies in general. More dependencies your software has means more potential errors and security holes. One technique for making software more robust is to minimize what your software depends on - the less that can go wrong, the less that will go wrong. On the other hand, removing all dependencies would be counterproductive as replicating that functionality would have been a huge amount of work and less reliable than just using a widely-used dependency. Finding a good balance is important, this skill requires experience.
+In addition to different libraries there are Frameworks. Frameworks can be a real nuisance because by definition they want to be in control and it's hard to replace a Framework later when your entire application is glued to it. Its fine to use Frameworks in outside layers (like infrastructure), but keep your domain clean of them when possible. You should be able to extract your domain layer and build a new infrastructure around it using any other framework without breaking your business logic.
+
+NestJS makes a good job as it uses decorators which are not very intrusive, so you could use decorators like `@Inject()` without affecting your business logic at all and it's relatively easy to remove or replace it when needed. Don't give up on frameworks completely, but keep them in boundaries and don't let them affect your business logic.
+
+Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer. In addition, try to minimize usage of dependencies in general. More dependencies your software has means more potential errors and security holes. One technique for making software more robust is to minimize what your software depends on - the less that can go wrong, the less will go wrong. On the other hand, removing all dependencies would be counterproductive as replicating that functionality would have been a huge amount of work and less reliable than just using a widely-used dependency. Finding a good balance is important, this skill requires experience.
 
 Read more:
 
@@ -902,21 +943,23 @@ Read more:
 
 # Other recommendations and best practices
 
-## Error Handling
+## Exceptions Handling
+
+Unlike Domain Errors, exceptions should be thrown when something unexpected happens. Like when a process is out of memory or a database connection lost. In our case we also throw an Exception in Domain Objects constructor when validation fails, since we know our input is validated before it even reaches Domain so when validation of a domain object constructor fails it is an exceptional situation.
 
 ### Exception types
 
-Consider extending `Error` object to make custom generic exception types for different situations. For example: `DomainException`, `ValidationException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default. Also, you can create domain-specific exceptions for different use-cases, like `NotEnoughFundsError` or `SeatIsAlreadyBookedError`.
+Consider extending `Error` object to make custom generic exception types for different situations. For example: `ArgumentInvalidException`, `ValidationException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
 
-Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc. A better approach is to create custom error codes for your app, like `code: 'WALLET.NOT_ENOUGH_FUNDS'` etc.
+Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc. A better approach is to create custom error classes with appropriate error codes.
 
 When used in HTTP context, for returning proper status code back to user an `instanceof` or a `switch/case` check against the custom code can be performed in exception interceptor or in a controller and appropriate HTTP exception can be returned depending on exception type/code.
 
 Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - notice how custom exceptions are converted to nest.js exceptions.
 
-Adding a `name` or `code` string with type name or a custom status code for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `name`/`code` string is used instead. `name` or `code` enum types can be stored in a separate file so they can be shared and reused on a receiving side: [exception.types.ts](src/libs/exceptions/exception.types.ts).
+Adding a `code` string with a custom status code for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `code` string is used instead. `code` enum types can be stored in a separate file so they can be shared and reused on a receiving side: [exception.codes.ts](src/libs/exceptions/exception.codes.ts).
 
-When using microservices, exception types/enums/codes can be packed into a library and reused in each microservice for consistency.
+When using microservices, exception codes can be packed into a library or a sub-module and reused in each microservice for consistency.
 
 ### Differentiate between programmer errors and operational errors
 
@@ -929,7 +972,7 @@ For example:
 
 ### Error metadata
 
-Consider adding optional `metadata` object to exceptions (if language doesn't support anything similar by default) and pass some useful technical information about the error when throwing. This will make debugging easier.
+Consider adding optional `metadata` object to exceptions (if language doesn't support anything similar by default) and pass some useful technical information about the exception when throwing. This will make debugging easier.
 
 **Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone or credit card numbers etc) since this information may leak into log files, and if log files are not protected properly this information can leak or be seen by developers who have access to log files. Aim adding only technical information to your logs.
 
@@ -942,51 +985,13 @@ Consider adding optional `metadata` object to exceptions (if language doesn't su
 Example files:
 
 - [exception.base.ts](src/libs/exceptions/exception.base.ts) - Exception abstract base class
-- [domain.exception.ts](src/libs/exceptions/domain.exception.ts) - Domain Exception class example
+- [argument-invalid.exception.ts](src/libs/exceptions/argument-invalid.exception.ts) - Generic exception class example
 - Check [exceptions](src/libs/exceptions) folder to see more examples (some of them are exceptions from other languages like C# or Java)
 
 Read more:
 
 - [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
 - ["Secure by design" Chapter 9: Handling failures securely](https://livebook.manning.com/book/secure-by-design/chapter-9/)
-
-### Alternatives to exceptions
-
-There is an alternative approach of not throwing exceptions, but returning some kind of Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell). Unlike throwing exceptions, this approach allows to define types for exceptional outcomes and will force us to handle those cases explicitly instead of using `try/catch`. For example:
-
-```typescript
-class User {
-  // ...
-  public createUser(): Result<User, EmailInvalidException> {
-    // ...code for creating a user
-    if (invalidEmail) {
-      return Result.err(EmailInvalidException); // <- returning instead of throwing
-    }
-    return Result.ok(User);
-  }
-}
-```
-
-This approach has its advantages each and may work nicely in some languages, especially in functional languages which support `Either` type natively, but is not widely used in TypeScript/Javascript world.
-
-Advantages:
-
-- Explicitly shows type of each exception that a method can return so you can handle it accordingly.
-- Complex domains may have a lot of exceptions that need special handling and are part of a business logic (like seat already booked, choose another one). In those cases explicit error types may be useful.
-- Makes error tracing easier.
-
-Downsides:
-
-- If used incorrectly, i.e for technical (connection failed) errors, It may cause some security issues and goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, returning exception continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors, so it's generally better to throw in those cases rather then returning an error.
-- It adds extra complexity. Exception cases returned somewhere deep inside application have to be handled by functions in upper layers until it reaches controllers which may add a lot of extra `if` statements.
-- More boilerplate code.
-
-In most applications it makes more sense to just throw an exception and notify a user immediately. Use `Result`/`Either` error types carefully and if you really need it and know what you are doing (unless you're using a language like [Rust](<https://en.wikipedia.org/wiki/Rust_(programming_language)>) which has this functionality built-in).
-
-Read more:
-
-- ["Secure by Design" Chapter 9.2: Handling failures without exceptions](https://livebook.manning.com/book/secure-by-design/chapter-9/51)
-- [Flexible Error Handling w/ the Result Class](https://khalilstemmler.com/articles/enterprise-typescript-nodejs/handling-errors-result-class/)
 
 ## Testing
 

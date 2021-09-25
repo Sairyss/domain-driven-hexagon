@@ -19,6 +19,6 @@ export class CreateUserMessageController {
 
     const id = await this.service.execute(command);
 
-    return new IdResponse(id.value);
+    return new IdResponse(id.unwrap().value);
   }
 }

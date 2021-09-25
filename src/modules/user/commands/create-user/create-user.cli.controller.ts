@@ -8,7 +8,7 @@ import { Logger } from '@libs/ddd/domain/ports/logger.port';
 import { CreateUserCommand } from './create-user.command';
 import { CreateUserService } from './create-user.service';
 
-// Allows creating a user using CLI
+// Allows creating a user using CLI (Command Line Interface)
 @Console({
   command: 'new',
   description: 'A command to create a user',
@@ -40,6 +40,6 @@ export class CreateUserCliController {
 
     const id = await this.service.execute(command);
 
-    this.logger.log('User created:', id.value);
+    this.logger.log('User created:', id.unwrap().value);
   }
 }
