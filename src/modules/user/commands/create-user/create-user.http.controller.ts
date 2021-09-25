@@ -27,7 +27,7 @@ export class CreateUserHttpController {
   })
   @ApiResponse({
     status: HttpStatus.CONFLICT,
-    description: 'User already exists',
+    description: UserAlreadyExistsError.message,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
