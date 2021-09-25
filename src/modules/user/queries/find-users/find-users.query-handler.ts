@@ -15,7 +15,7 @@ export class FindUsersQueryHandler extends QueryHandlerBase {
      logic involved, it bypasses application's core completely 
      and retrieves users directly from a repository.
    */
-  async execute(query: FindUsersQuery): Promise<Result<UserEntity[]>> {
+  async handle(query: FindUsersQuery): Promise<Result<UserEntity[]>> {
     const users = await this.userRepo.findUsers(query);
     return Result.ok(users);
   }
