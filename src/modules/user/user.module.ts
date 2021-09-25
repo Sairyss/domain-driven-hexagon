@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CqrsModule } from '@nestjs/cqrs';
 import { UserOrmEntity } from './database/user.orm-entity';
 import { UserRepository } from './database/user.repository';
 import { CreateUserHttpController } from './commands/create-user/create-user.http.controller';
@@ -12,6 +13,7 @@ import { CreateUserGraphqlResolver } from './commands/create-user/create-user.gr
 import { FindUsersGraphqlResolver } from './queries/find-users/find-users.gralhql-resolver';
 import { CreateUserService } from './commands/create-user/create-user.service';
 import { DeleteUserService } from './commands/delete-user/delete-user.service';
+import { FindUsersQueryHandler } from './queries/find-users/find-users.query-handler';
 
 const httpControllers = [
   CreateUserHttpController,
@@ -27,16 +29,19 @@ const graphqlResolvers = [CreateUserGraphqlResolver, FindUsersGraphqlResolver];
 
 const repositories = [UserRepository];
 
-const services = [CreateUserService, DeleteUserService];
+const commandHandlers = [CreateUserService, DeleteUserService];
+
+const queryHandlers = [FindUsersQueryHandler];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserOrmEntity])],
+  imports: [TypeOrmModule.forFeature([UserOrmEntity]), CqrsModule],
   controllers: [...httpControllers, ...messageControllers],
   providers: [
     ...cliControllers,
     ...repositories,
     ...graphqlResolvers,
-    ...services,
+    ...commandHandlers,
+    ...queryHandlers,
     createUserCliLoggerProvider,
   ],
 })

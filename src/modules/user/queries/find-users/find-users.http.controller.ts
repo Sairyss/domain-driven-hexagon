@@ -1,27 +1,25 @@
 import { Body, Controller, Get } from '@nestjs/common';
 import { routesV1 } from '@config/app.routes';
 import { UserHttpResponse } from '@modules/user/dtos/user.response.dto';
-import { UserRepository } from '@modules/user/database/user.repository';
+import { QueryBus } from '@nestjs/cqrs';
+import { Result } from '@src/libs/ddd/domain/utils/result.util';
 import { FindUsersQuery } from './find-users.query';
 import { FindUsersHttpRequest } from './find-users.request.dto';
+import { UserEntity } from '../../domain/entities/user.entity';
 
 @Controller(routesV1.version)
 export class FindUsersHttpController {
-  constructor(private readonly userRepo: UserRepository) {}
+  constructor(private readonly queryBys: QueryBus) {}
 
-  /* Since this is a simple query with no additional business
-     logic involved, it bypasses application's core completely 
-     and retrieves users directly from a repository.
-   */
   @Get(routesV1.user.root)
   async findUsers(
     @Body() request: FindUsersHttpRequest,
   ): Promise<UserHttpResponse[]> {
     const query = new FindUsersQuery(request);
-    const users = await this.userRepo.findUsers(query);
+    const result: Result<UserEntity[]> = await this.queryBys.execute(query);
 
     /* Returning Response classes which are responsible
        for whitelisting data that is sent to the user */
-    return users.map(user => new UserHttpResponse(user));
+    return result.unwrap().map(user => new UserHttpResponse(user));
   }
 }

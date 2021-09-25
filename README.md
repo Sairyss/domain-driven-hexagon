@@ -17,6 +17,7 @@ Refactoring:
 - Commands are now plain objects
 - Moved generic files to /libs directory
 - Refactored Entity/Aggregate creation
+- Using a command bus instead of importing a service directly
 - And more
 
 Updates in readme and code:
@@ -270,7 +271,17 @@ All changes done by `Commands` (or by events or anything else) across multiple a
 
 **Note**: `Command` is similar but not the same as described here: [Command Pattern](https://refactoring.guru/design-patterns/command). There are multiple definitions across the internet with similar but slightly different implementations.
 
-Example of a command object: [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts)
+To execute a command you can use a `Command Bus` instead of importing a service directly. This will decouple a command Invoker from a Receiver so you can send your commands from anywhere without creating coupling.
+
+Example files:
+
+- [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts) - a command Object
+- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - a command handler
+- [command-handler.base.ts](src/libs/ddd/domain/base-classes/command-handler.base.ts) - command handler base class that wraps execution in a Unit of Work.
+
+Read more:
+
+- [What is a command bus and why should you use it?](https://barryvanveen.nl/blog/49-what-is-a-command-bus-and-why-should-you-use-it)
 
 ### Queries
 
@@ -280,9 +291,12 @@ Example of a command object: [create-user.command.ts](src/modules/user/commands/
 
 Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it can be done in a application/domain layer.
 
-Example of a query object: [find-users.query.ts](src/modules/user/queries/find-users/find-users.query.ts)
+Similarly to Commands, Queries can use a `Query Bus` too.
 
-Example of query bypassing application/domain layers completely: [find-users.http.controller.ts](src/modules/user/queries/find-users/find-users.http.controller.ts)
+Example files:
+
+- [find-users.query.ts](src/modules/user/queries/find-users/find-users.query.ts) - query object
+- [find-users.query-handler.ts](src/modules/user/queries/find-users/find-users.query-handler.ts) - example of a query bypassing application/domain layers completely
 
 ---
 
@@ -290,7 +304,7 @@ By enforcing `Command` and `Query` separation, the code becomes simpler to under
 
 Also, following CQS from the start will facilitate separating write and read models into different databases (CQRS) if someday in the future the need for it arises.
 
-**Note**: NestJS provides a package for CQRS that can be used as an alternative to code examples presented in this repo: [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs). Basically if offers to use `Command Handlers` and instead of passing commands/queries directly to methods this package proposes a command/query bus + an event bus for events. But it is important to keep in mind that this package doesn't provide any consistency for emitted events (neither does [Node.js Event Emitter](https://nodejs.dev/learn/the-nodejs-event-emitter)) since there is no way to `await` for events to finish. More info in [Domain Events](#Domain-Events) and [Integration Events](#Integration-Events) sections below.
+**Note**: this repo uses [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs) package that provides a command/query bus.
 
 Read more about CQS and CQRS:
 
