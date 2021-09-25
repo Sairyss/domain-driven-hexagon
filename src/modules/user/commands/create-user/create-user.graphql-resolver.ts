@@ -1,5 +1,3 @@
-import { createUserSymbol } from '@modules/user/user.providers';
-import { Inject } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { IdResponse } from '@libs/ddd/interface-adapters/dtos/id.response.dto';
 import { CreateUserCommand } from './create-user.command';
@@ -10,10 +8,7 @@ import { CreateUserService } from './create-user.service';
 
 @Resolver()
 export class CreateUserGraphqlResolver {
-  constructor(
-    @Inject(createUserSymbol)
-    private readonly service: CreateUserService,
-  ) {}
+  constructor(private readonly service: CreateUserService) {}
 
   @Mutation(() => IdResponse)
   async create(@Args('input') input: CreateUserRequest): Promise<IdResponse> {

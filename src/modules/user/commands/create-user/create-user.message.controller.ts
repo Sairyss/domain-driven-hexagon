@@ -1,5 +1,4 @@
-import { createUserSymbol } from '@modules/user/user.providers';
-import { Controller, Inject } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { IdResponse } from '@libs/ddd/interface-adapters/dtos/id.response.dto';
 import { CreateUserCommand } from './create-user.command';
@@ -8,10 +7,7 @@ import { CreateUserService } from './create-user.service';
 
 @Controller()
 export class CreateUserMessageController {
-  constructor(
-    @Inject(createUserSymbol)
-    private readonly service: CreateUserService,
-  ) {}
+  constructor(private readonly service: CreateUserService) {}
 
   @MessagePattern('user.create') // <- Subscribe to a microservice message
   async create(message: CreateUserMessageRequest): Promise<IdResponse> {

@@ -3,12 +3,10 @@ import {
   ConflictException,
   Controller,
   HttpStatus,
-  Inject,
   Post,
 } from '@nestjs/common';
 import { IdResponse } from '@libs/ddd/interface-adapters/dtos/id.response.dto';
 import { routesV1 } from '@config/app.routes';
-import { createUserSymbol } from '@modules/user/user.providers';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserCommand } from './create-user.command';
 import { CreateUserService } from './create-user.service';
@@ -17,10 +15,7 @@ import { UserAlreadyExistsError } from '../../errors/user.errors';
 
 @Controller(routesV1.version)
 export class CreateUserHttpController {
-  constructor(
-    @Inject(createUserSymbol)
-    private readonly service: CreateUserService,
-  ) {}
+  constructor(private readonly service: CreateUserService) {}
 
   @Post(routesV1.user.root)
   @ApiOperation({ summary: 'Create a user' })

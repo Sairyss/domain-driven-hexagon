@@ -4,10 +4,12 @@ import { Address } from '@modules/user/domain/value-objects/address.value-object
 import { Email } from '@modules/user/domain/value-objects/email.value-object';
 import { UnitOfWork } from '@src/infrastructure/database/unit-of-work/unit-of-work';
 import { Result } from '@libs/ddd/domain/utils/result.util';
+import { Injectable } from '@nestjs/common';
 import { CreateUserCommand } from './create-user.command';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserAlreadyExistsError } from '../../errors/user.errors';
 
+@Injectable()
 export class CreateUserService {
   constructor(protected readonly unitOfWork: UnitOfWork) {}
 
@@ -23,6 +25,8 @@ export class CreateUserService {
       );
       // user uniqueness guard
       if (await userRepo.exists(command.email)) {
+        /** Returning an Error instead of throwing it
+         *  so a controller can handle it explicitly */
         return Result.err(new UserAlreadyExistsError());
       }
 
