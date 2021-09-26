@@ -5,7 +5,7 @@ import { Command } from './command.base';
 export abstract class CommandHandlerBase {
   constructor(protected readonly unitOfWork: UnitOfWorkPort) {}
 
-  // Forces all CommandHandlers to implement a handle method
+  // Forces all command handlers to implement a handle method
   abstract handle(command: Command): Promise<Result<unknown>>;
 
   /**
