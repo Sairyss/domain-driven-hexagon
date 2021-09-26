@@ -276,6 +276,7 @@ To execute a command you can use a `Command Bus` instead of importing a service 
 Example files:
 
 - [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts) - a command Object
+- [create-user.message.controller.ts](src/modules/user/commands/create-user/create-user.message.controller.ts) - controller executes a command using a bus. This decouples it from a command handler.
 - [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - a command handler
 - [command-handler.base.ts](src/libs/ddd/domain/base-classes/command-handler.base.ts) - command handler base class that wraps execution in a Unit of Work.
 
@@ -291,7 +292,7 @@ Read more:
 
 Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it can be done in a application/domain layer.
 
-Similarly to Commands, Queries can use a `Query Bus` too.
+Similarly to Commands, Queries can use a `Query Bus`.
 
 Example files:
 
