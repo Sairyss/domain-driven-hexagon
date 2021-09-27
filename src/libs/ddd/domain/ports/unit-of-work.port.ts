@@ -5,5 +5,5 @@ export interface UnitOfWorkPort {
     correlationId: string,
     callback: () => Promise<T>,
     options?: unknown,
-  ): Promise<T | Result<T>>;
+  ): Promise<T>;
 }
