@@ -1,0 +1,25 @@
+# Load testing with Artillery.
+# Can also be good for seeding database with lots of dummy data.
+# https://www.npmjs.com/package/artillery
+# https://www.npmjs.com/package/artillery-plugin-faker
+config:
+  target: http://localhost:3000/v1
+  phases:
+    - duration: 2
+      arrivalRate: 150
+  plugins:
+    faker:
+      locale: en
+  variables:
+    email: '$faker.internet.email'
+    country: '$faker.address.country'
+    street: '$faker.address.streetName'
+scenarios:
+  - flow:
+      - post:
+          url: '/users'
+          json:
+            email: '{{ email }}'
+            country: '{{ country }}'
+            postalCode: '12345'
+            street: '{{ street }}'
