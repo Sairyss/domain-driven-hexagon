@@ -2,9 +2,7 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 import * as request from 'supertest';
 import { CreateUser } from '@src/interface-adapters/interfaces/user/create.user.interface';
 import { getTestServer, TestServer } from '../../jestSetupAfterEnv';
-import { CreateUserService } from '@src/modules/user/commands/create-user/create-user.service';
-import { CreateUserCommand } from '@src/modules/user/commands/create-user/create-user.command';
-import { ID } from '@src/libs/ddd/domain/value-objects/id.value-object';
+import { Id } from '@src/libs/ddd/interface-adapters/interfaces/id.interface';
 
 const feature = loadFeature('tests/user/delete-user/delete-user.feature');
 
@@ -23,7 +21,7 @@ defineFeature(feature, test => {
 
   test('Deleting a user happy path', ({ given, when, then, and }) => {
     let userDto: CreateUser;
-    let userId: ID;
+    let userId: Id;
 
     given(
       /^that my email is "(.*), my country is "(.*)", my postal code is "(.*)" and my street is "(.*)"$/,
@@ -38,26 +36,16 @@ defineFeature(feature, test => {
     );
 
     and('my user is created', async () => {
-      await testServer.testingModule
-        .get<CreateUserService>(CreateUserService)
-        .execute(
-          new CreateUserCommand({
-            email: userDto.email,
-            country: userDto.country,
-            postalCode: userDto.postalCode,
-            street: userDto.street,
-
-            correlationId: 'correlation-e2e-delete-user',
-          }),
-        )
-        .then(user => {
-          userId = user.unwrap();
-        });
+      const res = await httpServer
+        .post('/v1/users')
+        .send(userDto)
+        .expect(201);
+      userId = res.body;
     });
 
     when('I send a request to delete my user', async () => {
       await httpServer
-        .delete('/v1/users/' + userId.value)
+        .delete('/v1/users/' + userId.id)
         .send(userDto)
         .expect(200);
     });
