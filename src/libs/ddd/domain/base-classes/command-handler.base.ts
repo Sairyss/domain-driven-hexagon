@@ -3,8 +3,8 @@ import { Result } from '../utils/result.util';
 import { Command } from './command.base';
 
 export abstract class CommandHandlerBase<
-  CommandHandlerReturnType,
-  CommandHandlerError extends Error
+  CommandHandlerReturnType = unknown,
+  CommandHandlerError extends Error = Error
 > {
   constructor(protected readonly unitOfWork: UnitOfWorkPort) {}
 
