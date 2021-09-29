@@ -11,10 +11,7 @@ import { UserEntity } from '../../domain/entities/user.entity';
 import { UserAlreadyExistsError } from '../../errors/user.errors';
 
 @CommandHandler(CreateUserCommand)
-export class CreateUserService extends CommandHandlerBase<
-  ID,
-  UserAlreadyExistsError
-> {
+export class CreateUserService extends CommandHandlerBase {
   constructor(protected readonly unitOfWork: UnitOfWork) {
     super(unitOfWork);
   }
