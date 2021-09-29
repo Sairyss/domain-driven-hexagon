@@ -4,7 +4,6 @@ import { Command, Console } from 'nestjs-console';
 import { Logger } from '@libs/ddd/domain/ports/logger.port';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from './create-user.command';
-import { CreateUserService } from './create-user.service';
 
 // Allows creating a user using CLI (Command Line Interface)
 @Console({

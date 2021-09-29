@@ -1,9 +1,9 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import * as request from 'supertest';
 import { CreateUser } from '@src/interface-adapters/interfaces/user/create.user.interface';
-import { getTestServer, TestServer } from '../../jestSetupAfterEnv';
 import { Id } from '@src/libs/ddd/interface-adapters/interfaces/id.interface';
 import { UserResponse } from '@src/modules/user/dtos/user.response.dto';
+import { getTestServer, TestServer } from '../../jestSetupAfterEnv';
 
 const feature = loadFeature('tests/user/delete-user/delete-user.feature');
 
@@ -46,7 +46,7 @@ defineFeature(feature, test => {
 
     when('I send a request to delete my user', async () => {
       await httpServer
-        .delete('/v1/users/' + userId.id)
+        .delete(`/v1/users/${userId.id}`)
         .send(userDto)
         .expect(200);
     });

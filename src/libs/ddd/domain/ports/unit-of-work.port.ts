@@ -1,5 +1,3 @@
-import { Result } from '../utils/result.util';
-
 export interface UnitOfWorkPort {
   execute<T>(
     correlationId: string,
