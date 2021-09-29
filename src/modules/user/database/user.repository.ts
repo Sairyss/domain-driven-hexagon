@@ -45,7 +45,7 @@ export class UserRepository
   async findOneByIdOrThrow(id: string): Promise<UserEntity> {
     const user = await this.findOneById(id);
     if (!user) {
-      throw new NotFoundException(`For user with id=${id}`);
+      throw new NotFoundException(`User with id '${id}' not found`);
     }
     return this.mapper.toDomainEntity(user);
   }
@@ -63,7 +63,7 @@ export class UserRepository
   async findOneByEmailOrThrow(email: string): Promise<UserEntity> {
     const user = await this.findOneByEmail(email);
     if (!user) {
-      throw new NotFoundException(`For user with email=${email}`);
+      throw new NotFoundException(`User with email '${email}' not found`);
     }
     return this.mapper.toDomainEntity(user);
   }
