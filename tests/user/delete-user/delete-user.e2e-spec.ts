@@ -3,6 +3,7 @@ import * as request from 'supertest';
 import { CreateUser } from '@src/interface-adapters/interfaces/user/create.user.interface';
 import { getTestServer, TestServer } from '../../jestSetupAfterEnv';
 import { Id } from '@src/libs/ddd/interface-adapters/interfaces/id.interface';
+import { UserResponse } from '@src/modules/user/dtos/user.response.dto';
 
 const feature = loadFeature('tests/user/delete-user/delete-user.feature');
 
@@ -53,7 +54,9 @@ defineFeature(feature, test => {
     then('I cannot see my user in a list of all users', async () => {
       const res = await httpServer.get('/v1/users').expect(200);
 
-      expect(res.body).toHaveLength(0);
+      expect(res.body.some((item: UserResponse) => item.id === userId.id)).toBe(
+        false,
+      );
     });
   });
 });
