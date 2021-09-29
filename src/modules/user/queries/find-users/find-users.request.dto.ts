@@ -17,21 +17,21 @@ export class FindUsersRequest implements FindUsers {
   @IsOptional()
   @IsString()
   @Matches(/^[a-zA-Z ]*$/)
-  @Field() // <- only if you are using GraphQL
+  @Field({ nullable: true }) // <- only if you are using GraphQL
   readonly country: string;
 
   @ApiProperty({ example: '28566', description: 'Postal code' })
   @IsOptional()
   @MaxLength(10)
   @IsAlphanumeric()
-  @Field() // <- only if you are using GraphQL
+  @Field({ nullable: true }) // <- only if you are using GraphQL
   readonly postalCode: string;
 
   @ApiProperty({ example: 'Grande Rue', description: 'Street' })
   @IsOptional()
   @MaxLength(50)
   @Matches(/^[a-zA-Z ]*$/)
-  @Field() // <- only if you are using GraphQL
+  @Field({ nullable: true }) // <- only if you are using GraphQL
   readonly street: string;
 }
 

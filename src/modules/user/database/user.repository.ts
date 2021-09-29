@@ -34,6 +34,22 @@ export class UserRepository
     );
   }
 
+  private async findOneById(id: string): Promise<UserOrmEntity | undefined> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    return user;
+  }
+
+  async findOneByIdOrThrow(id: string): Promise<UserEntity> {
+    const user = await this.findOneById(id);
+    if (!user) {
+      throw new NotFoundException(`For user with id=${id}`);
+    }
+    return this.mapper.toDomainEntity(user);
+  }
+
   private async findOneByEmail(
     email: string,
   ): Promise<UserOrmEntity | undefined> {
@@ -47,7 +63,7 @@ export class UserRepository
   async findOneByEmailOrThrow(email: string): Promise<UserEntity> {
     const user = await this.findOneByEmail(email);
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException(`For user with email=${email}`);
     }
     return this.mapper.toDomainEntity(user);
   }
