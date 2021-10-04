@@ -335,8 +335,8 @@ In Application Core **dependencies point inwards**. Outer layers can depend on i
 
 Example files:
 
-- [repository.ports.ts](src/core/ports/repository.ports.ts)
-- [logger.port.ts](src/core/ports/logger.port.ts)
+- [repository.ports.ts](src/libs/ddd/domain/ports/repository.ports.ts)
+- [logger.port.ts](src/libs/ddd/domain/ports/logger.port.ts)
 
 ---
 
