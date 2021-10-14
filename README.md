@@ -241,11 +241,13 @@ Some people prefer having an interface for each use case (Driving Port), which `
 
 ### Local DTOs
 
-Another thing that can be seen in some projects is local DTOs. Some people prefer never to use domain objects (like entities) outside of core (in `controllers`, for example), and are using DTOs instead. This project doesn't use this technique to avoid extra interfaces and data mapping. Either to use local DTOs or not is a matter of taste.
+Another thing that can be seen in some projects is local DTOs. Some people prefer never to use domain objects (like entities) outside of core (in `controllers`, for example), and are using DTOs instead. This project doesn't use this technique to avoid extra complexity and boilerplate code like interfaces and data mapping.
 
 [Here](https://martinfowler.com/bliki/LocalDTO.html) are Martin Fowler's thoughts on local DTOs, in short (quote):
 
 > Some people argue for them(DTOs) as part of a Service Layer API because they ensure that service layer clients aren't dependent upon an underlying Domain Model. While that may be handy, I don't think it's worth the cost of all of that data mapping.
+
+Though you may want to introduce Local DTOs when you need to decouple modules properly. For example, when querying from one module to another you don't want to leak your entities between modules. In that case using a Local DTO would be preferred.
 
 </details>
 
@@ -292,7 +294,7 @@ Read more:
 
 Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it can be done in a application/domain layer.
 
-Similarly to Commands, Queries can use a `Query Bus`.
+Similarly to Commands, Queries can use a `Query Bus` if needed. This way you can query anything from anywhere without importing repositories directly and avoid coupling.
 
 Example files:
 
