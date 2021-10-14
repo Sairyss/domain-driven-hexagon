@@ -409,7 +409,7 @@ In summary, if you combine multiple related entities and value objects inside on
 
 Example files:
 
-- [aggregate-root.base.ts](src/core/base-classes/aggregate-root.base.ts) - abstract base class.
+- [aggregate-root.base.ts](src/libs/ddd/domain/base-classes/aggregate-root.base.ts) - abstract base class.
 - [user.entity.ts](src/modules/user/domain/entities/user.entity.ts) - aggregates are just entities that have to follow a set of specific rules described above.
 
 Read more:
