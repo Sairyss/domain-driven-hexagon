@@ -248,7 +248,7 @@ Some CQS purists may say that a `Command` shouldn't return anything at all. But 
 
 Though, violating this rule and returning some metadata, like `ID` of a created item, redirect link, confirmation message, status, or other metadata is a more practical approach than following dogmas.
 
-All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction (if you are using a single database). This means that inside a single process, one command/request to your application usually should execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that something like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar patterns can be used. Example: [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how it gets a transactional repository from `this.unitOfWork`.
+All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction (if you are using a single database). This means that inside a single process, one command/request to your application usually should execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that you can wrap database operations in a transaction or use something like [Unit of Work](https://java-design-patterns.com/patterns/unit-of-work/) pattern. Example: [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how it gets a transactional repository from `this.unitOfWork`.
 
 **Note**: `Command` is similar but not the same as described here: [Command Pattern](https://refactoring.guru/design-patterns/command). There are multiple definitions across the internet with similar but slightly different implementations.
 
@@ -259,7 +259,7 @@ Example files:
 - [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts) - a command Object
 - [create-user.message.controller.ts](src/modules/user/commands/create-user/create-user.message.controller.ts) - controller executes a command using a bus. This decouples it from a command handler.
 - [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - a command handler
-- [command-handler.base.ts](src/libs/ddd/domain/base-classes/command-handler.base.ts) - command handler base class that wraps execution in a Unit of Work.
+- [command-handler.base.ts](src/libs/ddd/domain/base-classes/command-handler.base.ts) - command handler base class that wraps execution in a transaction.
 
 Read more:
 
@@ -417,7 +417,7 @@ An alternative approach would be publishing a `Domain Event`. If executing a com
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-All changes done by Domain Events (or by anything else) across multiple aggregates in a single process should be saved in a single database transaction to maintain consistency. Patterns like [Unit of Work](https://www.c-sharpcorner.com/UploadFile/b1df45/unit-of-work-in-repository-pattern/) or similar can help with that.
+All changes done by Domain Events (or by anything else) across multiple aggregates in a single process should be saved in a single database transaction to maintain consistency. Patterns like [Unit of Work](https://java-design-patterns.com/patterns/unit-of-work/) or similar can help with that.
 
 **Note**: this project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
 
@@ -429,11 +429,11 @@ Examples:
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
 - [create-wallet-when-user-is-created.domain-event-handler.ts](src/modules/wallet/application/event-handlers/create-wallet-when-user-is-created.domain-event-handler.ts) - this is an example of Domain Event Handler that executes some actions when a domain event is raised (in this case, when user is created it also creates a wallet for that user).
 - [typeorm.repository.base.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution when it persists changes to an aggregate.
-- [typeorm-unit-of-work.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm-unit-of-work.ts) - this ensures that everything is saved in a single transaction.
+- [typeorm-unit-of-work.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm-unit-of-work.ts) - this ensures that all changes are saved in a single database transaction. Keep in mind that this is a naive implementation of a Unit of Work as it only wraps execution into a transaction. To have a proper Unit of Work implementation use something like [mikro-orm](https://www.npmjs.com/package/mikro-orm) instead of [typeorm](https://www.npmjs.com/package/typeorm). Read more about [mikro-orm unit of work](https://mikro-orm.io/docs/unit-of-work/).
 - [unit-of-work.ts](src/infrastructure/database/unit-of-work/unit-of-work.ts) - here you create factories for specific Domain Repositories that are used in a transaction.
 - [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - here we get a user repository from a `UnitOfWork` and execute a transaction.
 
-**Note**: Unit of work is not required for some operations (for example queries or operations that don't cause any side-effects in other aggregates) so you may skip using a unit of work in this cases and just use a regular repository injected through a constructor instead of a repository from a unit of work.
+**Note**: Transactions are not required for some operations (for example queries or operations that don't cause any side-effects in other aggregates) so you may skip using a unit of work in this cases and just use a regular repository injected through a constructor instead of a transactional repository.
 
 To have a better understanding on domain events and implementation read this:
 
@@ -881,23 +881,24 @@ Since domain `Entities` have their data modeled so that it best accommodates dom
 There can be multiple models optimized for different purposes, for example:
 
 - Domain with it's own models - `Entities`, `Aggregates` and `Value Objects`.
-- Persistence layer with it's own models - `ORM` for SQL, `Schemas` for NoSQL, `Read/Write` models if databases are separated into a read and write db ([CQRS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)) etc.
+- Persistence layer with it's own models - ORM ([Object–relational mapping](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping)), schemas, read/write models if databases are separated into a read and write db ([CQRS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)) etc.
 
 Over time, when the amount of data grows, there may be a need to make some changes in the database like improving performance or data integrity by re-designing some tables or even changing the database entirely. Without an explicit separation between `Domain` and `Persistance` models any change to the database will lead to change in your domain `Entities` or `Aggregates`. For example, when performing a database [normalization](https://en.wikipedia.org/wiki/Database_normalization) data can spread across multiple tables rather than being in one table, or vice-versa for [denormalization](https://en.wikipedia.org/wiki/Denormalization). This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges. Separating Domain and Persistance models prevents that.
-
-An alternative to using Persistence Models may be raw queries or some sort of a query builder, in this case you may not need to create `ORM Entities` or `Schemas`.
 
 **Note**: separating domain and persistance models may be an overkill for smaller applications, consider all pros and cons before making this decision.
 
 Example files:
 
-- [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts) <- Persistence model using [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping).
+- [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts) <- Persistence model using ORM.
 - [user.orm-mapper.ts](src/modules/user/database/user.orm-mapper.ts) <- Persistence models should also have a corresponding mapper to map from domain to persistence and back.
+
+Alternative approach to ORM are raw queries or some sort of a query builder (like [knex](https://www.npmjs.com/package/knex)). This may be a better approach for bigger projects than Object-Relational Mapping since it offers more flexibility and better performance.
 
 Read more:
 
 - [Stack Overflow question: DDD - Persistence Model and Domain Model](https://stackoverflow.com/questions/14024912/ddd-persistence-model-and-domain-model)
 - [Just Stop It! The Domain Model Is Not The Persistence Model](https://blog.sapiensworks.com/post/2012/04/07/Just-Stop-It!-The-Domain-Model-Is-Not-The-Persistence-Model.aspx)
+- [Comparing SQL, query builders, and ORMs](https://www.prisma.io/dataguide/types/relational/comparing-sql-query-builders-and-orms)
 - [Secure by Design: Chapter 6.2.2 ORM frameworks and no-arg constructors](https://livebook.manning.com/book/secure-by-design/chapter-6/40)
 
 ## Other things that can be a part of Infrastructure layer:
