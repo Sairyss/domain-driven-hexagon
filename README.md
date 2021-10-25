@@ -1,30 +1,3 @@
-## September update:
-
-There are a lot of updates to this repo lately:
-
-Added more code examples:
-
-- Added UnitOfWork
-- All Domain Events can now be executed in a single database transaction using a UnitOfWork
-- Added Wallet module to show an example of using a UnitOfWork together with Domain Events
-- Added BDD tests example
-- Added GraphQL examples
-- Added Domain Events
-
-Refactoring:
-
-- Refactored Domain Events and Domain Events Handlers
-- Commands are now plain objects
-- Moved generic files to /libs directory
-- Refactored Entity/Aggregate creation
-- Using a command bus instead of importing a service directly
-- And more
-
-Updates in readme and code:
-
-- My opinion on some topics evolve over time so readme and code gets updated constantly.
-- Added more resources and topics to readme
-
 # Domain-Driven Hexagon
 
 Main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
