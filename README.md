@@ -390,9 +390,7 @@ An alternative approach would be publishing a `Domain Event`. If executing a com
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-All changes done by Domain Events (or by anything else) across multiple aggregates in a single process should be saved in a single database transaction to maintain consistency. Patterns like [Unit of Work](https://java-design-patterns.com/patterns/unit-of-work/) or similar can help with that.
-
-**Note**: this project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
+All changes done by Domain Events (or by anything else) across multiple aggregates in a single process should be saved in a single database transaction to maintain consistency. Wrapping an entire flow in a transaction or using patterns like [Unit of Work](https://java-design-patterns.com/patterns/unit-of-work/) or similar can help with that.
 
 There are multiple ways on implementing an event bus for Domain Events, for example by using ideas from patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or [Observer](https://refactoring.guru/design-patterns/observer).
 
@@ -402,26 +400,30 @@ Examples:
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
 - [create-wallet-when-user-is-created.domain-event-handler.ts](src/modules/wallet/application/event-handlers/create-wallet-when-user-is-created.domain-event-handler.ts) - this is an example of Domain Event Handler that executes some actions when a domain event is raised (in this case, when user is created it also creates a wallet for that user).
 - [typeorm.repository.base.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution when it persists changes to an aggregate.
-- [typeorm-unit-of-work.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm-unit-of-work.ts) - this ensures that all changes are saved in a single database transaction. Keep in mind that this is a naive implementation of a Unit of Work as it only wraps execution into a transaction. To have a proper Unit of Work implementation use something like [mikro-orm](https://www.npmjs.com/package/mikro-orm) instead of [typeorm](https://www.npmjs.com/package/typeorm). Read more about [mikro-orm unit of work](https://mikro-orm.io/docs/unit-of-work/).
+- [typeorm-unit-of-work.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm-unit-of-work.ts) - this ensures that all changes are saved in a single database transaction. Keep in mind that this is a naive implementation of a Unit of Work as it only wraps execution into a transaction. Proper Unit of Work implementation requires storing all changes in memory first. [Mikro-orm](https://www.npmjs.com/package/mikro-orm) is a nice ORM for nodejs that can be used instead of [typeorm](https://www.npmjs.com/package/typeorm) to have a proper Unit of Work pattern. Read more about [mikro-orm unit of work](https://mikro-orm.io/docs/unit-of-work/).
 - [unit-of-work.ts](src/infrastructure/database/unit-of-work/unit-of-work.ts) - here you create factories for specific Domain Repositories that are used in a transaction.
 - [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - here we get a user repository from a `UnitOfWork` and execute a transaction.
-
-**Note**: Transactions are not required for some operations (for example queries or operations that don't cause any side-effects in other aggregates) so you may skip using a unit of work in this cases and just use a regular repository injected through a constructor instead of a transactional repository.
 
 To have a better understanding on domain events and implementation read this:
 
 - [Domain Event pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-event-pattern.html)
 - [Domain events: design and implementation](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
 
-**Note**: keep in mind that while using only events for complex workflows with a lot of steps it will be hard to track everything that is happening across the application. One event may trigger another one, then another one, and so on. To track the entire workflow you'll have to go multiple places and search for an event handler for each step which is hard to maintain. In this cases using a service/orchestrator/mediator might be a preferred approach than only using events since you will have an entire workflow in one place. This might create some coupling, but is easier to maintain. Don't rely on events only, pick the right tool for the job.
+**Additional notes**:
 
-**Note**: keep in mind that if you are using [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) with a single stream per aggregate you most likely will not be able to save all events across multiple aggregates in a single transaction. In this case saving events across multiple aggregates should be treated differently (for example by using [Sagas](https://microservices.io/patterns/data/saga.html) with compensating events or a [Process Manager](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html) or something similar).
+- This project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
+
+- Transactions are not required for some operations (for example queries or operations that don't cause any side-effects in other aggregates) so you may skip using a unit of work in this cases and just use a regular repository injected through a constructor instead of a transactional repository.
+
+- While using only events for complex workflows with a lot of steps it will be hard to track everything that is happening across the application. One event may trigger another one, then another one, and so on. To track the entire workflow you'll have to go multiple places and search for an event handler for each step which is hard to maintain. In this cases using a service/orchestrator/mediator might be a preferred approach than only using events since you will have an entire workflow in one place. This might create some coupling, but is easier to maintain. Don't rely on events only, pick the right tool for the job.
+
+- In some cases you will not be able to save all changes done by your events to multiple aggregates in a single transaction. For example if you are using microservices that span transaction between multiple services, or [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) that has a single stream per aggregate. In this case saving events across multiple aggregates can be eventually consistent (for example by using [Sagas](https://microservices.io/patterns/data/saga.html) with compensating events or a [Process Manager](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html) or something similar).
 
 ## Integration Events
 
 Out-of-process communications (calling microservices, external apis) are called `Integration Events`. If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
 
-Integration Events should be published only **after** all Domain Events finished executing and saving all changes to the database.
+Integration Events usually should be published only after all Domain Events finished executing and saving all changes to the database.
 
 To handle integration events in microservices you may need an external message broker / event bus like [RabbitMQ](https://www.rabbitmq.com/) or [Kafka](https://kafka.apache.org/) together with patterns like [Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html), [Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture), [Sagas](https://microservices.io/patterns/data/saga.html) or a [Process Manager](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html) to maintain [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency).
 
