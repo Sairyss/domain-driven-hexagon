@@ -346,12 +346,12 @@ Read more:
 - Aggregates help to simplify the domain model by gathering multiple domain objects under a single abstraction.
 - Aggregates should not be influenced by data model. Associations between domain objects are not the same as database relationships.
 - Aggregate root is an entity that contains other entities/value objects and all logic to operate them.
-- Aggregate root has global identity. Entities inside the boundary have local identity, unique only within the Aggregate.
+- Aggregate root has global identity ([UUID / GUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) / primary key). Entities inside the aggregate boundary have local identities, unique only within the Aggregate.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
 - Any operations on an aggregate must be [transactional operations](https://en.wikipedia.org/wiki/Database_transaction). Either everything gets saved/updated/deleted or nothing.
 - Only Aggregate Roots can be obtained directly with database queries. Everything else must be done through traversal.
 - Similar to `Entities`, aggregates must protect their invariants through entire lifecycle. When a change to any object within the Aggregate boundary is committed, all invariants of the whole Aggregate must be satisfied. Simply said, all objects in an aggregate must be consistent, meaning that if one object inside an aggregate changes state, this shouldn't conflict with other domain objects inside this aggregate (this is called _Consistency Boundary_).
-- Objects within the Aggregate can hold references to other Aggregate roots. Prefer references to external aggregates only by their globally unique identity, not by holding a direct object reference.
+- Objects within the Aggregate can reference other Aggregate roots via their globally unique identifier (id). Avoid holding a direct object reference.
 - Try to avoid aggregates that are too big, this can lead to performance and maintaining problems.
 - Aggregates can publish `Domain Events` (more on that below).
 
