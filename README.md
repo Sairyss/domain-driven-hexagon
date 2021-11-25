@@ -68,8 +68,8 @@ Though patterns and principles presented here are **framework/language agnostic*
 
 - [Additional resources](#Additional-resources)
   - [Articles](#Articles)
-  - [Repositories](#Repositories)
-  - [Documentation](#Documentation)
+  - [Github Repositories](#Github-repositories)
+  - [Documentation websites](#Documentation-websites)
   - [Blogs](#Blogs)
   - [Videos](#Videos)
   - [Books](#Books)
@@ -79,7 +79,7 @@ Though patterns and principles presented here are **framework/language agnostic*
 Mainly based on:
 
 - [Domain-Driven Design (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design)
-- [Hexagonal (Ports and Adapters) Architecture ](https://blog.octo.com/en/hexagonal-architecture-three-principles-and-an-implementation-example/)
+- [Hexagonal (Ports and Adapters) Architecture](https://blog.octo.com/en/hexagonal-architecture-three-principles-and-an-implementation-example/)
 - [Secure by Design](https://www.manning.com/books/secure-by-design)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Onion Architecture](https://herbertograca.com/2017/09/21/onion-architecture/)
@@ -90,7 +90,7 @@ And many other sources (more links below in every chapter).
 
 Before we begin, here are the PROS and CONS of using a complete architecture like this:
 
-## Pros:
+#### Pros
 
 - Independent of external frameworks, technologies, databases, etc. Frameworks and external resources can be plugged/unplugged with much less effort.
 - Easily testable and scalable.
@@ -99,7 +99,7 @@ Before we begin, here are the PROS and CONS of using a complete architecture lik
 - Easier to add new features. As the system grows over time, the difficulty in adding new features remains constant and relatively small.
 - If the solution is properly broken apart along [bounded context](https://martinfowler.com/bliki/BoundedContext.html) lines, it becomes easy to convert pieces of it into microservices if needed.
 
-## Cons:
+#### Cons
 
 - This is a sophisticated architecture which requires a firm understanding of quality software principles, such as SOLID, Clean/Hexagonal Architecture, Domain-Driven Design, etc. Any team implementing such a solution will almost certainly require an expert to drive the solution and keep it from evolving the wrong way and accumulating technical debt.
 
@@ -147,7 +147,7 @@ Each module is separated in layers described below.
 
 This is the core of the system which is built using [DDD building blocks](https://dzone.com/articles/ddd-part-ii-ddd-building-blocks):
 
-### Domain layer:
+**Domain layer**:
 
 - Entities
 - Aggregates
@@ -155,7 +155,7 @@ This is the core of the system which is built using [DDD building blocks](https:
 - Value Objects
 - Domain Errors
 
-### Application layer:
+**Application layer**:
 
 - Application Services
 - Commands and Queries
@@ -783,7 +783,7 @@ So why do we need DTOs if we already have Command objects that carry properties?
 
 More info on this subject here: [Are CQRS commands part of the domain model?](https://enterprisecraftsmanship.com/posts/cqrs-commands-part-domain-model/) (read "_Commands vs DTOs_" section).
 
-### Additional recommendations:
+### Additional recommendations
 
 - DTOs should be data-oriented, not object-oriented. Its properties should be mostly primitives. We are not modeling anything here, just sending flat data around.
 - When returning a `Response` prefer _whitelisting_ properties over _blacklisting_. This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
@@ -877,7 +877,7 @@ Read more:
 - [Comparing SQL, query builders, and ORMs](https://www.prisma.io/dataguide/types/relational/comparing-sql-query-builders-and-orms)
 - [Secure by Design: Chapter 6.2.2 ORM frameworks and no-arg constructors](https://livebook.manning.com/book/secure-by-design/chapter-6/40)
 
-## Other things that can be a part of Infrastructure layer:
+## Other things that can be a part of Infrastructure layer
 
 - Framework related files;
 - Application logger implementation;
@@ -907,7 +907,6 @@ Different projects most likely will have different requirements. Some principles
 Sometimes complex architecture and principles like [SOLID](https://en.wikipedia.org/wiki/SOLID) can be incompatible with [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) and [KISS](https://en.wikipedia.org/wiki/KISS_principle). A good programmer should be pragmatic and has to be able to combine his skills and knowledge with a common sense to choose the best solution for the problem.
 
 > You need some experience with object-oriented software development in real world projects before they are of any use to you. Furthermore, they don’t tell you when you have found a good solution and when you went too far. Going too far means that you are outside the “scope” of a principle and the expected advantages don’t appear.
-
 > Principles, Heuristics, ‘laws of engineering’ are like hint signs, they are helpful when you know where they are pointing to and you know when you have gone too far. Applying them requires experience, that is trying things out, failing, analysing, talking to people, failing again, fixing, learning and failing some more. There is no short cut as far as I know.
 
 **Before implementing any pattern always analyze if benefit given by using it worth extra code complexity**.
@@ -1016,7 +1015,7 @@ Example files:
 Read more:
 
 - [Pragmatic unit testing](https://enterprisecraftsmanship.com/posts/pragmatic-unit-testing/)
-- [Google Blog: Test Behavior, Not Implementation ](https://testing.googleblog.com/2013/08/testing-on-toilet-test-behavior-not.html)
+- [Google Blog: Test Behavior, Not Implementation](https://testing.googleblog.com/2013/08/testing-on-toilet-test-behavior-not.html)
 - [Writing BDD Test Scenarios](https://www.departmentofproduct.com/blog/writing-bdd-test-scenarios/)
 - Book: [Unit Testing Principles, Practices, and Patterns](https://www.amazon.com/gp/product/1617296279/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1617296279&linkCode=as2&tag=vkhorikov-20&linkId=2081de4b1cb7564cb9f95526533c3dae)
 
@@ -1333,7 +1332,7 @@ To solve this, implementing [Rate Limiting](https://en.wikipedia.org/wiki/Rate_l
 
 Read more:
 
-- [Everything You Need To Know About API Rate Limiting ](https://nordicapis.com/everything-you-need-to-know-about-api-rate-limiting/)
+- [Everything You Need To Know About API Rate Limiting](https://nordicapis.com/everything-you-need-to-know-about-api-rate-limiting/)
 - [Rate-limiting strategies and techniques](https://cloud.google.com/solutions/rate-limiting-strategies-techniques)
 - [How to Design a Scalable Rate Limiting Algorithm](https://konghq.com/blog/how-to-design-a-scalable-rate-limiting-algorithm/)
 
@@ -1409,12 +1408,12 @@ Read more:
 - [Clean architecture for the rest of us](https://pusher.com/tutorials/clean-architecture-introduction)
 - [An illustrated guide to 12 Factor Apps](https://www.redhat.com/architect/12-factor-app)
 
-## Repositories
+## Github Repositories
 
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
 - [The System Design Primer](https://github.com/donnemartin/system-design-primer)
 
-## Documentation
+## Documentation Websites
 
 - [The Twelve-Factor App](https://12factor.net/)
 - [Refactoring guru - Catalog of Design Patterns](https://refactoring.guru/design-patterns/catalog)
@@ -1437,7 +1436,7 @@ Read more:
 
 ## Books
 
-- ["Domain-Driven Design: Tackling Complexity in the Heart of Software" ](https://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215) by Eric Evans
+- ["Domain-Driven Design: Tackling Complexity in the Heart of Software"](https://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215) by Eric Evans
 - ["Secure by Design"](https://www.manning.com/books/secure-by-design) by Dan Bergh Johnsson, Daniel Deogun, Daniel Sawano
 - ["Implementing Domain-Driven Design"](https://www.amazon.com/Implementing-Domain-Driven-Design-Vaughn-Vernon/dp/0321834577) by Vaughn Vernon
 - ["Clean Architecture: A Craftsman's Guide to Software Structure and Design"](https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164/ref=sr_1_1?dchild=1&keywords=clean+architecture&qid=1605343702&s=books&sr=1-1) by Robert Martin
