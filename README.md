@@ -518,6 +518,8 @@ Using `Value Objects` instead of primitives:
 
 Also an alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases) just to give this primitive a semantic meaning.
 
+**Note**: Do not include Value Objects in dtos, commands, events, database models, projections etc. Transform them to primitive types first. Value Objects should be used only within the same bounded context. It is a bad practice to send them to different contexts, to a command/event bus, saving them to the database etc. because this creates coupling.
+
 Example files:
 
 - [email.value-object.ts](src/modules/user/domain/value-objects/email.value-object.ts)
