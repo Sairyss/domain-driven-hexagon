@@ -129,9 +129,11 @@ More in details on each step below.
 
 # Modules
 
-This project's code examples use separation by modules (also called components). Each module gets its own folder with a dedicated codebase, and each use case inside that module gets it's own folder to store most of the things it needs (this is also called _Vertical Slicing_).
+This project's code examples use separation by modules (also called components). Each module's name should reflect an important concept from the Domain and have its own folder with a dedicated codebase, and each use case inside that module gets it's own folder to store most of the things it needs (this is also called _Vertical Slicing_).
 
-It is easier to work on things that change together if those things are gathered relatively close to each other. Try not to create dependencies between modules or use cases, move shared logic into a separate files and make both depend on that instead of depending on each other.
+It is easier to work on things that change together if those things are gathered relatively close to each other. Think of a module as a "box" that groups together related business logic.
+
+Try not to create dependencies between modules or use cases, move shared logic into a separate files and make both depend on that instead of depending on each other.
 
 Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Try to avoid direct imports between modules (like importing a service from other domain) since this creates [tight coupling](<https://en.wikipedia.org/wiki/Coupling_(computer_programming)>). To avoid coupling modules can communicate with each other by using a message bus, for example you can send commands using a commands bus or subscribe to events that other modules emit (more info on events and commands bus below).
 
@@ -140,6 +142,7 @@ This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupl
 Read more about modular programming benefits:
 
 - [Modular programming: Beyond the spaghetti mess](https://www.tiny.cloud/blog/modular-programming-principle/).
+- [What are Modules in Domain Driven Design?](https://www.culttt.com/2014/12/10/modules-domain-driven-design/)
 
 Each module is separated in layers described below.
 
