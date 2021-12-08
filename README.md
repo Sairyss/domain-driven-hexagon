@@ -325,7 +325,7 @@ Entities:
 - Domain entities data should be modelled to accommodate business logic, not some database schema.
 - Entities must protect their invariants, try to avoid public setters - update state using methods and execute invariant validation on each update if needed (this can be a simple `validate()` method that checks if business rules are not violated by update).
 - Must be consistent on creation. Validate Entities and other domain objects on creation and throw an error on first failure. [Fail Fast](https://en.wikipedia.org/wiki/Fail-fast).
-- Avoid no-arg (empty) constructors, accept and validate all required properties through a constructor.
+- Avoid no-arg (empty) constructors, accept and validate all required properties in a constructor (or in a factory method like `create()`).
 - For optional properties that require some complex setting up, [Fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) and [Builder Pattern](https://refactoring.guru/design-patterns/builder) can be used.
 - Make Entities partially immutable. Identify what properties shouldn't change after creation and make them `readonly` (for example `id` or `createdAt`).
 
@@ -960,7 +960,7 @@ Read more:
 
 ## Exceptions Handling
 
-Unlike Domain Errors, exceptions should be thrown when something unexpected happens. Like when a process is out of memory or a database connection lost. In our case we also throw an Exception in Domain Objects constructor when validation fails, since we know our input is validated before it even reaches Domain so when validation of a domain object constructor fails it is an exceptional situation.
+Unlike Domain Errors, exceptions should be thrown when something unexpected happens. Like when a process is out of memory or a database connection lost. In our case we also throw an Exception when Domain Objects are created with incorrect parameters, since we know our input is validated before it even reaches Domain so when validation of a domain object fails it is an exceptional situation.
 
 ### Exception types
 
@@ -983,7 +983,7 @@ Application should be protected not only from operational errors (like incorrect
 For example:
 
 - Operational errors can happen when validation error is thrown by validating user input, it means that input body is incorrect and a `400 Bad Request` exception should be returned to the user with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this case user can fix the input body and retry the request.
-- On the other hand, programmer error means something unexpected occurs in the program. For example, when exception happens on a new domain object creation, sometimes it can mean that a class is not used as intended and some rule is violated, for example a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, only a programmer can, so it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
+- On the other hand, programmer error means something unexpected occurs in the program. For example, when exception happens on a new domain object creation, sometimes it can mean that a class is not used as intended and some rule is violated, for example a programmer did a mistake by creating an object with incorrect parameters, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, only a programmer can, so it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
 
 ### Error metadata
 
