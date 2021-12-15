@@ -1017,24 +1017,26 @@ Lets review two types of software testing:
 - [White Box](https://en.wikipedia.org/wiki/White-box_testing) testing.
 - [Black Box](https://en.wikipedia.org/wiki/Black-box_testing) testing.
 
-Testing module/use-case internal structures (creating a test for every file/class) is called _`White Box`_ testing. _White Box_ testing is widely used technique, but it has disadvantages. It creates coupling to implementation details, so every time you decide to refactor business logic code this may also cause a refactoring of corresponding tests.
+Testing module/use-case internal structures (creating a test for every file/class) is called _`White Box`_ testing (or unit testing). _White Box_ testing is widely used technique, but it has disadvantages. It creates coupling to implementation details, so every time you decide to refactor business logic code this may also cause a refactoring of corresponding tests.
 
-Use case requirements may change mid work, your understanding of a problem may evolve or you may start noticing new patterns that emerge during development, in other words, you start noticing a "big picture", which may lead to refactoring. For example: imagine that you defined a _`White box`_ test for a class, and while developing this class you start noticing that it does too much and should be separated into two classes. Now you'll also have to refactor your unit test. After some time, while implementing a new feature, you notice that this new feature uses some code from that class you defined before, so you decide to separate that code and make it reusable, creating a third class (which originally was one), which leads to changing your unit tests yet again, every time you refactor. Use case requirements, input, output or behavior never changed, but unit tests had to be changed multiple times. This is inefficient and time consuming.
+Use case requirements may change mid work, your understanding of a problem may evolve or you may start noticing new patterns that emerge during development, in other words, you start noticing a "big picture", which may lead to refactoring. For example: imagine that you defined a unit test for a class, and while developing this class you start noticing that it does too much and should be separated into two classes. Now you'll also have to refactor your unit test. After some time, while implementing a new feature, you notice that this new feature uses some code from that class you defined before, so you decide to separate that code and make it reusable, creating a third class (which originally was one), which leads to changing your unit tests yet again, every time you refactor. Use case requirements, input, output or behavior never changed, but unit tests had to be changed multiple times. This is inefficient and time consuming.
+
+When we have domain models that change often, unit tests end up having to change with them. Traditional unit tests tend to be very coupled to internals of our domain model structure.
 
 To solve this and get the most out of your tests, prefer _`Black Box`_ testing ([Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
 
 > Tests that are independent of implementation details are easier to maintain since they don't need to be changed each time you make a change to the implementation.
 
-Try to avoid _White Box_ testing when possible. However, it's worth mentioning that there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation when it is required to reduce combinations of testing conditions, for example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time, in this case _White Box_ tests may be appropriate.
+Try to avoid _White Box_ (unit) testing when possible. However, it's worth mentioning that there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation details when it is required to reduce combinations of testing conditions. For example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time. Or you are developing a library that will be used by multiple modules or projects. In those cases _White Box_ tests may be appropriate.
 
 Use _White Box_ testing only when it is really needed and as an addition to _Black Box_ testing, not the other way around.
 
 It's all about investing only in the tests that yield the biggest return on your effort.
 
-Behavioral tests can be divided in two parts:
+Black box / Behavioral tests can be divided in two parts:
 
 - Fast: Use cases tests in isolation which test only your business logic, with all I/O (external API or database calls, file reads etc.) mocked. This makes tests fast so they can be run all the time (after each change or before every commit). This will inform you when something fails as fast as possible. Finding bugs early is critical and saves a lot of time.
-- Slow: Full [End to End](https://www.guru99.com/end-to-end-testing.html) (e2e) tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests should have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before pushing/deploying. Though e2e tests live in the same project/repository, it is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
+- Slow: Full [End to End](https://www.guru99.com/end-to-end-testing.html) (e2e) tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests should have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before pushing/deploying. Though e2e tests can live in the same project/repository, it is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
 
 **Note**: some people try to make e2e tests faster by using in-memory or embedded databases (like [sqlite3](https://www.npmjs.com/package/sqlite3)). This makes tests faster, but reduces the reliability of those tests and should be avoided. Read more: [Don't use In-Memory Databases for Tests](https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/).
 
@@ -1042,8 +1044,8 @@ For BDD tests [Cucumber](https://cucumber.io/) with [Gherkin](https://cucumber.i
 
 Example files:
 
-- [create-user.feature](tests/user/create-user/create-user.feature) - feature file that contains Gherkin steps
-- [create-user.e2e-spec.ts](tests/user/create-user/create-user.e2e-spec.ts) - spec file that executes Gherkin steps
+- [create-user.feature](tests/user/create-user/create-user.feature) - feature file that contains human readable Gherkin steps
+- [create-user.e2e-spec.ts](tests/user/create-user/create-user.e2e-spec.ts) - e2e / behavioral test
 
 Read more:
 
