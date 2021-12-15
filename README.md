@@ -44,7 +44,6 @@ Though patterns and principles presented here are **framework/language agnostic*
 
 - [Other recommendations and best practices](#Other-recommendations-and-best-practices)
 
-  - [Exceptions Handling](#Exceptions-Handling)
   - [Testing](#Testing)
     - [Load Testing](#Load-Testing)
     - [Fuzz Testing](#Fuzz-Testing)
@@ -656,7 +655,9 @@ Read more about validation types described above:
 
 ## Domain Errors
 
-Exceptions are for exceptional situations. Complex domains usually have a lot of errors that are not exceptional, but a part of a business logic (like seat already booked, choose another one). Those errors may need special handling. In those cases returning explicit error types can be a better approach than throwing.
+Application's core and domain layers shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc. A better approach is to create custom error classes with appropriate error codes.
+
+Exceptions are for exceptional situations. Complex domains usually have a lot of errors that are not exceptional, but a part of a business logic (like "seat already booked, choose another one"). Those errors may need special handling. In those cases returning explicit error types can be a better approach than throwing.
 
 Returning an error instead of throwing explicitly shows a type of each exception that a method can return so you can handle it accordingly. It can make an error handling and tracing easier.
 
@@ -931,56 +932,6 @@ Read more:
 - [SOLID Principles and the Arts of Finding the Beach](https://sebastiankuebeck.wordpress.com/2017/09/17/solid-principles-and-the-arts-of-finding-the-beach/)
 
 # Other recommendations and best practices
-
-## Exceptions Handling
-
-Unlike Domain Errors, exceptions should be thrown when something unexpected happens. Like when a process is out of memory or a database connection lost. In our case we also throw an Exception in Domain Objects constructor when validation fails, since we know our input is validated before it even reaches Domain so when validation of a domain object constructor fails it is an exceptional situation.
-
-### Exception types
-
-Consider extending `Error` object to make custom generic exception types for different situations. For example: `ArgumentInvalidException`, `ValidationException` etc. This is especially relevant in NodeJS world since there is no exceptions for different situations by default.
-
-Keep in mind that application's `core` shouldn't throw HTTP exceptions or statuses since it shouldn't know in what context it is used, since it can be used by anything: HTTP controller, Microservice event handler, Command Line Interface etc. A better approach is to create custom error classes with appropriate error codes.
-
-When used in HTTP context, for returning proper status code back to user an `instanceof` or a `switch/case` check against the custom code can be performed in exception interceptor or in a controller and appropriate HTTP exception can be returned depending on exception type/code.
-
-Exception interceptor example: [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - notice how custom exceptions are converted to nest.js exceptions.
-
-Adding a `code` string with a custom status code for every exception is a good practice, since when that exception is transferred to another process `instanceof` check cannot be performed anymore so a `code` string is used instead. `code` enum types can be stored in a separate file so they can be shared and reused on a receiving side: [exception.codes.ts](src/libs/exceptions/exception.codes.ts).
-
-When using microservices, exception codes can be packed into a library or a sub-module and reused in each microservice for consistency.
-
-### Differentiate between programmer errors and operational errors
-
-Application should be protected not only from operational errors (like incorrect user input), but from a programmer errors as well by throwing exceptions when something is not used as intended.
-
-For example:
-
-- Operational errors can happen when validation error is thrown by validating user input, it means that input body is incorrect and a `400 Bad Request` exception should be returned to the user with details of what fields are incorrect ([notification pattern](https://martinfowler.com/eaaDev/Notification.html)). In this case user can fix the input body and retry the request.
-- On the other hand, programmer error means something unexpected occurs in the program. For example, when exception happens on a new domain object creation, sometimes it can mean that a class is not used as intended and some rule is violated, for example a programmer did a mistake by assigning an incorrect value to a constructor, or value got mutated at some point and is no longer valid. In this case user cannot do anything to fix this, only a programmer can, so it may be more appropriate to throw a different type of exception that should be logged and then returned to the user as `500 Internal Server Error`, in this case without adding much additional details to the response since it may cause a leak of some sensitive data.
-
-### Error metadata
-
-Consider adding optional `metadata` object to exceptions (if language doesn't support anything similar by default) and pass some useful technical information about the exception when throwing. This will make debugging easier.
-
-**Important to keep in mind**: never log or add to `metadata` any sensitive information (like passwords, emails, phone or credit card numbers etc) since this information may leak into log files, and if log files are not protected properly this information can leak or be seen by developers who have access to log files. Aim adding only technical information to your logs.
-
-### Other recommendations
-
-- If translations of error messages to other languages is needed, consider storing those error messages in a separate object/class rather than inline string literals. This will make it easier to implement localization by adding conditional getters. Also, it is usually better to store all localization in a single place, for example, having a single file/folder for all messages that need translation, and then import them where needed. It is easier to add new translations when all of your messages are in one place rather then scattered across the app.
-- You can use "Problem Details for HTTP APIs" standard for returned exceptions, described in [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807). Read more about this standard: [REST API Error Handling - Problem Details Response](https://blog.restcase.com/rest-api-error-handling-problem-details-response/)
-- By default in NodeJS Error objects are not serialized properly when sending plain objects to external processes. Consider creating a `toJSON()` method so it can be easily sent to other processes as a plain object. (see example in [exception.base.ts](src/libs/exceptions/exception.base.ts)). But keep in mind not to return a stack trace when in production.
-
-Example files:
-
-- [exception.base.ts](src/libs/exceptions/exception.base.ts) - Exception abstract base class
-- [argument-invalid.exception.ts](src/libs/exceptions/argument-invalid.exception.ts) - Generic exception class example
-- Check [exceptions](src/libs/exceptions) folder to see more examples (some of them are exceptions from other languages like C# or Java)
-
-Read more:
-
-- [Better error handling in JavaScript](https://iaincollins.medium.com/error-handling-in-javascript-a6172ccdf9af)
-- ["Secure by design" Chapter 9: Handling failures securely](https://livebook.manning.com/book/secure-by-design/chapter-9/)
 
 ## Testing
 

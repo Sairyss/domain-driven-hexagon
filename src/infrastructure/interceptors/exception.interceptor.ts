@@ -21,6 +21,10 @@ export class ExceptionInterceptor implements NestInterceptor {
   ): Observable<ExceptionBase> {
     return next.handle().pipe(
       catchError(err => {
+        /**
+         * Custom exceptions are converted to nest.js exceptions.
+         * This way we are not tied to a framework or HTTP protocol.
+         */
         if (err instanceof NotFoundException) {
           throw new NestNotFoundException(err.message);
         }
