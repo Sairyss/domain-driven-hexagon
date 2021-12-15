@@ -324,7 +324,7 @@ Entities:
 - Domain entities data should be modelled to accommodate business logic, not some database schema.
 - Entities must protect their invariants, try to avoid public setters - update state using methods and execute invariant validation on each update if needed (this can be a simple `validate()` method that checks if business rules are not violated by update).
 - Must be consistent on creation. Validate Entities and other domain objects on creation and throw an error on first failure. [Fail Fast](https://en.wikipedia.org/wiki/Fail-fast).
-- Avoid no-arg (empty) constructors, accept and validate all required properties through a constructor.
+- Avoid no-arg (empty) constructors, accept and validate all required properties in a constructor (or in a factory method like `create()`).
 - For optional properties that require some complex setting up, [Fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) and [Builder Pattern](https://refactoring.guru/design-patterns/builder) can be used.
 - Make Entities partially immutable. Identify what properties shouldn't change after creation and make them `readonly` (for example `id` or `createdAt`).
 
@@ -601,19 +601,45 @@ Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain p
 - [Domain Primitives: what they are and how you can use them to make more secure software](https://freecontent.manning.com/domain-primitives-what-they-are-and-how-you-can-use-them-to-make-more-secure-software/)
 - ["Secure by Design" Chapter 5: Domain Primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/) (a full chapter of the article above)
 
-### How to do simple validation?
+### Guarding vs validating
 
-For simple validation like checking for nulls, empty arrays, input length etc. a library of [guards](<https://en.wikipedia.org/wiki/Guard_(computer_science)>) can be created.
+You may have noticed that we do validation in two places:
+
+1. First when user input is sent to our application. In our example we use DTO decorators: [create-user.request-dto.ts](src/modules/user/commands/create-user/create-user.request.dto.ts).
+2. Second time in domain objects, for example: [email.value-object.ts](src/modules/user/domain/value-objects/email.value-object.ts).
+
+So, why validating things twice? Lets call a second validation "_guarding_" and distinguish a difference between guarding and validating:
+
+- Guarding is a failsafe mechanism. Domain layer views it as invariants to comply with always-valid domain model.
+- Validation is a filtration mechanism. Outside layers view them as input validation rules.
+
+> This difference leads to different treatment of violations of these business rules. An invariant violation in the domain model is an exceptional situation and should be met with throwing an exception. On the other hand, there’s nothing exceptional in external input being incorrect.
+
+The input coming from the outside world should be filtered out before passing it further to the domain model. It’s the first line of defense against data inconsistency. At this stage, any incorrect data is denied with corresponding error messages.
+Once the filtration has confirmed that the incoming data is valid it is passed to a domain. When the data enters the always-valid domain boundary, it is assumed to be valid and any violation of this assumption means that you’ve introduced a bug.
+Guards help to reveal those bugs. They are the failsafe mechanism, the last line of defense that ensures data in the always-valid boundary is indeed valid. Unlike validations, guards throw exceptions; they comply with the [Fail Fast principle](https://enterprisecraftsmanship.com/posts/fail-fast-principle).
+
+Domain classes should always guard themselves against becoming invalid.
+
+For preventing null/undefined values, empty objects and arrays, incorrect input length etc. a library of [guards](<https://en.wikipedia.org/wiki/Guard_(computer_science)>) can be created.
 
 Example file: [guard.ts](src/libs/ddd/domain/guard.ts)
 
-Read more: [Refactoring: Guard Clauses](https://medium.com/better-programming/refactoring-guard-clauses-2ceeaa1a9da)
+**Keep in mind** that not all validations/guarding can be done in a single domain object, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may involve another field, or even a different entity. Handle those cases accordingly.
 
-Another solution would be using an external validation library, but it is not a good practice to tie domain to external libraries and is not usually recommended.
+Read more:
+
+- [Refactoring: Guard Clauses](https://medium.com/better-programming/refactoring-guard-clauses-2ceeaa1a9da)
+- [Always-Valid Domain Model](https://enterprisecraftsmanship.com/posts/always-valid-domain-model/)
+
+<details>
+<summary><b>Note</b>: Using validation library instead of custom guards</summary>
+
+Instead of using custom _guards_ you could use an external validation library, but it is not a good practice to tie domain to external libraries and is not usually recommended.
 
 Although exceptions can be made if needed, especially for very specific validation libraries that validate only one thing (like specific IDs, for example bitcoin wallet address). Tying only one or just few `Value Objects` to such a specific library won't cause any harm. Unlike general purpose validation libraries which will be tied to domain everywhere and it will be troublesome to change it in every `Value Object` in case when old library is no longer maintained, contains critical bugs or is compromised by hackers etc.
 
-Though, it is fine to do full sanity checks using validation framework or library **outside** of domain (for example [class-validator](https://www.npmjs.com/package/class-validator) decorators in `DTOs`), and do only some basic checks inside of `Value Objects` (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
+Though, it is fine to do full sanity checks using validation framework or library **outside** of domain (for example [class-validator](https://www.npmjs.com/package/class-validator) decorators in `DTOs`), and do only some basic checks (guarding) inside of domain objects (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
 
 <details>
 <summary>Note about using regexp</summary>
@@ -634,7 +660,7 @@ Either to use external library/framework for validation inside domain or not is 
 
 For some projects, especially smaller ones, it might be easier and more appropriate to just use validation library/framework.
 
-**Keep in mind** that not all validations can be done in a single `Value Object`, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may involve another field, or even a different entity. Handle those cases accordingly.
+</details>
 
 ### Types of validation
 
@@ -942,24 +968,26 @@ Lets review two types of software testing:
 - [White Box](https://en.wikipedia.org/wiki/White-box_testing) testing.
 - [Black Box](https://en.wikipedia.org/wiki/Black-box_testing) testing.
 
-Testing module/use-case internal structures (creating a test for every file/class) is called _`White Box`_ testing. _White Box_ testing is widely used technique, but it has disadvantages. It creates coupling to implementation details, so every time you decide to refactor business logic code this may also cause a refactoring of corresponding tests.
+Testing module/use-case internal structures (creating a test for every file/class) is called _`White Box`_ testing (or unit testing). _White Box_ testing is widely used technique, but it has disadvantages. It creates coupling to implementation details, so every time you decide to refactor business logic code this may also cause a refactoring of corresponding tests.
 
-Use case requirements may change mid work, your understanding of a problem may evolve or you may start noticing new patterns that emerge during development, in other words, you start noticing a "big picture", which may lead to refactoring. For example: imagine that you defined a _`White box`_ test for a class, and while developing this class you start noticing that it does too much and should be separated into two classes. Now you'll also have to refactor your unit test. After some time, while implementing a new feature, you notice that this new feature uses some code from that class you defined before, so you decide to separate that code and make it reusable, creating a third class (which originally was one), which leads to changing your unit tests yet again, every time you refactor. Use case requirements, input, output or behavior never changed, but unit tests had to be changed multiple times. This is inefficient and time consuming.
+Use case requirements may change mid work, your understanding of a problem may evolve or you may start noticing new patterns that emerge during development, in other words, you start noticing a "big picture", which may lead to refactoring. For example: imagine that you defined a unit test for a class, and while developing this class you start noticing that it does too much and should be separated into two classes. Now you'll also have to refactor your unit test. After some time, while implementing a new feature, you notice that this new feature uses some code from that class you defined before, so you decide to separate that code and make it reusable, creating a third class (which originally was one), which leads to changing your unit tests yet again, every time you refactor. Use case requirements, input, output or behavior never changed, but unit tests had to be changed multiple times. This is inefficient and time consuming.
+
+When we have domain models that change often, unit tests end up having to change with them. Traditional unit tests tend to be very coupled to internals of our domain model structure.
 
 To solve this and get the most out of your tests, prefer _`Black Box`_ testing ([Behavioral Testing](https://www.codekul.com/blog/what-is-behavioral-testing/)). This means that tests should focus on testing user-facing behavior users care about (your code's public API), not the implementation details of individual units it has inside. This avoids coupling, protects tests from changes that may happen while refactoring, makes tests easier to understand and maintain thus saving time.
 
 > Tests that are independent of implementation details are easier to maintain since they don't need to be changed each time you make a change to the implementation.
 
-Try to avoid _White Box_ testing when possible. However, it's worth mentioning that there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation when it is required to reduce combinations of testing conditions, for example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time, in this case _White Box_ tests may be appropriate.
+Try to avoid _White Box_ (unit) testing when possible. However, it's worth mentioning that there are cases when _White Box_ testing may be useful. For instance, we need to go deeper into the implementation details when it is required to reduce combinations of testing conditions. For example, a class uses several plug-in [strategies](https://refactoring.guru/design-patterns/strategy), thus it is easier for us to test those strategies one at a time. Or you are developing a library that will be used by multiple modules or projects. In those cases _White Box_ tests may be appropriate.
 
 Use _White Box_ testing only when it is really needed and as an addition to _Black Box_ testing, not the other way around.
 
 It's all about investing only in the tests that yield the biggest return on your effort.
 
-Behavioral tests can be divided in two parts:
+Black box / Behavioral tests can be divided in two parts:
 
 - Fast: Use cases tests in isolation which test only your business logic, with all I/O (external API or database calls, file reads etc.) mocked. This makes tests fast so they can be run all the time (after each change or before every commit). This will inform you when something fails as fast as possible. Finding bugs early is critical and saves a lot of time.
-- Slow: Full [End to End](https://www.guru99.com/end-to-end-testing.html) (e2e) tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests should have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before pushing/deploying. Though e2e tests live in the same project/repository, it is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
+- Slow: Full [End to End](https://www.guru99.com/end-to-end-testing.html) (e2e) tests which test a use case from end-user standpoint. Instead of injecting I/O mocks those tests should have all infrastructure up and running: like database, API routes etc. Those tests check how everything works together and are slower so can be run only before pushing/deploying. Though e2e tests can live in the same project/repository, it is a good practice to have e2e tests independent from project's code. In bigger projects e2e tests are usually written by a separate QA team.
 
 **Note**: some people try to make e2e tests faster by using in-memory or embedded databases (like [sqlite3](https://www.npmjs.com/package/sqlite3)). This makes tests faster, but reduces the reliability of those tests and should be avoided. Read more: [Don't use In-Memory Databases for Tests](https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/).
 
@@ -967,8 +995,8 @@ For BDD tests [Cucumber](https://cucumber.io/) with [Gherkin](https://cucumber.i
 
 Example files:
 
-- [create-user.feature](tests/user/create-user/create-user.feature) - feature file that contains Gherkin steps
-- [create-user.e2e-spec.ts](tests/user/create-user/create-user.e2e-spec.ts) - spec file that executes Gherkin steps
+- [create-user.feature](tests/user/create-user/create-user.feature) - feature file that contains human readable Gherkin steps
+- [create-user.e2e-spec.ts](tests/user/create-user/create-user.e2e-spec.ts) - e2e / behavioral test
 
 Read more:
 
