@@ -18,49 +18,63 @@ Though patterns and principles presented here are **framework/language agnostic*
 
 - [Backend best practices](https://github.com/Sairyss/backend-best-practices) - Best practices, tools and guidelines for backend development. Code examples in TypeScript + NodeJS.
 
-## Table of Contents
+---
 
-- [Architecture](#Architecture)
-
-  - [Diagram](#Diagram)
-  - [Modules](#Modules)
-  - [Application Core](#Application-Core)
-  - [Application layer](#Application-layer)
-    - [Application Services](#Application-Services)
-    - [Commands and Queries](#Commands-and-Queries)
-    - [Ports](#Ports)
-  - [Domain Layer](#Domain-Layer)
-    - [Entities](#Entities)
-    - [Aggregates](#Aggregates)
-    - [Domain Events](#Domain-Events)
-    - [Integration Events](#Integration-Events)
-    - [Domain Services](#Domain-Services)
-    - [Value Objects](#Value-Objects)
-    - [Enforcing invariants of Domain Objects](#Enforcing-invariants-of-Domain-Objects)
-    - [Domain Errors](#Domain-Errors)
-    - [Using libraries inside application's core](#Using-libraries-inside-applications-core)
-  - [Interface Adapters](#Interface-Adapters)
-    - [Controllers](#Controllers)
-    - [DTOs](#DTOs)
-  - [Infrastructure](#Infrastructure)
-    - [Adapters](#Adapters)
-    - [Repositories](#Repositories)
-    - [Persistence models](#Persistence-models)
-    - [Other things that can be a part of Infrastructure layer](#Other-things-that-can-be-a-part-of-Infrastructure-layer)
-  - [Recommendations for smaller APIs](#Recommendations-for-smaller-APIs)
-  - [General recommendations on architectures, best practices, design patterns and principles](#General-recommendations-on-architectures-best-practices-design-patterns-and-principles)
-  - [Folder and File Structure](#Folder-and-File-Structure)
-    - [File names](#File-names)
-  - [Custom utility types](#Custom-utility-types)
-  - [Prevent massive inheritance chains](#Prevent-massive-inheritance-chains)
-
-- [Additional resources](#Additional-resources)
-  - [Articles](#Articles)
-  - [Github Repositories](#Github-repositories)
-  - [Documentation websites](#Documentation-websites)
-  - [Blogs](#Blogs)
-  - [Videos](#Videos)
-  - [Books](#Books)
+- [December update](#december-update)
+- [Domain-Driven Hexagon](#domain-driven-hexagon)
+- [Architecture](#architecture)
+      - [Pros](#pros)
+      - [Cons](#cons)
+- [Diagram](#diagram)
+- [Modules](#modules)
+- [Application Core](#application-core)
+- [Application layer](#application-layer)
+  - [Application Services](#application-services)
+  - [Commands and Queries](#commands-and-queries)
+    - [Commands](#commands)
+    - [Queries](#queries)
+  - [Ports](#ports)
+- [Domain Layer](#domain-layer)
+  - [Entities](#entities)
+  - [Aggregates](#aggregates)
+  - [Domain Events](#domain-events)
+  - [Integration Events](#integration-events)
+  - [Domain Services](#domain-services)
+  - [Value objects](#value-objects)
+  - [Enforcing invariants of Domain Objects](#enforcing-invariants-of-domain-objects)
+    - [Replacing primitives with Value Objects](#replacing-primitives-with-value-objects)
+    - [At compile time](#at-compile-time)
+    - [At runtime](#at-runtime)
+    - [Guarding vs validating](#guarding-vs-validating)
+    - [Types of validation](#types-of-validation)
+  - [Domain Errors](#domain-errors)
+  - [Using libraries inside application's core](#using-libraries-inside-applications-core)
+- [Interface Adapters](#interface-adapters)
+  - [Controllers](#controllers)
+    - [Resolvers](#resolvers)
+  - [DTOs](#dtos)
+    - [Request DTOs](#request-dtos)
+    - [Response DTOs](#response-dtos)
+    - [Additional recommendations](#additional-recommendations)
+    - [Local DTOs](#local-dtos)
+- [Infrastructure](#infrastructure)
+  - [Adapters](#adapters)
+  - [Repositories](#repositories)
+  - [Persistence models](#persistence-models)
+  - [Other things that can be a part of Infrastructure layer](#other-things-that-can-be-a-part-of-infrastructure-layer)
+- [Recommendations for smaller APIs](#recommendations-for-smaller-apis)
+- [General recommendations on architectures, best practices, design patterns and principles](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles)
+  - [Folder and File Structure](#folder-and-file-structure)
+    - [File names](#file-names)
+  - [Custom utility types](#custom-utility-types)
+  - [Prevent massive inheritance chains](#prevent-massive-inheritance-chains)
+- [Additional resources](#additional-resources)
+  - [Articles](#articles)
+  - [Github Repositories](#github-repositories)
+  - [Documentation Websites](#documentation-websites)
+  - [Blogs](#blogs)
+  - [Videos](#videos)
+  - [Books](#books)
 
 # Architecture
 
@@ -473,6 +487,8 @@ Read more about Value Objects:
 
 ## Enforcing invariants of Domain Objects
 
+Domain objects must enforce their invariants. Below we will discuss some techniques to achieve that.
+
 ### Replacing primitives with Value Objects
 
 Most of the code bases operate on primitive types – `strings`, `numbers` etc. In the Domain Model, this level of abstraction may be too low.
@@ -865,7 +881,7 @@ The data flow here looks something like this: repository receives a domain `Enti
 
 **Keep in mind** that application's core is not allowed to depend on repositories directly, instead it depends on abstractions (ports/interfaces). This makes data retrieval technology-agnostic.
 
-### Examples
+Example files:
 
 This project contains abstract repository class that allows to make basic CRUD operations: [typeorm.repository.base.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm.repository.base.ts). This base class is then extended by a specific repository, and all specific operations that an entity may need is implemented in that specific repo: [user.repository.ts](src/modules/user/database/user.repository.ts).
 
