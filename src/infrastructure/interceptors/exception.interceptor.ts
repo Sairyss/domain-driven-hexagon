@@ -2,7 +2,7 @@ import {
   CallHandler,
   ExecutionContext,
   NestInterceptor,
-  // To avoid confusion between internal exceptions and NestJS exceptions
+  // To avoid confusion between internal app exceptions and NestJS exceptions
   ConflictException as NestConflictException,
   NotFoundException as NestNotFoundException,
 } from '@nestjs/common';

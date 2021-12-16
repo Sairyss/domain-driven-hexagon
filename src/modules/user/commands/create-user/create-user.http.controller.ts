@@ -1,16 +1,11 @@
-import {
-  Body,
-  ConflictException,
-  Controller,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { IdResponse } from '@libs/ddd/interface-adapters/dtos/id.response.dto';
 import { routesV1 } from '@config/app.routes';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import { Result } from '@src/libs/ddd/domain/utils/result.util';
 import { ID } from '@src/libs/ddd/domain/value-objects/id.value-object';
+import { ConflictException } from '@src/libs/exceptions';
 import { CreateUserCommand } from './create-user.command';
 import { CreateUserHttpRequest } from './create-user.request.dto';
 import { UserAlreadyExistsError } from '../../errors/user.errors';
