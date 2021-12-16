@@ -139,7 +139,9 @@ It is easier to work on things that change together if those things are gathered
 
 Try not to create dependencies between modules or use cases, move shared logic into a separate files and make both depend on that instead of depending on each other.
 
-Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Try to avoid direct imports between modules (like importing a service from other domain) since this creates [tight coupling](<https://en.wikipedia.org/wiki/Coupling_(computer_programming)>). To avoid coupling modules can communicate with each other by using a message bus, for example you can send commands using a commands bus or subscribe to events that other modules emit (more info on events and commands bus below).
+Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Consider module internals private and try to avoid direct imports between modules (like importing a class `import SomeClass from '../SomeOtherModule'`) since this creates [tight coupling](<https://en.wikipedia.org/wiki/Coupling_(computer_programming)>), turns your code into a [spaghetti](https://en.wikipedia.org/wiki/Spaghetti_code) and application into a [big ball of mud](https://en.wikipedia.org/wiki/Big_ball_of_mud).
+
+To avoid coupling modules can communicate with each other by using a message bus, for example you can send commands using a commands bus or subscribe to events that other modules emit (more info on events and commands bus below).
 
 This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupling), and, if bounded contexts are defined and designed properly, each module can be easily separated into a microservice if needed without touching any domain logic.
 
