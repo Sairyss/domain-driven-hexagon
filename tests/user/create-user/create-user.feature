@@ -1,3 +1,5 @@
+# This is a Gherkin feature file https://cucumber.io/docs/gherkin/reference/
+
 Feature: Create a user
 
 Scenario: Creating a user happy path

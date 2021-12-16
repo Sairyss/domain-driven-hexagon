@@ -1,6 +1,6 @@
 # December update
 
-"Other best practices and recommendations" section is extended and moved to a separate repository - [Backend best practices](https://github.com/Sairyss/backend-best-practices).
+"Other best practices and recommendations" section is extended and moved to a separate repository - [Backend best practices](https://github.com/Sairyss/backend-best-practices). This repository will mostly focus on architectural patterns and practices.
 
 # Domain-Driven Hexagon
 
@@ -16,7 +16,7 @@ Though patterns and principles presented here are **framework/language agnostic*
 
 **Check out my other repositories**:
 
-- [Backend best practices](https://github.com/Sairyss/backend-best-practices) - Best practices, tools and guidelines for backend development. Code examples in TypeScript + NodeJS.
+- [Backend best practices](https://github.com/Sairyss/backend-best-practices) - Best practices, tools and guidelines for backend development.
 
 ---
 
@@ -62,8 +62,10 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Repositories](#repositories)
   - [Persistence models](#persistence-models)
   - [Other things that can be a part of Infrastructure layer](#other-things-that-can-be-a-part-of-infrastructure-layer)
-- [Recommendations for smaller APIs](#recommendations-for-smaller-apis)
-- [General recommendations on architectures, best practices, design patterns and principles](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles)
+- [Other recommendations](#other-recommendations)
+  - [Recommendations for smaller APIs](#recommendations-for-smaller-apis)
+  - [General recommendations on architectures, best practices, design patterns and principles](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles)
+  - [Behavioral Testing](#behavioral-testing)
   - [Folder and File Structure](#folder-and-file-structure)
     - [File names](#file-names)
   - [Custom utility types](#custom-utility-types)
@@ -924,7 +926,9 @@ Read more:
 
 ---
 
-# Recommendations for smaller APIs
+# Other recommendations
+
+## Recommendations for smaller APIs
 
 Be careful when implementing any complex architecture in small-medium sized projects with not a lot of business logic. Some of the building blocks/patterns/principles may fit well, but others may be an overengineering.
 
@@ -937,7 +941,7 @@ For example:
 
 For applications with not a lot of business logic consider other architectures. The most popular is probably [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). _Model-View-Controller_ is better suited for [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) applications with little business logic since it tends to favor designs where software is mostly the view of the database.
 
-# General recommendations on architectures, best practices, design patterns and principles
+## General recommendations on architectures, best practices, design patterns and principles
 
 Different projects most likely will have different requirements. Some principles/patterns in such projects can be implemented in a simplified form, some can be skipped. Follow [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) principle and don't over-engineer.
 
@@ -961,6 +965,23 @@ Read more:
 - [Martin Fowler blog: Yagni](https://martinfowler.com/bliki/Yagni.html)
 - [7 Software Development Principles That Should Be Embraced Daily](https://betterprogramming.pub/7-software-development-principles-that-should-be-embraced-daily-c26a94ec4ecc?gi=3b5b298ddc23)
 - [SOLID Principles and the Arts of Finding the Beach](https://sebastiankuebeck.wordpress.com/2017/09/17/solid-principles-and-the-arts-of-finding-the-beach/)
+
+## Behavioral Testing
+
+Behavioral Testing (and also [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)) is a testing of the external behavior of the program, also known as black box testing.
+
+Domain-Driven Design with its ubiquitous language plays nicely with Behavioral tests.
+
+For BDD tests [Cucumber](https://cucumber.io/) with [Gherkin](https://cucumber.io/docs/gherkin/reference/) syntax can give a structure and meaning to your tests. This way even people not involved in a development can define steps needed for testing. In node.js world [jest-cucumber](https://www.npmjs.com/package/jest-cucumber) is a nice package to achieve that.
+
+Example files:
+
+- [create-user.feature](https://github.com/Sairyss/domain-driven-hexagon/blob/master/tests/user/create-user/create-user.feature) - feature file that contains human readable Gherkin steps
+- [create-user.e2e-spec.ts](https://github.com/Sairyss/domain-driven-hexagon/blob/master/tests/user/create-user/create-user.e2e-spec.ts) - e2e / behavioral test
+
+Read more:
+
+- [Backend best practices - Testing](https://github.com/Sairyss/backend-best-practices#testing)
 
 ## Folder and File Structure
 
@@ -1030,7 +1051,7 @@ Read more:
 
 # Additional resources
 
-For more best practices that are used here check out this repository - [Backend best practices](https://github.com/Sairyss/backend-best-practices)
+For more best practices that are used here check out this repository: [Backend best practices](https://github.com/Sairyss/backend-best-practices)
 
 ## Articles
 
