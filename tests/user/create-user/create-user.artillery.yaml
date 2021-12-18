@@ -1,5 +1,6 @@
 # Load testing with Artillery.
 # Can also be good for seeding database with lots of dummy data.
+# https://github.com/Sairyss/backend-best-practices#load-testing
 # https://www.npmjs.com/package/artillery
 # https://www.npmjs.com/package/artillery-plugin-faker
 config:

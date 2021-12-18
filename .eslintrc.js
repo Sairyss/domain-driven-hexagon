@@ -1,3 +1,8 @@
+/**
+ * eslint config
+ * https://github.com/Sairyss/backend-best-practices#static-code-analysis
+ */
+
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {

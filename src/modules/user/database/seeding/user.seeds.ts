@@ -3,6 +3,10 @@ import { NonFunctionProperties } from '@libs/types';
 import { createdAtUpdatedAtMock } from '@src/libs/test-utils/mocks/generic-model-props.mock';
 import { UserOrmEntity } from '../user.orm-entity';
 
+/**
+ * Seeding database with dummy data
+ * https://github.com/Sairyss/backend-best-practices#data-seeding
+ */
 export const userSeeds: NonFunctionProperties<UserOrmEntity>[] = [
   {
     ...createdAtUpdatedAtMock,

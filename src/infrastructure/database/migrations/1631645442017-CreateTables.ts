@@ -1,5 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
+/**
+ * Database migration for schema changes
+ * https://github.com/Sairyss/backend-best-practices#managing-schema-changes
+ */
 export class CreateTables1631645442017 implements MigrationInterface {
   name = 'CreateTables1631645442017';
 
