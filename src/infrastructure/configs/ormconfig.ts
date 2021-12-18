@@ -2,6 +2,8 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { get } from 'env-var';
 
+// https://github.com/Sairyss/backend-best-practices#configuration
+
 // Initializing dotenv
 config();
 
