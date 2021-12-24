@@ -43,8 +43,9 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Value objects](#value-objects)
   - [Enforcing invariants of Domain Objects](#enforcing-invariants-of-domain-objects)
     - [Replacing primitives with Value Objects](#replacing-primitives-with-value-objects)
-    - [At compile time](#at-compile-time)
-    - [At runtime](#at-runtime)
+    - [Make illegal states unrepresentable](#make-illegal-states-unrepresentable)
+      - [Validation at compile time](#validation-at-compile-time)
+      - [Validation at runtime](#validation-at-runtime)
     - [Guarding vs validating](#guarding-vs-validating)
   - [Domain Errors](#domain-errors)
   - [Using libraries inside application's core](#using-libraries-inside-applications-core)
@@ -306,7 +307,9 @@ Example files:
 
 This layer contains application's business rules.
 
-Domain should only operate using domain objects, most important ones are described below.
+Domain should operate using domain objects described by [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html). Most important domain building blocks are described below.
+
+- [Developing the ubiquitous language](https://medium.com/@felipefreitasbatista/developing-the-ubiquitous-language-1382b720bb8c)
 
 ## Entities
 
@@ -519,9 +522,19 @@ Using `Value Objects` for primitive types is also called a `domain primitive`. T
 
 Using `Value Objects` instead of primitives:
 
-- Makes code easier to understand by using [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) instead of just `string`.
+- Makes code easier to understand by using ubiquitous language instead of just `string`.
 - Improves security by ensuring invariants of every property.
 - Encapsulates specific business rules associated with a value.
+
+`Value Object` can represent a typed value in domain (a _domain primitive_). The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context.
+
+If every argument and return value of a method is valid by definition, you’ll have input and output validation in every single method in your codebase without any extra effort. This will make application more resilient to errors and will protect it from a whole class of bugs and security vulnerabilities caused by invalid input data.
+
+> Without domain primitives, the remaining code needs to take care of validation, formatting, comparing, and lots of other details. Entities represent long-lived objects with a distinguished identity, such as articles in a news feed, rooms in a hotel, and shopping carts in online sales. The functionality in a system often centers around changing the state of these objects: hotel rooms are booked, shopping cart contents are
+> paid for, and so on. Sooner or later the flow of control will be guided to some code representing these entities. And if all the data is transmitted as generic types such as int or String , responsibilities fall on the entity code to validate, compare, and format the data, among other tasks. The entity code will be burdened with a lot of
+> tasks, rather than focusing on the central business flow-of-state changes that it models. Using domain primitives can counteract the tendency for entities to grow overly complex.
+
+Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/96)
 
 Also an alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases) just to give this primitive a semantic meaning.
 
@@ -534,8 +547,11 @@ Example files:
 Recommended to read:
 
 - [Primitive Obsession — A Code Smell that Hurts People the Most](https://medium.com/the-sixt-india-blog/primitive-obsession-code-smell-that-hurt-people-the-most-5cbdd70496e9)
+- [Domain Primitives: what they are and how you can use them to make more secure software](https://freecontent.manning.com/domain-primitives-what-they-are-and-how-you-can-use-them-to-make-more-secure-software/)
 - [Value Objects Like a Pro](https://medium.com/@nicolopigna/value-objects-like-a-pro-f1bfc1548c72)
-- [Developing the ubiquitous language](https://medium.com/@felipefreitasbatista/developing-the-ubiquitous-language-1382b720bb8c)
+- ["Secure by Design" Chapter 5: Domain Primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/) (a full chapter of the article above)
+
+### Make illegal states unrepresentable
 
 **Use Value Objects/Domain Primitives and Types system to make illegal states unrepresentable in your program.**
 
@@ -545,9 +561,11 @@ Quote from [John A De Goes](https://twitter.com/jdegoes):
 
 > Making illegal states unrepresentable is all about statically proving that all runtime values (without exception) correspond to valid objects in the business domain. The effect of this technique on eliminating meaningless runtime states is astounding and cannot be overstated.
 
+**Note**: Though _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be an overengineering. For less complex and smaller projects it definitely may be. For bigger projects, there are people who advocate for and against this approach. If creating a class for every primitive is not preferred, create classes just for those primitives that have specific rules or behavior, or just validate only outside of domain using some validation framework. Here are some thoughts on this topic: [From Primitive Obsession to Domain Modelling - Over-engineering?](https://blog.ploeh.dk/2015/01/19/from-primitive-obsession-to-domain-modelling/#7172fd9ca69c467e8123a20f43ea76c2).
+
 Lets distinguish two types of protection from illegal states: at **compile time** and at **runtime**.
 
-### At compile time
+#### Validation at compile time
 
 Types give useful semantic information to a developer. Good code should be easy to use correctly, and hard to use incorrectly. Types system can be a good help for that. It can prevent some nasty errors at a compile time, so IDE will show type errors right away.
 
@@ -581,33 +599,24 @@ Read more about typestates:
 - [Typestates Would Have Saved the Roman Republic](https://blog.yoavlavi.com/state-machines-would-have-saved-the-roman-republic/)
 - [The Typestate Pattern](https://cliffle.com/blog/rust-typestate/)
 
-### At runtime
-
-Things that can't be validated at compile time (like user input) are validated at runtime.
-
-Domain objects have to protect their invariants. Having some validation rules here will protect their state from corruption.
-
-`Value Object` can represent a typed value in domain (a _domain primitive_). The goal here is to encapsulate validations and business logic related only to the represented fields and make it impossible to pass around raw values by forcing a creation of valid `Value Objects` first. This object only accepts values which make sense in its context.
-
-If every argument and return value of a method is valid by definition, you’ll have input and output validation in every single method in your codebase without any extra effort. This will make application more resilient to errors and will protect it from a whole class of bugs and security vulnerabilities caused by invalid input data.
+#### Validation at runtime
 
 Data should not be trusted. There are a lot of cases when invalid data may end up in a domain. For example, if data comes from external API, database, or if it's just a programmer error.
 
-Enforcing self-validation will inform immediately when data is corrupted. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
+Things that can't be validated at compile time (like user input) are validated at runtime.
 
-> Without domain primitives, the remaining code needs to take care of validation, formatting, comparing, and lots of other details. Entities represent long-lived objects with a distinguished identity, such as articles in a news feed, rooms in a hotel, and shopping carts in online sales. The functionality in a system often centers around changing the state of these objects: hotel rooms are booked, shopping cart contents are
-> paid for, and so on. Sooner or later the flow of control will be guided to some code representing these entities. And if all the data is transmitted as generic types such as int or String , responsibilities fall on the entity code to validate, compare, and format the data, among other tasks. The entity code will be burdened with a lot of
-> tasks, rather than focusing on the central business flow-of-state changes that it models. Using domain primitives can counteract the tendency for entities to grow overly complex.
+First line of defense is validation of user input DTOs.
 
-Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/96)
+Second line of defense are Domain Objects. Entities and value objects have to protect their invariants. Having some validation rules here will protect their state from corruption.
 
-**Note**: Though _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be an overengineering. For less complex and smaller projects it definitely may be. For bigger projects, there are people who advocate for and against this approach. If creating a class for every primitive is not preferred, create classes just for those primitives that have specific rules or behavior, or just validate only outside of domain using some validation framework. Here are some thoughts on this topic: [From Primitive Obsession to Domain Modelling - Over-engineering?](https://blog.ploeh.dk/2015/01/19/from-primitive-obsession-to-domain-modelling/#7172fd9ca69c467e8123a20f43ea76c2).
+Enforcing self-validation of your domain objects will inform immediately when data is corrupted. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
+
+By combining compile and runtime validations, using objects instead of primitives, enforcing self-validation and invariants of your domain objects, you can achieve an architecture where it is hard to represent illegal states, thus improving security and robustness of your application.
 
 **Recommended to read**:
 
+- [Backend Best Practices: Data Validation](https://github.com/Sairyss/backend-best-practices#data-validation)
 - [Making illegal states unrepresentable](https://v5.chriskrycho.com/journal/making-illegal-states-unrepresentable-in-ts/)
-- [Domain Primitives: what they are and how you can use them to make more secure software](https://freecontent.manning.com/domain-primitives-what-they-are-and-how-you-can-use-them-to-make-more-secure-software/)
-- ["Secure by Design" Chapter 5: Domain Primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/) (a full chapter of the article above)
 
 ### Guarding vs validating
 
@@ -637,7 +646,6 @@ Example file: [guard.ts](src/libs/ddd/domain/guard.ts)
 
 Read more:
 
-- [Backend Best Practices: Data Validation](https://github.com/Sairyss/backend-best-practices#data-validation)
 - [Refactoring: Guard Clauses](https://medium.com/better-programming/refactoring-guard-clauses-2ceeaa1a9da)
 - [Always-Valid Domain Model](https://enterprisecraftsmanship.com/posts/always-valid-domain-model/)
 
