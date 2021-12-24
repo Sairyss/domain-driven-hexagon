@@ -493,7 +493,27 @@ Read more about Value Objects:
 
 ## Enforcing invariants of Domain Objects
 
-Domain objects must enforce their invariants. Below we will discuss some techniques to achieve that.
+Invariants enforcement is the responsibility of domain objects (especially of the entities and aggregate roots).
+
+There are a certain number of invariants for an object that should always be true. For example:
+
+- When sending money, amount must always be a positive integer, and there always must be a receiver credit card number in a correct format;
+- Client cannot purchase a product that is out of stock;
+- Client's wallet cannot have less than 0 balance;
+- etc.
+
+If business has some rules similar to described above, domain object should not be able to exist without following those rules.
+
+Below we will discuss some validation techniques for your domain objects.
+
+Example files:
+
+- [wallet.entity.ts](src/modules/wallet/domain/entities/wallet.entity.ts) - notice `validate` method. This is a simplified example of enforcing a domain invariant.
+
+Read more:
+
+- [Design validations in the domain model layer](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-model-layer-validations)
+- [Why Domain Invariants are critical to build good software?](https://no-kill-switch.ghost.io/why-domain-invariants-are-critical-to-build-good-software/)
 
 ### Replacing primitives with Value Objects
 
