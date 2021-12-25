@@ -41,7 +41,7 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Integration Events](#integration-events)
   - [Domain Services](#domain-services)
   - [Value objects](#value-objects)
-  - [Enforcing invariants of Domain Objects](#enforcing-invariants-of-domain-objects)
+  - [Domain Invariants](#domain-invariants)
     - [Replacing primitives with Value Objects](#replacing-primitives-with-value-objects)
     - [Make illegal states unrepresentable](#make-illegal-states-unrepresentable)
       - [Validation at compile time](#validation-at-compile-time)
@@ -491,7 +491,9 @@ Read more about Value Objects:
 - [Value Objects to the rescue](https://medium.com/swlh/value-objects-to-the-rescue-28c563ad97c6).
 - [Value Object pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/value-object-pattern.html)
 
-## Enforcing invariants of Domain Objects
+## Domain Invariants
+
+Domain [invariants](<https://en.wikipedia.org/wiki/Invariant_(mathematics)#Invariants_in_computer_science>) are the policies and conditions that are always met for the Domain in particular context. Invariants determine what is possible or what is prohibited in the context.
 
 Invariants enforcement is the responsibility of domain objects (especially of the entities and aggregate roots).
 
@@ -616,6 +618,7 @@ This is called a _typestate pattern_.
 
 Read more about typestates:
 
+- [Making illegal states unrepresentable](https://v5.chriskrycho.com/journal/making-illegal-states-unrepresentable-in-ts/)
 - [Typestates Would Have Saved the Roman Republic](https://blog.yoavlavi.com/state-machines-would-have-saved-the-roman-republic/)
 - [The Typestate Pattern](https://cliffle.com/blog/rust-typestate/)
 
@@ -631,12 +634,11 @@ Second line of defense are Domain Objects. Entities and value objects have to pr
 
 Enforcing self-validation of your domain objects will inform immediately when data is corrupted. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
 
-By combining compile and runtime validations, using objects instead of primitives, enforcing self-validation and invariants of your domain objects, you can achieve an architecture where it is hard to represent illegal states, thus improving security and robustness of your application.
+By combining compile and runtime validations, using objects instead of primitives, enforcing self-validation and invariants of your domain objects, you can achieve an architecture where it is hard to end up in illegal states, thus improving security and robustness of your application.
 
 **Recommended to read**:
 
 - [Backend Best Practices: Data Validation](https://github.com/Sairyss/backend-best-practices#data-validation)
-- [Making illegal states unrepresentable](https://v5.chriskrycho.com/journal/making-illegal-states-unrepresentable-in-ts/)
 
 ### Guarding vs validating
 
@@ -707,7 +709,7 @@ Exceptions are for exceptional situations. Complex domains usually have a lot of
 
 Returning an error instead of throwing explicitly shows a type of each exception that a method can return so you can handle it accordingly. It can make an error handling and tracing easier.
 
-To help with that use some kind of a Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell). Unlike throwing exceptions, this approach allows to define types for every error and will force you to handle those cases explicitly instead of using `try/catch`. For example:
+To help with that you can use some kind of a Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell). Unlike throwing exceptions, this approach allows to define types for every error and will force you to handle those cases explicitly instead of using `try/catch`. For example:
 
 ```typescript
 if (await userRepo.exists(command.email)) {
@@ -720,7 +722,7 @@ return Result.ok(user);
 
 [@badrap/result](https://www.npmjs.com/package/@badrap/result) - this is a nice npm package if you want to use a Result object.
 
-Returning errors instead of throwing them adds a bit of extra boilerplate code, but makes your application more robust and secure.
+Returning errors instead of throwing them adds some extra boilerplate code, but can make your application more robust and secure.
 
 **Note**: Distinguish between Domain Errors and Exceptions. Exceptions are usually thrown and not returned. If you return technical Exceptions (like connection failed, process out of memory etc), It may cause some security issues and goes against [Fail-fast](https://en.wikipedia.org/wiki/Fail-fast) principle. Instead of terminating a program flow, returning an exception continues program execution and allows it to run in an incorrect state, which may lead to more unexpected errors, so it's generally better to throw an Exception in those cases rather then returning it.
 
