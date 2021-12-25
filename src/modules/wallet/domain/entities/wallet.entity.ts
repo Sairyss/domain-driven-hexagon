@@ -26,7 +26,6 @@ export class WalletEntity extends AggregateRoot<WalletProps> {
 
   deposit(amount: number): void {
     this.props.balance += amount;
-    WalletEntity.validate(this.props);
   }
 
   withdraw(amount: number): Result<null, WalletNotEnoughBalanceError> {
@@ -34,15 +33,16 @@ export class WalletEntity extends AggregateRoot<WalletProps> {
       return Result.err(new WalletNotEnoughBalanceError());
     }
     this.props.balance -= amount;
-    WalletEntity.validate(this.props);
     return Result.ok(null);
   }
 
   /**
    * Protects wallet invariant.
+   * This method is executed by a repository
+   * before saving entity in a database.
    */
-  static validate(props: WalletProps): void {
-    if (props.balance < 0) {
+  public validate(): void {
+    if (this.props.balance < 0) {
       throw new ArgumentOutOfRangeException(
         'Wallet balance cannot be less than 0',
       );

@@ -70,7 +70,7 @@ export class UserEntity extends AggregateRoot<UserProps> {
     // TODO: add example business logic
   }
 
-  static validate(props: UserProps): void {
+  validate(): void {
     // TODO: example
     // entity business rules validation to protect it's invariant
   }
