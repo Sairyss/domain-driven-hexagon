@@ -230,8 +230,6 @@ Some CQS purists may say that a `Command` shouldn't return anything at all. But 
 
 Though, violating this rule and returning some metadata, like `ID` of a created item, redirect link, confirmation message, status, or other metadata is a more practical approach than following dogmas.
 
-All changes done by `Commands` (or by events or anything else) across multiple aggregates should be saved in a single database transaction (if you are using a single database). This means that inside a single process, one command/request to your application usually should execute **only one** [transactional operation](https://en.wikipedia.org/wiki/Database_transaction) to save **all** changes (or cancel **all** changes of that command/request in case if something fails). This should be done to maintain consistency. To do that you can wrap database operations in a transaction or use something like [Unit of Work](https://java-design-patterns.com/patterns/unit-of-work/) pattern. Example: [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how it gets a transactional repository from `this.unitOfWork`.
-
 **Note**: `Command` is similar but not the same as described here: [Command Pattern](https://refactoring.guru/design-patterns/command). There are multiple definitions across the internet with similar but slightly different implementations.
 
 To execute a command you can use a `Command Bus` instead of importing a service directly. This will decouple a command Invoker from a Receiver so you can send your commands from anywhere without creating coupling.
@@ -401,7 +399,8 @@ An alternative approach would be publishing a `Domain Event`. If executing a com
 
 Domain Events may be useful for creating an [audit log](https://en.wikipedia.org/wiki/Audit_trail) to track all changes to important entities by saving each event to the database. Read more on why audit logs may be useful: [Why soft deletes are evil and what to do instead](https://jameshalsall.co.uk/posts/why-soft-deletes-are-evil-and-what-to-do-instead).
 
-All changes done by Domain Events (or by anything else) across multiple aggregates in a single process should be saved in a single database transaction to maintain consistency. Wrapping an entire flow in a transaction or using patterns like [Unit of Work](https://java-design-patterns.com/patterns/unit-of-work/) or similar can help with that.
+All changes caused by Domain Events across multiple aggregates in a single process can be saved in a single database [transaction](https://en.wikipedia.org/wiki/Database_transaction). This approach ensures consistency and integrity of your data. Wrapping an entire flow in a transaction or using patterns like [Unit of Work](https://java-design-patterns.com/patterns/unit-of-work/) or similar can help with that.
+**Keep in mind** that abusing transactions can create bottlenecks when multiple users try to modify single record concurrently. Use it only when you can afford it, otherwise go for other approaches (like [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency)).
 
 There are multiple ways on implementing an event bus for Domain Events, for example by using ideas from patterns like [Mediator](https://refactoring.guru/design-patterns/mediator) or [Observer](https://refactoring.guru/design-patterns/observer).
 
