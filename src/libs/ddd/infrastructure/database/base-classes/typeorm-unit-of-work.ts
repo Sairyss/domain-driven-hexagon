@@ -4,6 +4,18 @@ import { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
 import { Logger } from 'src/libs/ddd/domain/ports/logger.port';
 import { Result } from '@src/libs/ddd/domain/utils/result.util';
 
+/**
+ * Keep in mind that this is a naive implementation
+ * of a Unit of Work as it only wraps execution into
+ * a transaction. Proper Unit of Work implementation
+ * requires storing all changes in memory first and
+ * then execute a transaction as a singe database call.
+ * Mikro-orm (https://www.npmjs.com/package/mikro-orm)
+ * is a nice ORM for nodejs that can be used instead
+ * of typeorm to have a proper Unit of Work pattern.
+ * Read more about mikro-orm unit of work:
+ * https://mikro-orm.io/docs/unit-of-work/.
+ */
 export class TypeormUnitOfWork implements UnitOfWorkPort {
   constructor(private readonly logger: Logger) {}
 
