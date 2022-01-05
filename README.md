@@ -72,7 +72,6 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Prevent massive inheritance chains](#prevent-massive-inheritance-chains)
 - [Additional resources](#additional-resources)
   - [Articles](#articles)
-  - [Github Repositories](#github-repositories)
   - [Websites](#websites)
   - [Blogs](#blogs)
   - [Videos](#videos)
@@ -1077,11 +1076,6 @@ For more best practices that are used here check out this repository: [Backend b
 - [Clean architecture series](https://medium.com/@pereiren/clean-architecture-series-part-1-f34ef6b04b62)
 - [Clean architecture for the rest of us](https://pusher.com/tutorials/clean-architecture-introduction)
 - [An illustrated guide to 12 Factor Apps](https://www.redhat.com/architect/12-factor-app)
-
-## Github Repositories
-
-- [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
-- [The System Design Primer](https://github.com/donnemartin/system-design-primer)
 
 ## Websites
 
