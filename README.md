@@ -73,7 +73,7 @@ Though patterns and principles presented here are **framework/language agnostic*
 - [Additional resources](#additional-resources)
   - [Articles](#articles)
   - [Github Repositories](#github-repositories)
-  - [Documentation Websites](#documentation-websites)
+  - [Websites](#websites)
   - [Blogs](#blogs)
   - [Videos](#videos)
   - [Books](#books)
@@ -1083,11 +1083,10 @@ For more best practices that are used here check out this repository: [Backend b
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
 - [The System Design Primer](https://github.com/donnemartin/system-design-primer)
 
-## Documentation Websites
+## Websites
 
 - [The Twelve-Factor App](https://12factor.net/)
 - [Refactoring guru - Catalog of Design Patterns](https://refactoring.guru/design-patterns/catalog)
-- [Microsoft - Cloud Design Patterns](https://docs.microsoft.com/en-us/azure/architecture/patterns/index-patterns)
 
 ## Blogs
 
@@ -1110,4 +1109,3 @@ For more best practices that are used here check out this repository: [Backend b
 - ["Secure by Design"](https://www.manning.com/books/secure-by-design) by Dan Bergh Johnsson, Daniel Deogun, Daniel Sawano
 - ["Implementing Domain-Driven Design"](https://www.amazon.com/Implementing-Domain-Driven-Design-Vaughn-Vernon/dp/0321834577) by Vaughn Vernon
 - ["Clean Architecture: A Craftsman's Guide to Software Structure and Design"](https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164/ref=sr_1_1?dchild=1&keywords=clean+architecture&qid=1605343702&s=books&sr=1-1) by Robert Martin
-- [Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems](https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321) by Martin Kleppmann
