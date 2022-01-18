@@ -17,7 +17,6 @@ export class WalletEntity extends AggregateRoot<WalletProps> {
 
   static create(create: CreateWalletProps): WalletEntity {
     const id = UUID.generate();
-    // Setting a default role since it is not accepted during creation
     const props: WalletProps = { ...create, balance: 0 };
     const wallet = new WalletEntity({ id, props });
 

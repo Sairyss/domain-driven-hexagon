@@ -339,6 +339,7 @@ Entities:
 Example files:
 
 - [user.entity.ts](src/modules/user/domain/entities/user.entity.ts)
+- [wallet.entity.ts](src/modules/wallet/domain/entities/wallet.entity.ts)
 
 Read more:
 
