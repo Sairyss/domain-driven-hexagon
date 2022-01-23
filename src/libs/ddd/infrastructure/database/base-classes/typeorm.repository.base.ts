@@ -29,6 +29,10 @@ export abstract class TypeormRepositoryBase<
     protected readonly logger: Logger,
   ) {}
 
+  /**
+   * Specify relations to other tables.
+   * For example: `relations = ['user', ...]`
+   */
   protected abstract relations: string[];
 
   protected tableName = this.repository.metadata.tableName;
