@@ -1,11 +1,11 @@
 import { Provider } from '@nestjs/common';
-import { UnitOfWork } from '@src/infrastructure/database/unit-of-work/unit-of-work';
+import {UnitOfWorkPort} from "@libs/ddd/domain/ports/unit-of-work.port";
 import { CreateWalletWhenUserIsCreatedDomainEventHandler } from './application/event-handlers/create-wallet-when-user-is-created.domain-event-handler';
 
 export const createWalletWhenUserIsCreatedProvider: Provider = {
   provide: CreateWalletWhenUserIsCreatedDomainEventHandler,
   useFactory: (
-    unitOfWork: UnitOfWork,
+    unitOfWork: UnitOfWorkPort,
   ): CreateWalletWhenUserIsCreatedDomainEventHandler => {
     const eventHandler = new CreateWalletWhenUserIsCreatedDomainEventHandler(
       unitOfWork,
@@ -13,5 +13,5 @@ export const createWalletWhenUserIsCreatedProvider: Provider = {
     eventHandler.listen();
     return eventHandler;
   },
-  inject: [UnitOfWork],
+  inject: ["UnitOfWorkPort"],
 };

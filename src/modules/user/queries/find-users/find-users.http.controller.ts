@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus } from '@nestjs/common';
+import {Body, Controller, Get, HttpStatus, Query} from '@nestjs/common';
 import { routesV1 } from '@config/app.routes';
 import { UserHttpResponse } from '@modules/user/dtos/user.response.dto';
 import { QueryBus } from '@nestjs/cqrs';
@@ -19,7 +19,7 @@ export class FindUsersHttpController {
     type: UserHttpResponse,
   })
   async findUsers(
-    @Body() request: FindUsersHttpRequest,
+    @Query() request: FindUsersHttpRequest,
   ): Promise<UserHttpResponse[]> {
     const query = new FindUsersQuery(request);
     const result: Result<UserEntity[]> = await this.queryBys.execute(query);

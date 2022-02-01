@@ -1,10 +1,10 @@
-import { Global, Logger, Module } from '@nestjs/common';
+import {FactoryProvider, Global, Logger, Module} from '@nestjs/common';
 import { UnitOfWork } from './unit-of-work';
 
 const unitOfWorkSingleton = new UnitOfWork(new Logger());
 
-const unitOfWorkSingletonProvider = {
-  provide: UnitOfWork,
+const unitOfWorkSingletonProvider : FactoryProvider = {
+  provide: "UnitOfWorkPort",
   useFactory: () => unitOfWorkSingleton,
 };
 
@@ -12,6 +12,6 @@ const unitOfWorkSingletonProvider = {
 @Module({
   imports: [],
   providers: [unitOfWorkSingletonProvider],
-  exports: [UnitOfWork],
+  exports: ["UnitOfWorkPort"],
 })
 export class UnitOfWorkModule {}
