@@ -1,13 +1,15 @@
-import { UserRepository } from '@modules/user/database/user.repository';
 import { QueryHandlerBase } from '@src/libs/ddd/domain/base-classes/query-handler.base';
 import { QueryHandler } from '@nestjs/cqrs';
 import { Result } from '@libs/ddd/domain/utils/result.util';
+import {Inject} from "@nestjs/common";
+import {UserRepositoryPort} from "@modules/user/database/user.repository.port";
 import { FindUsersQuery } from './find-users.query';
 import { UserEntity } from '../../domain/entities/user.entity';
 
 @QueryHandler(FindUsersQuery)
 export class FindUsersQueryHandler extends QueryHandlerBase {
-  constructor(private readonly userRepo: UserRepository) {
+  constructor(@Inject("userRepositoryPort")
+              private readonly userRepo: UserRepositoryPort) {
     super();
   }
 

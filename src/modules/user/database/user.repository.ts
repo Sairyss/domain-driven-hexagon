@@ -25,17 +25,17 @@ export class UserRepository
 
   constructor(
     @InjectRepository(UserOrmEntity)
-    private readonly userRepository: Repository<UserOrmEntity>,
+    private readonly userOrmRepository: Repository<UserOrmEntity>,
   ) {
     super(
-      userRepository,
+      userOrmRepository,
       new UserOrmMapper(UserEntity, UserOrmEntity),
       new Logger('UserRepository'),
     );
   }
 
   private async findOneById(id: string): Promise<UserOrmEntity | undefined> {
-    const user = await this.userRepository.findOne({
+    const user = await this.userOrmRepository.findOne({
       where: { id },
     });
 
@@ -53,7 +53,7 @@ export class UserRepository
   private async findOneByEmail(
     email: string,
   ): Promise<UserOrmEntity | undefined> {
-    const user = await this.userRepository.findOne({
+    const user = await this.userOrmRepository.findOne({
       where: { email },
     });
 

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {ClassProvider, Module} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UserOrmEntity } from './database/user.orm-entity';
@@ -27,7 +27,12 @@ const cliControllers = [CreateUserCliController];
 
 const graphqlResolvers = [CreateUserGraphqlResolver, FindUsersGraphqlResolver];
 
-const repositories = [UserRepository];
+const userRepositoryProvider : ClassProvider = {
+  provide: "userRepositoryPort",
+  useClass: UserRepository
+};
+
+const repositories = [userRepositoryProvider];
 
 const commandHandlers = [CreateUserService, DeleteUserService];
 
@@ -44,5 +49,6 @@ const queryHandlers = [FindUsersQueryHandler];
     ...queryHandlers,
     createUserCliLoggerProvider,
   ],
+  exports: ["userRepositoryPort"],
 })
 export class UserModule {}

@@ -1,4 +1,5 @@
 import { RepositoryPort } from '@libs/ddd/domain/ports/repository.ports';
+import {FindUsersQuery} from "@modules/user/queries/find-users/find-users.query";
 import { UserEntity, UserProps } from '../domain/entities/user.entity';
 
 /* Repository port belongs to application's core, but since it usually
@@ -9,4 +10,5 @@ export interface UserRepositoryPort
   findOneByIdOrThrow(id: string): Promise<UserEntity>;
   findOneByEmailOrThrow(email: string): Promise<UserEntity>;
   exists(email: string): Promise<boolean>;
+  findUsers(query: FindUsersQuery): Promise<UserEntity[]>
 }
