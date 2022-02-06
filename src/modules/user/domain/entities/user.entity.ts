@@ -30,8 +30,8 @@ export class UserEntity extends AggregateRoot<UserProps> {
     user.addEvent(
       new UserCreatedDomainEvent({
         aggregateId: id.value,
-        email: props.email.getRawProps(),
-        ...props.address.getRawProps(),
+        email: props.email.unpack(),
+        ...props.address.unpack(),
       }),
     );
     return user;

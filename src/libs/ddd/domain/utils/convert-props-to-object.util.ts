@@ -17,7 +17,7 @@ function isEntity(obj: unknown): obj is Entity<unknown> {
 
 function convertToPlainObject(item: any): any {
   if (ValueObject.isValueObject(item)) {
-    return item.getRawProps();
+    return item.unpack();
   }
   if (isEntity(item)) {
     return item.toObject();

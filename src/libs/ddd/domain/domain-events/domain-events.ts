@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { AggregateRoot } from '../base-classes/aggregate-root.base';
 import { Logger } from '../ports/logger.port';
 import { DomainEvent, DomainEventHandler } from '.';
@@ -48,7 +49,6 @@ export class DomainEvents {
       await Promise.all(
         aggregate.domainEvents.map((event: DomainEvent) => {
           if (correlationId && !event.correlationId) {
-            // eslint-disable-next-line no-param-reassign
             event.correlationId = correlationId;
           }
           return this.publish(event, logger);

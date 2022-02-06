@@ -3,7 +3,6 @@ import {
   CommandProps,
 } from '@src/libs/ddd/domain/base-classes/command.base';
 
-// Command is a plain object with properties
 export class CreateUserCommand extends Command {
   constructor(props: CommandProps<CreateUserCommand>) {
     super(props);
