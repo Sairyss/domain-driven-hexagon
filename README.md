@@ -228,7 +228,7 @@ Though, violating this rule and returning some metadata, like `ID` of a created 
 
 To execute a command you can use a `Command Bus` instead of importing a service directly. This will decouple a command Invoker from a Receiver so you can send your commands from anywhere without creating coupling.
 
-Avoid command handlers executing other commands, creating a chain of commands. Use events for that purpose.
+Avoid command handlers executing other commands in this fashion: Command -> Command. Instead use events for that purpose and execute next commands in a chain in a Event handler: Command -> Event -> Command.
 
 Example files:
 
