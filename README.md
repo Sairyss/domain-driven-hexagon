@@ -1,7 +1,3 @@
-# December update
-
-"Other best practices and recommendations" section is extended and moved to a separate repository - [Backend best practices](https://github.com/Sairyss/backend-best-practices). This repository will mostly focus on architectural patterns and practices.
-
 # Domain-Driven Hexagon
 
 Main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
@@ -20,7 +16,6 @@ Though patterns and principles presented here are **framework/language agnostic*
 
 ---
 
-- [December update](#december-update)
 - [Domain-Driven Hexagon](#domain-driven-hexagon)
 - [Architecture](#architecture)
       - [Pros](#pros)
@@ -233,6 +228,8 @@ Though, violating this rule and returning some metadata, like `ID` of a created 
 
 To execute a command you can use a `Command Bus` instead of importing a service directly. This will decouple a command Invoker from a Receiver so you can send your commands from anywhere without creating coupling.
 
+Avoid command handlers executing other commands, creating a chain of commands. Use events for that purpose.
+
 Example files:
 
 - [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts) - a command Object
@@ -243,6 +240,7 @@ Example files:
 Read more:
 
 - [What is a command bus and why should you use it?](https://barryvanveen.nl/blog/49-what-is-a-command-bus-and-why-should-you-use-it)
+- [Why You Should Avoid Command Handlers Calling Other Commands?](https://www.rahulpnath.com/blog/avoid-commands-calling-commands/)
 
 ### Queries
 
@@ -263,7 +261,7 @@ Example files:
 
 By enforcing `Command` and `Query` separation, the code becomes simpler to understand. One changes something, another just retrieves data.
 
-Also, following CQS from the start will facilitate separating write and read models into different databases (CQRS) if someday in the future the need for it arises.
+Also, following CQS from the start will facilitate separating write and read models into different databases if someday in the future the need for it arises.
 
 **Note**: this repo uses [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs) package that provides a command/query bus.
 
@@ -559,7 +557,7 @@ Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain p
 
 Also an alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases) just to give this primitive a semantic meaning.
 
-**Note**: Do not include Value Objects in dtos, commands, events, database models, projections etc. Transform them to primitive types first. Value Objects should be used only within the same bounded context. It is a bad practice to send them to different contexts, to a command/event bus, saving them to the database etc. because this creates coupling.
+**Note**: Do not include Value Objects in objects that can be sent to other processes, like dtos, events, database models etc. Serialize them to primitive types first.
 
 Example files:
 
