@@ -276,7 +276,7 @@ Read more about CQS and CQRS:
 
 ## Ports
 
-Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather than business logic. Ports act like abstractions for technology details that business logic does not care about.
+Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather than business logic. Ports act like [abstractions](<https://en.wikipedia.org/wiki/Abstraction_(computer_science)>) for technology details that business logic does not care about.
 
 In Application Core **dependencies point inwards**. Outer layers can depend on inner layers, but inner layers never depend on outer layers. Application Core shouldn't depend on frameworks or access external resources directly. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)). This makes business logic independent of technology, facilitates testing, allows to plug/unplug/swap any external resources easily making application modular and [loosely coupled](https://en.wikipedia.org/wiki/Loose_coupling).
 
@@ -284,12 +284,13 @@ In Application Core **dependencies point inwards**. Outer layers can depend on i
 - Ports can be created to abstract I/O operations, technology details, invasive libraries, legacy code etc. from the Domain.
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
 - Mock implementations can be passed to ports while testing. Mocking makes your tests faster and independent from the environment.
+- Abstraction provided by ports can be used to inject different implementations to a port if needed ([polymorphism](<https://en.wikipedia.org/wiki/Polymorphism_(computer_science)>)).
 - When designing ports, remember about [Interface segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle). Split large interfaces into a smaller ones when it makes sense, but also keep in mind to not overdo it when not necessary.
 - Ports can also help to delay decisions. Domain layer can be implemented before even deciding what technologies (frameworks, database etc) will be used.
 
 **Note**: since most ports implementations are injected and executed in application service, Application Layer can be a good place to keep those ports. But there are times when Domain Layer's business logic depends on executing some external resource, in that case those ports can be put in a Domain Layer.
 
-**Note**: creating ports in smaller applications/APIs may overcomplicate such solutions by adding unnecessary abstractions. Using concrete implementations directly instead of ports may be enough in such applications. Consider all pros and cons before using this pattern.
+**Note**: abusing ports/interfaces and adding unnecessary abstractions may overcomplicate your application. Using concrete implementations directly instead of ports is enough in most cases. Think carefully if you really need an abstraction before using it.
 
 Example files:
 
