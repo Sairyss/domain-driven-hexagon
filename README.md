@@ -43,7 +43,7 @@ Though patterns and principles presented here are **framework/language agnostic*
       - [Validation at runtime](#validation-at-runtime)
     - [Guarding vs validating](#guarding-vs-validating)
   - [Domain Errors](#domain-errors)
-  - [Using libraries inside application's core](#using-libraries-inside-applications-core)
+  - [Using libraries inside Application's core](#using-libraries-inside-applications-core)
 - [Interface Adapters](#interface-adapters)
   - [Controllers](#controllers)
     - [Resolvers](#resolvers)
@@ -52,7 +52,7 @@ Though patterns and principles presented here are **framework/language agnostic*
     - [Response DTOs](#response-dtos)
     - [Additional recommendations](#additional-recommendations)
     - [Local DTOs](#local-dtos)
-- [Infrastructure](#infrastructure)
+- [Infrastructure layer](#infrastructure-layer)
   - [Adapters](#adapters)
   - [Repositories](#repositories)
   - [Persistence models](#persistence-models)
@@ -863,9 +863,9 @@ Though you may want to introduce Local DTOs when you need to decouple modules pr
 
 ---
 
-# Infrastructure
+# Infrastructure layer
 
-The Infrastructure is responsible strictly to keep technology. You can find there the implementations of database repositories for business entities, message brokers, I/O components, dependency injection, frameworks and any other thing that represents a detail for the architecture, mostly framework dependent, external dependencies, and so on.
+The Infrastructure layer is responsible for encapsulating technology. You can find there the implementations of database repositories for storing/retrieving business entities, message brokers to emit messages/events, I/O services to access external resources, framework related code and any other code that represents a replaceable detail for the architecture.
 
 It's the most volatile layer. Since the things in this layer are so likely to change, they are kept as far away as possible from the more stable domain layers. Because they are kept separate, it's relatively easy make changes or swap one component for another.
 
