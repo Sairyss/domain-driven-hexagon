@@ -1,5 +1,12 @@
 # Domain-Driven Hexagon
 
+**Check out my other repositories**:
+
+- [Backend best practices](https://github.com/Sairyss/backend-best-practices) - Best practices, tools and guidelines for backend development.
+- [Full-stack application example](https://github.com/Sairyss/full-stack-application-example) - an example of a simple full-stack application using NodeJS + NestJS, MongoDB + Mongoose, NX Monorepo, etc.
+
+---
+
 The main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
 **Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed.
@@ -9,10 +16,6 @@ Code examples are written using [NodeJS](https://nodejs.org/en/), [TypeScript](h
 Though patterns and principles presented here are **framework/language agnostic**, so above technologies can be easily replaced with any alternative. No matter what language or framework is used, any application can benefit from principles described below.
 
 **Note**: code examples are adapted to TypeScript and mentioned above frameworks so may not fit well for other languages. Also remember that code examples presented here are just examples and must be changed according to project's needs or personal preference.
-
-**Check out my other repositories**:
-
-- [Backend best practices](https://github.com/Sairyss/backend-best-practices) - Best practices, tools and guidelines for backend development.
 
 ---
 
@@ -966,6 +969,8 @@ For example:
 
 For applications with not a lot of business logic consider other architectures. The most popular is probably [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). _Model-View-Controller_ is better suited for [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) applications with little business logic since it tends to favor designs where software is mostly the view of the database.
 
+[Full-stack application example](https://github.com/Sairyss/full-stack-application-example) - here is an example of a simple CRUD full-stack application.
+
 ## General recommendations on architectures, best practices, design patterns and principles
 
 Different projects most likely will have different requirements. Some principles/patterns in such projects can be implemented in a simplified form, some can be skipped. Follow [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) principle and don't over-engineer.
@@ -1076,7 +1081,8 @@ Read more:
 
 # Additional resources
 
-For more best practices that are used here check out this repository: [Backend best practices](https://github.com/Sairyss/backend-best-practices)
+- [Backend best practices](https://github.com/Sairyss/backend-best-practices) - more best practices that are used here
+- [Full-stack application example](https://github.com/Sairyss/full-stack-application-example) - architecture example of a simple full stack application
 
 ## Articles
 
