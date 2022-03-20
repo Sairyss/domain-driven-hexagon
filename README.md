@@ -1,6 +1,6 @@
 # Domain-Driven Hexagon
 
-Main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
+The main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
 **Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed.
 
@@ -101,7 +101,7 @@ Before we begin, here are the PROS and CONS of using a complete architecture lik
 
 - This is a sophisticated architecture which requires a firm understanding of quality software principles, such as SOLID, Clean/Hexagonal Architecture, Domain-Driven Design, etc. Any team implementing such a solution will almost certainly require an expert to drive the solution and keep it from evolving the wrong way and accumulating technical debt.
 
-- Some of the practices presented here are not recommended for small-medium sized applications with not a lot of business logic. There is added up-front complexity to support all those building blocks and layers, boilerplate code, abstractions, data mapping etc. thus implementing a complete architecture like this is generally ill-suited to simple [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) applications and could over-complicate such solutions. Some of the described below principles can be used in a smaller sized applications but must be implemented only after analyzing and understanding all pros and cons.
+- Some of the practices presented here are not recommended for small-medium sized applications with not a lot of business logic. There is added up-front complexity to support all those building blocks and layers, boilerplate code, abstractions, data mapping etc. thus implementing a complete architecture like this is generally ill-suited to simple [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) applications and could over-complicate such solutions. Some of the described below principles can be used in a smaller sized applications, but must be implemented only after analyzing and understanding all pros and cons.
 
 # Diagram
 
@@ -114,12 +114,12 @@ In short, data flow looks like this (from left to right):
 - Controller parses this DTO, maps it to a Command/Query object format and passes it to a Application service;
 - Application service handles this Command/Query; it executes business logic using domain services and/or entities and uses the infrastructure layer through ports;
 - Infrastructure layer uses a mapper to convert data to format that it needs, uses repositories to fetch/persist data and adapters to send events or do other I/O communications, maps data back to domain format and returns it back to Application service;
-- After application service finishes doing it's job, it returns data/confirmation back to Controllers;
+- After the Application service finishes doing its job, it returns data/confirmation back to Controllers;
 - Controllers return data back to the user (if application has presenters/views, those are returned instead).
 
-Each layer is in charge of it's own logic and has building blocks that usually should follow a [Single-responsibility principle](https://en.wikipedia.org/wiki/Single-responsibility_principle) when possible and when it makes sense (for example, using `Repositories` only for database access, using `Entities` for business logic etc).
+Each layer is in charge of its own logic and has building blocks that usually should follow a [Single-responsibility principle](https://en.wikipedia.org/wiki/Single-responsibility_principle) when possible and when it makes sense (for example, using `Repositories` only for database access, using `Entities` for business logic, etc).
 
-**Keep in mind** that different projects can have more or less steps/layers/building blocks than described here. Add more if application requires it, and skip some if application is not that complex and doesn't need all that abstraction.
+**Keep in mind** that different projects can have more or less steps/layers/building blocks than described here. Add more if the application requires it, and skip some if the application is not that complex and doesn't need all that abstraction.
 
 General recommendation for any project: analyze how big/complex the application will be, find a compromise and use as many layers/building blocks as needed for the project and skip ones that may over-complicate things.
 
@@ -127,15 +127,15 @@ More in details on each step below.
 
 # Modules
 
-This project's code examples use separation by modules (also called components). Each module's name should reflect an important concept from the Domain and have its own folder with a dedicated codebase, and each use case inside that module gets it's own folder to store most of the things it needs (this is also called _Vertical Slicing_).
+This project's code examples use separation by modules (also called components). Each module's name should reflect an important concept from the Domain and have its own folder with a dedicated codebase, and each use case inside that module gets its own folder to store most of the things it needs (this is also called _Vertical Slicing_).
 
 It is easier to work on things that change together if those things are gathered relatively close to each other. Think of a module as a "box" that groups together related business logic.
 
-Try not to create dependencies between modules or use cases, move shared logic into a separate files and make both depend on that instead of depending on each other.
+Try not to create dependencies between modules or use cases. Instead, move shared logic into a separate files and make both depend on that instead of depending on each other.
 
 Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Consider module internals private and try to avoid direct imports between modules (like importing a class `import SomeClass from '../SomeOtherModule'`) since this creates [tight coupling](<https://en.wikipedia.org/wiki/Coupling_(computer_programming)>), turns your code into a [spaghetti](https://en.wikipedia.org/wiki/Spaghetti_code) and application into a [big ball of mud](https://en.wikipedia.org/wiki/Big_ball_of_mud).
 
-To avoid coupling modules can communicate with each other by using a message bus, for example you can send commands using a commands bus or subscribe to events that other modules emit (more info on events and commands bus below).
+To avoid coupling, modules can communicate with each other by using a message bus. For example, you can send commands using a commands bus or subscribe to events that other modules emit (more info on events and commands bus below).
 
 This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupling), and, if bounded contexts are defined and designed properly, each module can be easily separated into a microservice if needed without touching any domain logic.
 
@@ -178,12 +178,12 @@ These services orchestrate the steps required to fulfill the commands imposed by
 - Typically used to orchestrate how the outside world interacts with your application and performs tasks required by the end users.
 - Contain no domain-specific business logic;
 - Operate on scalar types, transforming them into Domain types. A scalar type can be considered any type that's unknown to the Domain Model. This includes primitive types and types that don't belong to the Domain.
-- Application services declare dependencies on infrastructural services required to execute domain logic (by using ports).
-- Are used in order to fetch domain `Entities` (or anything else) from database/outside world through ports;
-- Execute other out-of-process communications through `Ports` (like event emits, sending emails etc);
-- In case of interacting with one Entity/Aggregate, executes its methods directly;
-- In case of working with multiple Entities/Aggregates, uses a `Domain Service` to orchestrate them;
-- Are basically a `Command`/`Query` handlers;
+- Declare dependencies on infrastructural services required to execute domain logic (by using Ports).
+- Are used in order to fetch domain `Entities` (or anything else) from database/outside world through Ports;
+- Execute other out-of-process communications through Ports (like event emits, sending emails etc);
+- In case of interacting with one Entity/Aggregate, execute its methods directly;
+- In case of working with multiple Entities/Aggregates, use a `Domain Service` to orchestrate them;
+- Are basically `Command`/`Query` handlers;
 - Should not depend on other application services since it may cause problems (like cyclic dependencies);
 
 One service per use case is considered a good practice.
@@ -228,7 +228,7 @@ Though, violating this rule and returning some metadata, like `ID` of a created 
 
 To execute a command you can use a `Command Bus` instead of importing a service directly. This will decouple a command Invoker from a Receiver so you can send your commands from anywhere without creating coupling.
 
-Avoid command handlers executing other commands in this fashion: Command -> Command. Instead use events for that purpose and execute next commands in a chain in a Event handler: Command -> Event -> Command.
+Avoid command handlers executing other commands in this fashion: Command -> Command. Instead, use events for that purpose, and execute next commands in a chain in a Event handler: Command -> Event -> Command.
 
 Example files:
 
@@ -282,16 +282,16 @@ In Application Core **dependencies point inwards**. Outer layers can depend on i
 
 - Ports are basically just interfaces that define what has to be done and don't care about how it is done.
 - Ports can be created to abstract side effects like I/O operations and database access, technology details, invasive libraries, legacy code etc. from the Domain.
-- By abstracting side effects you can test your application logic in isolation by [mocking](https://en.wikipedia.org/wiki/Mock_object) the implementation. This can be useful for [unit testing](https://en.wikipedia.org/wiki/Unit_testing).
+- By abstracting side effects, you can test your application logic in isolation by [mocking](https://en.wikipedia.org/wiki/Mock_object) the implementation. This can be useful for [unit testing](https://en.wikipedia.org/wiki/Unit_testing).
 - Ports should be created to fit the Domain needs, not simply mimic the tools APIs.
 - Mock implementations can be passed to ports while testing. Mocking makes your tests faster and independent from the environment.
 - Abstraction provided by ports can be used to inject different implementations to a port if needed ([polymorphism](<https://en.wikipedia.org/wiki/Polymorphism_(computer_science)>)).
-- When designing ports, remember about [Interface segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle). Split large interfaces into a smaller ones when it makes sense, but also keep in mind to not overdo it when not necessary.
-- Ports can also help to delay decisions. Domain layer can be implemented before even deciding what technologies (frameworks, database etc) will be used.
+- When designing ports, remember the [Interface segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle). Split large interfaces into a smaller ones when it makes sense, but also keep in mind to not overdo it when not necessary.
+- Ports can also help to delay decisions. The Domain layer can be implemented even before deciding what technologies (frameworks, databases etc) will be used.
 
-**Note**: since most ports implementations are injected and executed in application service, Application Layer can be a good place to keep those ports. But there are times when Domain Layer's business logic depends on executing some external resource, in that case those ports can be put in a Domain Layer.
+**Note**: since most ports implementations are injected and executed in application service, Application Layer can be a good place to keep those ports. But there are times when the Domain Layer's business logic depends on executing some external resource, in such cases those ports can be put in a Domain Layer.
 
-**Note**: abusing ports/interfaces may lead to unnecessary abstractions and overcomplicate your application. In some cases It is totally fine to depend on a concrete implementation instead of abstracting it with an interface. Think carefully if you really need an abstraction before using it.
+**Note**: abusing ports/interfaces may lead to unnecessary abstractions and overcomplicate your application. In some cases it is totally fine to depend on a concrete implementation instead of abstracting it with an interface. Think carefully if you really need an abstraction before using it.
 
 Example files:
 
@@ -302,7 +302,7 @@ Example files:
 
 # Domain Layer
 
-This layer contains application's business rules.
+This layer contains the application's business rules.
 
 Domain should operate using domain objects described by [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html). Most important domain building blocks are described below.
 
@@ -310,18 +310,18 @@ Domain should operate using domain objects described by [ubiquitous language](ht
 
 ## Entities
 
-Entities are the core of the domain. They encapsulate Enterprise wide business rules and attributes. An entity can be an object with properties and methods, or it can be a set of data structures and functions.
+Entities are the core of the domain. They encapsulate Enterprise-wide business rules and attributes. An entity can be an object with properties and methods, or it can be a set of data structures and functions.
 
 Entities represent business models and express what properties a particular model has, what it can do, when and at what conditions it can do it. An example of business model can be a User, Product, Booking, Ticket, Wallet etc.
 
-Entities must always protect it's [invariant](https://en.wikipedia.org/wiki/Class_invariant):
+Entities must always protect their [invariant](https://en.wikipedia.org/wiki/Class_invariant):
 
 > Domain entities should always be valid entities. There are a certain number of invariants for an object that should always be true. For example, an order item object always has to have a quantity that must be a positive integer, plus an article name and price. Therefore, invariants enforcement is the responsibility of the domain entities (especially of the aggregate root) and an entity object should not be able to exist without being valid.
 
 Entities:
 
-- Contain Domain business logic. Avoid having business logic in your services when possible, this leads to [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) (domain services are exception for business logic that can't be put in a single entity).
-- Have an identity that defines it and makes it distinguishable from others. It's identity is consistent during its life cycle.
+- Contain Domain business logic. Avoid having business logic in your services when possible, this leads to [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) (Domain Services are an exception for business logic that can't be put in a single entity).
+- Have an identity that defines it and makes it distinguishable from others. Its identity is consistent during its life cycle.
 - Equality between two entities is determined by comparing their identificators (usually its `id` field).
 - Can contain other objects, such as other entities or value objects.
 - Are responsible for collecting all the understanding of state and how it changes in the same place.
@@ -353,7 +353,7 @@ Read more:
 [Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html) is a cluster of domain objects that can be treated as a single unit. It encapsulates entities and value objects which conceptually belong together. It also contains a set of operations which those domain objects can be operated on.
 
 - Aggregates help to simplify the domain model by gathering multiple domain objects under a single abstraction.
-- Aggregates should not be influenced by data model. Associations between domain objects are not the same as database relationships.
+- Aggregates should not be influenced by the data model. Associations between domain objects are not the same as database relationships.
 - Aggregate root is an entity that contains other entities/value objects and all logic to operate them.
 - Aggregate root has global identity ([UUID / GUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) / primary key). Entities inside the aggregate boundary have local identities, unique only within the Aggregate.
 - Aggregate root is a gateway to entire aggregate. Any references from outside the aggregate should **only** go to the aggregate root.
@@ -384,7 +384,7 @@ Read more:
 
 ## Domain Events
 
-Domain event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of. Domain events are just messages pushed to an in-memory domain event dispatcher.
+Domain Event indicates that something happened in a domain that you want other parts of the same domain (in-process) to be aware of. Domain events are just messages pushed to an in-memory Domain Event dispatcher.
 
 For example, if a user buys something, you may want to:
 
@@ -393,7 +393,7 @@ For example, if a user buys something, you may want to:
 - Create a new shipping order;
 - Perform other domain operations that are not a concern of an aggregate that executes a "buy" command.
 
-Typical approach that is usually used involves executing all this logic in a service that performs a buy operation. But this creates coupling between different subdomains.
+The typical approach involves executing all this logic in a service that performs a "buy" operation. However, this creates coupling between different subdomains.
 
 An alternative approach would be publishing a `Domain Event`. If executing a command related to one aggregate instance requires additional domain rules to be run on one or more additional aggregates, you can design and implement those side effects to be triggered by Domain Events. Propagation of state changes across multiple aggregates within the same domain model can be performed by subscribing to a concrete `Domain Event` and creating as many event handlers as needed. This prevents coupling between aggregates.
 
@@ -421,13 +421,13 @@ To have a better understanding on domain events and implementation read this:
 
 **Additional notes**:
 
-- This project uses custom implementation for publishing Domain Events. Reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
+- This project uses custom implementation for publishing Domain Events. The reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
 
 - Transactions are not required for some operations (for example queries or operations that don't cause any side-effects in other aggregates) so you may skip using a unit of work in those cases.
 
-- While using only events for complex workflows with a lot of steps it will be hard to track everything that is happening across the application. One event may trigger another one, then another one, and so on. To track the entire workflow you'll have to go multiple places and search for an event handler for each step which is hard to maintain. In this cases using a service/orchestrator/mediator might be a preferred approach than only using events since you will have an entire workflow in one place. This might create some coupling, but is easier to maintain. Don't rely on events only, pick the right tool for the job.
+- When using only events for complex workflows with a lot of steps, it will be hard to track everything that is happening across the application. One event may trigger another one, then another one, and so on. To track the entire workflow you'll have to go multiple places and search for an event handler for each step, which is hard to maintain. In this case, using a service/orchestrator/mediator might be a preferred approach compared to only using events since you will have an entire workflow in one place. This might create some coupling, but is easier to maintain. Don't rely on events only, pick the right tool for the job.
 
-- In some cases you will not be able to save all changes done by your events to multiple aggregates in a single transaction. For example if you are using microservices that span transaction between multiple services, or [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) that has a single stream per aggregate. In this case saving events across multiple aggregates can be eventually consistent (for example by using [Sagas](https://microservices.io/patterns/data/saga.html) with compensating events or a [Process Manager](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html) or something similar).
+- In some cases you will not be able to save all changes done by your events to multiple aggregates in a single transaction. For example, if you are using microservices that span transaction between multiple services, or [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) that has a single stream per aggregate. In this case saving events across multiple aggregates can be eventually consistent (for example by using [Sagas](https://microservices.io/patterns/data/saga.html) with compensating events or a [Process Manager](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html) or something similar).
 
 ## Integration Events
 
@@ -476,7 +476,7 @@ Value Objects:
 
 Value object shouldn’t be just a convenient grouping of attributes but should form a well-defined concept in the domain model. This is true even if it contains only one attribute. When modeled as a conceptual whole, it carries meaning when passed around, and it can uphold its constraints.
 
-Imagine you have a `User` entity which needs to have an `address` of a user. Usually an address is simply a complex value that has no identity in the domain and is composed of multiple other values, like `country`, `street`, `postalCode` etc; so it can be modeled and treated as a `Value Object` with it's own business logic.
+Imagine you have a `User` entity which needs to have an `address` of a user. Usually an address is simply a complex value that has no identity in the domain and is composed of multiple other values, like `country`, `street`, `postalCode` etc; so it can be modeled and treated as a `Value Object` with its own business logic.
 
 `Value object` isn’t just a data structure that holds values. It can also encapsulate logic associated with the concept it represents.
 
@@ -503,7 +503,7 @@ There are a certain number of invariants for an object that should always be tru
 - Client's wallet cannot have less than 0 balance;
 - etc.
 
-If business has some rules similar to described above, domain object should not be able to exist without following those rules.
+If the business has some rules similar to described above, the domain object should not be able to exist without following those rules.
 
 Below we will discuss some validation techniques for your domain objects.
 
@@ -567,7 +567,7 @@ Example files:
 
 **Note**: if you are using nodejs, [Runtypes](https://www.npmjs.com/package/runtypes) is a nice library that you can use instead of creating your own value objects for primitives.
 
-Recommended to read:
+Recommended reading:
 
 - [Primitive Obsession — A Code Smell that Hurts People the Most](https://medium.com/the-sixt-india-blog/primitive-obsession-code-smell-that-hurt-people-the-most-5cbdd70496e9)
 - [Domain Primitives: what they are and how you can use them to make more secure software](https://freecontent.manning.com/domain-primitives-what-they-are-and-how-you-can-use-them-to-make-more-secure-software/)
@@ -592,7 +592,7 @@ Lets distinguish two types of protection from illegal states: at **compile time*
 
 Types give useful semantic information to a developer. Good code should be easy to use correctly, and hard to use incorrectly. Types system can be a good help for that. It can prevent some nasty errors at a compile time, so IDE will show type errors right away.
 
-The simplest example may be using enums instead of constants, and use those enums as input type for something. When passing anything that is not intended IDE will show a type error.
+The simplest example may be using enums instead of constants, and use those enums as input type for something. When passing anything that is not intended the IDE will show a type error.
 
 Or, for example, imagine that business logic requires to have contact info of a person by either having `email`, or `phone`, or both. Both `email` and `phone` could be represented as optional, for example:
 
@@ -611,7 +611,7 @@ Solution: this could be presented as a [union type](https://www.typescriptlang.o
 type ContactInfo = Email | Phone | [Email, Phone];
 ```
 
-Now only either `Email`, or `Phone`, or both must be provided. If nothing is provided IDE will show a type error right away. Now business rule validation is moved from runtime to a **compile time** which makes application more secure and gives a faster feedback when something is not used as intended.
+Now only either `Email`, or `Phone`, or both must be provided. If nothing is provided, the IDE will show a type error right away. Now business rule validation is moved from runtime to a **compile time**, which makes the application more secure and gives a faster feedback when something is not used as intended.
 
 This is called a _typestate pattern_.
 
@@ -648,7 +648,7 @@ You may have noticed that we do validation in two places:
 1. First when user input is sent to our application. In our example we use DTO decorators: [create-user.request-dto.ts](src/modules/user/commands/create-user/create-user.request.dto.ts).
 2. Second time in domain objects, for example: [email.value-object.ts](src/modules/user/domain/value-objects/email.value-object.ts).
 
-So, why validating things twice? Lets call a second validation "_guarding_" and distinguish a difference between guarding and validating:
+So, why are we validating things twice? Lets call a second validation "_guarding_", and distinguish between guarding and validating:
 
 - Guarding is a failsafe mechanism. Domain layer views it as invariants to comply with always-valid domain model.
 - Validation is a filtration mechanism. Outside layers view them as input validation rules.
@@ -679,12 +679,12 @@ Instead of using custom _guards_ you could use an external validation library, b
 
 Although exceptions can be made if needed, especially for very specific validation libraries that validate only one thing (like specific IDs, for example bitcoin wallet address). Tying only one or just few `Value Objects` to such a specific library won't cause any harm. Unlike general purpose validation libraries which will be tied to domain everywhere and it will be troublesome to change it in every `Value Object` in case when old library is no longer maintained, contains critical bugs or is compromised by hackers etc.
 
-Though, it is fine to do full sanity checks using validation framework or library **outside** of domain (for example [class-validator](https://www.npmjs.com/package/class-validator) decorators in `DTOs`), and do only some basic checks (guarding) inside of domain objects (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
+Though, it is fine to do full sanity checks using validation framework or library **outside** of the domain (for example [class-validator](https://www.npmjs.com/package/class-validator) decorators in `DTOs`), and do only some basic checks (guarding) inside of domain objects (besides business rules), like checking for `null` or `undefined`, checking length, matching against simple regexp etc. to check if value makes sense and for extra security.
 
 <details>
 <summary>Note about using regexp</summary>
 
-Be careful with custom regexp validations for things like validating `email`, only use custom regexp for some very simple rules and, if possible, let validation library do it's job on more difficult ones to avoid problems in case your regexp is not good enough.
+Be careful with custom regexp validations for things like validating `email`, only use custom regexp for some very simple rules and, if possible, let validation library do its job on more difficult ones to avoid problems in case your regexp is not good enough.
 
 Also, keep in mind that custom regexp that does same type of validation that is already done by validation library outside of domain may create conflicts between your regexp and the one used by a validation library.
 
@@ -742,7 +742,7 @@ Read more:
 - [Advanced error handling techniques](https://enterprisecraftsmanship.com/posts/advanced-error-handling-techniques/)
 - ["Secure by Design" Chapter 9.2: Handling failures without exceptions](https://livebook.manning.com/book/secure-by-design/chapter-9/51)
 
-## Using libraries inside application's core
+## Using libraries inside Application's core
 
 Whether or not to use libraries in application core and especially domain layer is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like working with numbers).
 
@@ -755,11 +755,11 @@ Main recommendations to keep in mind is that libraries imported in application's
 
 To use such libraries consider creating an `anti-corruption` layer by using [adapter](https://refactoring.guru/design-patterns/adapter) or [facade](https://refactoring.guru/design-patterns/facade) patterns.
 
-We sometimes tolerate libraries in the center, but be careful with general purpose libraries that may scatter across many domain objects. It will be hard to replace those libraries if needed. Tying only one or just few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
+We sometimes tolerate libraries in the center, but be careful with general purpose libraries that may scatter across many domain objects. It will be hard to replace those libraries if needed. Tying only one or just a few domain objects to some single-responsibility library should be fine. It is way easier to replace a specific library that is tied to one or few objects than a general purpose library that is everywhere.
 
-In addition to different libraries there are Frameworks. Frameworks can be a real nuisance because by definition they want to be in control and it's hard to replace a Framework later when your entire application is glued to it. Its fine to use Frameworks in outside layers (like infrastructure), but keep your domain clean of them when possible. You should be able to extract your domain layer and build a new infrastructure around it using any other framework without breaking your business logic.
+In addition to different libraries there are Frameworks. Frameworks can be a real nuisance, because by definition they want to be in control, and it's hard to replace a Framework later when your entire application is glued to it. It's fine to use Frameworks in outside layers (like infrastructure), but keep your domain clean of them when possible. You should be able to extract your domain layer and build a new infrastructure around it using any other framework without breaking your business logic.
 
-NestJS makes a good job as it uses decorators which are not very intrusive, so you could use decorators like `@Inject()` without affecting your business logic at all and it's relatively easy to remove or replace it when needed. Don't give up on frameworks completely, but keep them in boundaries and don't let them affect your business logic.
+NestJS does a good job, as it uses decorators which are not very intrusive, so you could use decorators like `@Inject()` without affecting your business logic at all and it's relatively easy to remove or replace it when needed. Don't give up on frameworks completely, but keep them in boundaries and don't let them affect your business logic.
 
 Offload as much of irrelevant responsibilities as possible from the core, especially from domain layer. In addition, try to minimize usage of dependencies in general. More dependencies your software has means more potential errors and security holes. One technique for making software more robust is to minimize what your software depends on - the less that can go wrong, the less will go wrong. On the other hand, removing all dependencies would be counterproductive as replicating that functionality would have been a huge amount of work and less reliable than just using a widely-used dependency. Finding a good balance is important, this skill requires experience.
 
@@ -782,7 +782,7 @@ Contains `Controllers` and `Request`/`Response` DTOs (can also contain `Views`, 
 - One controller per use case is considered a good practice.
 - In [NestJS](https://docs.nestjs.com/) world controllers may be a good place to use [OpenAPI/Swagger decorators](https://docs.nestjs.com/openapi/operations) for documentation.
 
-One controller per trigger type can be used to have a more clear separation. For example:
+One controller per trigger type can be used to have a clearer separation. For example:
 
 - [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) for http requests ([NestJS Controllers](https://docs.nestjs.com/controllers)),
 - [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
@@ -791,9 +791,9 @@ One controller per trigger type can be used to have a more clear separation. For
 
 ### Resolvers
 
-If you are using [GraphQL](https://graphql.org/) instead of controllers you will use [Resolvers](https://docs.nestjs.com/graphql/resolvers).
+If you are using [GraphQL](https://graphql.org/) instead of controllers, you will use [Resolvers](https://docs.nestjs.com/graphql/resolvers).
 
-One of the main benefits of a layered architecture is separation of concerns. As you can see it doesn't matter if you use [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) or GraphQL, the only thing that changes is user-facing API layer (interface-adapters). All the application Core stays the same since it doesn't depend on technology you are using.
+One of the main benefits of a layered architecture is separation of concerns. As you can see, it doesn't matter if you use [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) or GraphQL, the only thing that changes is user-facing API layer (interface-adapters). All the application Core stays the same since it doesn't depend on technology you are using.
 
 Example files:
 
@@ -845,7 +845,7 @@ More info on this subject here: [Are CQRS commands part of the domain model?](ht
 
 - DTOs should be data-oriented, not object-oriented. Its properties should be mostly primitives. We are not modeling anything here, just sending flat data around.
 - When returning a `Response` prefer _whitelisting_ properties over _blacklisting_. This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
-- Interfaces for `Request`/`Response` objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating git submodule or a separate package for sharing interfaces.
+- Interfaces for `Request`/`Response` objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating a git submodule or a separate package for sharing interfaces.
 - `Request`/`Response` DTO classes may be a good place to use validation and sanitization decorators like [class-validator](https://www.npmjs.com/package/class-validator) and [class-sanitizer](https://www.npmjs.com/package/class-sanitizer) (make sure that all validation errors are gathered first and only then return them to the user, this is called [Notification pattern](https://martinfowler.com/eaaDev/Notification.html). Class-validator does this by default).
 - `Request`/`Response` DTO classes may also be a good place to use Swagger/OpenAPI library decorators that [NestJS provides](https://docs.nestjs.com/openapi/types-and-parameters).
 - If DTO decorators for validation/documentation are not used, DTO can be just an interface instead of class + interface.
@@ -853,11 +853,11 @@ More info on this subject here: [Are CQRS commands part of the domain model?](ht
 
 ### Local DTOs
 
-Another thing that can be seen in some projects is local DTOs. Some people prefer to never use domain objects (like entities) outside of its domain (in `controllers`, for example) and are returning a plain DTO object instead. This project doesn't use this technique to avoid extra complexity and boilerplate code like interfaces and data mapping.
+Another thing that can be seen in some projects is local DTOs. Some people prefer to never use domain objects (like entities) outside of its domain (in `controllers`, for example) and return a plain DTO object instead. This project doesn't use this technique, to avoid extra complexity and boilerplate code like interfaces and data mapping.
 
 [Here](https://martinfowler.com/bliki/LocalDTO.html) are Martin Fowler's thoughts on local DTOs, in short (quote):
 
-> Some people argue for them(DTOs) as part of a Service Layer API because they ensure that service layer clients aren't dependent upon an underlying Domain Model. While that may be handy, I don't think it's worth the cost of all of that data mapping.
+> Some people argue for them (DTOs) as part of a Service Layer API because they ensure that service layer clients aren't dependent upon an underlying Domain Model. While that may be handy, I don't think it's worth the cost of all of that data mapping.
 
 Though you may want to introduce Local DTOs when you need to decouple modules properly. For example, when querying from one module to another you don't want to leak your entities between modules. In that case using a Local DTO may be a better idea.
 
@@ -920,12 +920,12 @@ Since domain `Entities` have their data modeled so that it best accommodates dom
 
 There can be multiple models optimized for different purposes, for example:
 
-- Domain with it's own models - `Entities`, `Aggregates` and `Value Objects`.
-- Persistence layer with it's own models - ORM ([Object–relational mapping](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping)), schemas, read/write models if databases are separated into a read and write db ([CQRS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)) etc.
+- Domain with its own models - `Entities`, `Aggregates` and `Value Objects`.
+- Persistence layer with its own models - ORM ([Object–relational mapping](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping)), schemas, read/write models if databases are separated into a read and write db ([CQRS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)) etc.
 
 Over time, when the amount of data grows, there may be a need to make some changes in the database like improving performance or data integrity by re-designing some tables or even changing the database entirely. Without an explicit separation between `Domain` and `Persistance` models any change to the database will lead to change in your domain `Entities` or `Aggregates`. For example, when performing a database [normalization](https://en.wikipedia.org/wiki/Database_normalization) data can spread across multiple tables rather than being in one table, or vice-versa for [denormalization](https://en.wikipedia.org/wiki/Denormalization). This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges. Separating Domain and Persistance models prevents that.
 
-**Note**: separating domain and persistance models may be an overkill for smaller applications. It requires a lot of effort creating and maintaining boilerplate code like mappers and abstractions. Consider all pros and cons before making this decision.
+**Note**: separating domain and persistance models may be overkill for smaller applications. It requires a lot of effort creating and maintaining boilerplate code like mappers and abstractions. Consider all pros and cons before making this decision.
 
 Example files:
 
@@ -1012,7 +1012,7 @@ Read more:
 
 So instead of using typical layered style when an entire application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
 
-A lot of people tend to do the same thing as before: create one big service/controller for a module and keep all logic for module's use cases there, making those controllers and services hundreds of lines long, which is hard to navigate and makes merge conflicts a nightmare to manage. Or they create a folder for each file type, like `interfaces` or `services` folder and store all unrelated to each other interfaces/services in there. This is the same approach that makes navigation harder. Every time you need to change something, instead of having all related files in the same place, you have to jump folders to find where the related files are.
+A lot of people tend to do the same thing as before: create one big service/controller for a module and keep all logic for the module's use cases there, making those controllers and services hundreds of lines long, which is hard to navigate and makes merge conflicts a nightmare to manage. Or they create a folder for each file type, like `interfaces` or `services` folder and store all unrelated to each other interfaces/services in there. This is the same approach that makes navigation harder. Every time you need to change something, instead of having all related files in the same place, you have to jump folders to find where the related files are.
 
 It would be more logical to separate every module by components and have all related files close together. For example, check out [create-user](src/modules/user/commands/create-user) folder. It has most of the files that it needs inside the same folder: a controller, service, command etc. Now if a use-case changes, most of the changes are usually made in a single component (folder), not everywhere across the module.
 
@@ -1022,7 +1022,7 @@ This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/cle
 
 > The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
 
-Keep in mind that this project's folder/file structure is an example and might not work for everyone. Main recommendations here are:
+Keep in mind that this project's folder/file structure is an example and might not work for everyone. The main recommendations here are:
 
 - Separate you application into modules;
 - Keep files that change together close to each other (_Common Closure Principle_);
