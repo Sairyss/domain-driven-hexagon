@@ -1,2 +1,3 @@
 this is a new file
 this file is located in branch2
+test2
