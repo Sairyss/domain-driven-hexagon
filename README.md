@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Domain-Driven Hexagon456456456
+=======
+123123123# Domain-Driven Hexagon
+>>>>>>> branch1
 
 Main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
@@ -1112,3 +1116,6 @@ For more best practices that are used here check out this repository: [Backend b
 - ["Secure by Design"](https://www.manning.com/books/secure-by-design) by Dan Bergh Johnsson, Daniel Deogun, Daniel Sawano
 - ["Implementing Domain-Driven Design"](https://www.amazon.com/Implementing-Domain-Driven-Design-Vaughn-Vernon/dp/0321834577) by Vaughn Vernon
 - ["Clean Architecture: A Craftsman's Guide to Software Structure and Design"](https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164/ref=sr_1_1?dchild=1&keywords=clean+architecture&qid=1605343702&s=books&sr=1-1) by Robert Martin
+conflict
+conflict2
+conflict3
