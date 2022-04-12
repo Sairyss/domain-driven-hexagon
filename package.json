@@ -49,6 +49,7 @@
     "nest-event": "^1.0.8",
     "nestjs-console": "^7.0.0",
     "npm": "^7.24.1",
+    "oxide.ts": "^0.9.12",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

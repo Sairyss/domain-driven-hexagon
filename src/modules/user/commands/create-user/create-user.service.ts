@@ -3,9 +3,9 @@ import { UserRepositoryPort } from '@modules/user/database/user.repository.port'
 import { Address } from '@modules/user/domain/value-objects/address.value-object';
 import { Email } from '@modules/user/domain/value-objects/email.value-object';
 import { UnitOfWork } from '@src/infrastructure/database/unit-of-work/unit-of-work';
-import { Result } from '@libs/ddd/domain/utils/result.util';
 import { CommandHandler } from '@nestjs/cqrs';
 import { CommandHandlerBase } from '@src/libs/ddd/domain/base-classes/command-handler.base';
+import { Err, Ok, Result } from 'oxide.ts/dist';
 import { CreateUserCommand } from './create-user.command';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserAlreadyExistsError } from '../../errors/user.errors';
@@ -29,7 +29,7 @@ export class CreateUserService extends CommandHandlerBase {
     if (await userRepo.exists(command.email)) {
       /** Returning an Error instead of throwing it
        *  so a controller can handle it explicitly */
-      return Result.err(new UserAlreadyExistsError());
+      return Err(new UserAlreadyExistsError());
     }
 
     const user = UserEntity.create({
@@ -44,6 +44,6 @@ export class CreateUserService extends CommandHandlerBase {
     user.someBusinessLogic();
 
     const created = await userRepo.save(user);
-    return Result.ok(created.id);
+    return Ok(created.id);
   }
 }

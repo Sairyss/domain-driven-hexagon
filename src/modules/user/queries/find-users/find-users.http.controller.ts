@@ -2,8 +2,8 @@ import { Body, Controller, Get, HttpStatus } from '@nestjs/common';
 import { routesV1 } from '@config/app.routes';
 import { UserHttpResponse } from '@modules/user/dtos/user.response.dto';
 import { QueryBus } from '@nestjs/cqrs';
-import { Result } from '@src/libs/ddd/domain/utils/result.util';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Result } from 'oxide.ts/dist';
 import { FindUsersQuery } from './find-users.query';
 import { FindUsersHttpRequest } from './find-users.request.dto';
 import { UserEntity } from '../../domain/entities/user.entity';
@@ -22,7 +22,9 @@ export class FindUsersHttpController {
     @Body() request: FindUsersHttpRequest,
   ): Promise<UserHttpResponse[]> {
     const query = new FindUsersQuery(request);
-    const result: Result<UserEntity[]> = await this.queryBys.execute(query);
+    const result: Result<UserEntity[], Error> = await this.queryBys.execute(
+      query,
+    );
 
     /* Returning Response classes which are responsible
        for whitelisting data that is sent to the user */

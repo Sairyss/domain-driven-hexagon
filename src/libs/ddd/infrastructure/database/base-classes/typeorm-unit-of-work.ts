@@ -2,7 +2,7 @@ import { UnitOfWorkPort } from '@src/libs/ddd/domain/ports/unit-of-work.port';
 import { EntityTarget, getConnection, QueryRunner, Repository } from 'typeorm';
 import { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
 import { Logger } from 'src/libs/ddd/domain/ports/logger.port';
-import { Result } from '@src/libs/ddd/domain/utils/result.util';
+import { Err, Result } from 'oxide.ts/dist';
 
 /**
  * Keep in mind that this is a naive implementation
@@ -59,13 +59,13 @@ export class TypeormUnitOfWork implements UnitOfWorkPort {
     this.logger.debug(`[Starting transaction]`);
     await queryRunner.startTransaction(options?.isolationLevel);
     // const queryRunner = this.getQueryRunner(correlationId);
-    let result: T | Result<T>;
+    let result: T | Result<T, Error>;
     try {
       result = await callback();
-      if (((result as unknown) as Result<T>)?.isErr) {
+      if (((result as unknown) as Result<T, Error>)?.isErr()) {
         await this.rollbackTransaction<T>(
           correlationId,
-          ((result as unknown) as Result.Err<T, Error>).error,
+          ((result as unknown) as Err<Error, T>).unwrapErr(),
         );
         return result;
       }

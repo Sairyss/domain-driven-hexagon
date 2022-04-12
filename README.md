@@ -3,7 +3,7 @@
 **Check out my other repositories**:
 
 - [Backend best practices](https://github.com/Sairyss/backend-best-practices) - Best practices, tools and guidelines for backend development.
-- [Full-stack application example](https://github.com/Sairyss/full-stack-application-example) - an example of a simple full-stack application using NodeJS + NestJS, MongoDB + Mongoose, NX Monorepo, etc.
+- [Distributed systems topics](https://github.com/Sairyss/backend-best-practices) - list of topics and resources related to distributed systems, system design, microservices, scalability and performance, etc
 
 ---
 
@@ -724,7 +724,8 @@ const user = await this.userRepo.create(user);
 return Result.ok(user);
 ```
 
-[@badrap/result](https://www.npmjs.com/package/@badrap/result) - this is a nice npm package if you want to use a Result object.
+- [oxide.ts](https://www.npmjs.com/package/oxide.ts) - this is a nice npm package if you want to use a Result object
+- [@badrap/result](https://www.npmjs.com/package/@badrap/result) - alternative
 
 Returning errors instead of throwing them adds some extra boilerplate code, but can make your application more robust and secure.
 

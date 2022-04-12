@@ -1,7 +1,7 @@
 import { ArgumentOutOfRangeException } from '@libs/exceptions';
 import { AggregateRoot } from '@libs/ddd/domain/base-classes/aggregate-root.base';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
-import { Result } from '@src/libs/ddd/domain/utils/result.util';
+import { Err, Ok, Result } from 'oxide.ts/dist';
 import { WalletNotEnoughBalanceError } from '../../errors/wallet.errors';
 
 export interface CreateWalletProps {
@@ -29,10 +29,10 @@ export class WalletEntity extends AggregateRoot<WalletProps> {
 
   withdraw(amount: number): Result<null, WalletNotEnoughBalanceError> {
     if (this.props.balance - amount < 0) {
-      return Result.err(new WalletNotEnoughBalanceError());
+      return Err(new WalletNotEnoughBalanceError());
     }
     this.props.balance -= amount;
-    return Result.ok(null);
+    return Ok(null);
   }
 
   /**
