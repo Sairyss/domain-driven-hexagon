@@ -3,7 +3,7 @@
 **Check out my other repositories**:
 
 - [Backend best practices](https://github.com/Sairyss/backend-best-practices) - Best practices, tools and guidelines for backend development.
-- [Distributed systems topics](https://github.com/Sairyss/backend-best-practices) - list of topics and resources related to distributed systems, system design, microservices, scalability and performance, etc
+- [Distributed systems topics](https://github.com/Sairyss/distributed-systems-topics) - list of topics and resources related to distributed systems, system design, microservices, scalability and performance, etc
 
 ---
 
