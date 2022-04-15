@@ -9,7 +9,7 @@
 
 The main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
-**Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed.
+**Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed. This is not a production ready application. It is purposefully over-engineered for educational purposes to showcase all the patterns explained in this readme. In real world production applications you will most likely only need a fraction of those patterns. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
 
 Code examples are written using [NodeJS](https://nodejs.org/en/), [TypeScript](https://www.typescriptlang.org/), [NestJS](https://docs.nestjs.com/) framework and [Typeorm](https://www.npmjs.com/package/typeorm) for the database access.
 
