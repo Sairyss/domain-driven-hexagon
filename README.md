@@ -9,13 +9,15 @@
 
 The main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some of the techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
-**Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed. This is not a production ready application. It is purposefully over-engineered for educational purposes to showcase all the patterns explained in this readme. In real world production applications you will most likely only need a fraction of those patterns. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
-
 Code examples are written using [NodeJS](https://nodejs.org/en/), [TypeScript](https://www.typescriptlang.org/), [NestJS](https://docs.nestjs.com/) framework and [Typeorm](https://www.npmjs.com/package/typeorm) for the database access.
 
 Though patterns and principles presented here are **framework/language agnostic**, so above technologies can be easily replaced with any alternative. No matter what language or framework is used, any application can benefit from principles described below.
 
-**Note**: code examples are adapted to TypeScript and mentioned above frameworks so may not fit well for other languages. Also remember that code examples presented here are just examples and must be changed according to project's needs or personal preference.
+**Note**: code examples are adapted to TypeScript and mentioned above frameworks, implementations in other languages will look differently.
+
+**Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed. Remember that code examples presented here are just examples and must be changed according to project's needs or personal preference.
+
+**This is not a production ready application.** It is purposefully over-engineered for educational purposes to showcase all the patterns explained in this readme. In real world production applications you will most likely only need a fraction of those patterns. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
 
 ---
 
