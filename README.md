@@ -15,9 +15,7 @@ Though patterns and principles presented here are **framework/language agnostic*
 
 **Note**: code examples are adapted to TypeScript and mentioned above frameworks, implementations in other languages will look differently.
 
-**Everything below should be seen as a recommendation**. Keep in mind that different projects have different requirements, so any pattern mentioned in this readme can be replaced or skipped if needed. Remember that code examples presented here are just examples and must be changed according to project's needs or personal preference.
-
-**This is not a production ready application.** It is purposefully over-engineered for educational purposes to showcase all the patterns explained in this readme. In real world production applications you will most likely only need a fraction of those patterns. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
+**Everything below should be seen as a recommendation, not a rule**. Different projects have different requirements, so any pattern mentioned in this readme should be adjusted to project needs or even skipped entirely if it doesn't fit. In real world production applications you will most likely only need a fraction of those patterns depending on your use cases. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
 
 ---
 
@@ -63,8 +61,8 @@ Though patterns and principles presented here are **framework/language agnostic*
   - [Persistence models](#persistence-models)
   - [Other things that can be a part of Infrastructure layer](#other-things-that-can-be-a-part-of-infrastructure-layer)
 - [Other recommendations](#other-recommendations)
-  - [Recommendations for smaller APIs](#recommendations-for-smaller-apis)
   - [General recommendations on architectures, best practices, design patterns and principles](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles)
+  - [Recommendations for smaller APIs](#recommendations-for-smaller-apis)
   - [Behavioral Testing](#behavioral-testing)
   - [Folder and File Structure](#folder-and-file-structure)
     - [File names](#file-names)
@@ -959,21 +957,6 @@ Read more:
 
 # Other recommendations
 
-## Recommendations for smaller APIs
-
-Be careful when implementing any complex architecture in small-medium sized projects with not a lot of business logic. Some of the building blocks/patterns/principles may fit well, but others may be an overengineering.
-
-For example:
-
-- Separating code into modules/layers/use-cases, using some building blocks like controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any project.
-- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, separating `Domain Models` from `Persistence Models` etc. in projects that are more data-centric and have little or no business logic may only complicate such solutions and add extra boilerplate code, data mapping, maintenance overheads etc. without adding much benefit.
-
-[DDD](https://en.wikipedia.org/wiki/Domain-driven_design) and other practices described here are mostly about creating software with complex business logic. But what would be a better approach for simpler applications?
-
-For applications with not a lot of business logic consider other architectures. The most popular is probably [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). _Model-View-Controller_ is better suited for [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) applications with little business logic since it tends to favor designs where software is mostly the view of the database.
-
-[Full-stack application example](https://github.com/Sairyss/full-stack-application-example) - here is an example of a simple CRUD full-stack application.
-
 ## General recommendations on architectures, best practices, design patterns and principles
 
 Different projects most likely will have different requirements. Some principles/patterns in such projects can be implemented in a simplified form, some can be skipped. Follow [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it) principle and don't over-engineer.
@@ -998,6 +981,21 @@ Read more:
 - [Martin Fowler blog: Yagni](https://martinfowler.com/bliki/Yagni.html)
 - [7 Software Development Principles That Should Be Embraced Daily](https://betterprogramming.pub/7-software-development-principles-that-should-be-embraced-daily-c26a94ec4ecc?gi=3b5b298ddc23)
 - [SOLID Principles and the Arts of Finding the Beach](https://sebastiankuebeck.wordpress.com/2017/09/17/solid-principles-and-the-arts-of-finding-the-beach/)
+
+## Recommendations for smaller APIs
+
+Be careful when implementing any complex architecture in small-medium sized projects with not a lot of business logic. Some of the building blocks/patterns/principles may fit well, but others may be an overengineering.
+
+For example:
+
+- Separating code into modules/layers/use-cases, using some building blocks like controllers/services/entities, respecting boundaries and dependency injections etc. may be a good idea for any project.
+- But practices like creating an object for every primitive, using `Value Objects` to separate business logic into smaller classes, separating `Domain Models` from `Persistence Models` etc. in projects that are more data-centric and have little or no business logic may only complicate such solutions and add extra boilerplate code, data mapping, maintenance overheads etc. without adding much benefit.
+
+[DDD](https://en.wikipedia.org/wiki/Domain-driven_design) and other practices described here are mostly about creating software with complex business logic. But what would be a better approach for simpler applications?
+
+For applications with not a lot of business logic consider other architectures. The most popular is probably [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). _Model-View-Controller_ is better suited for [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) applications with little business logic since it tends to favor designs where software is mostly the view of the database.
+
+[Full-stack application example](https://github.com/Sairyss/full-stack-application-example) - here is an example of a simple CRUD full-stack application.
 
 ## Behavioral Testing
 
