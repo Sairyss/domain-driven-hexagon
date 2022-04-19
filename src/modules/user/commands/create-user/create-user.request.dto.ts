@@ -45,9 +45,3 @@ export class CreateUserRequest implements CreateUser {
   @Field() // <- only if you are using graphql
   readonly street: string;
 }
-
-export class CreateUserHttpRequest extends CreateUserRequest
-  implements CreateUser {}
-
-export class CreateUserMessageRequest extends CreateUserRequest
-  implements CreateUser {}

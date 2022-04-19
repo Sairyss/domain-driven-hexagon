@@ -7,8 +7,8 @@ import { ID } from '@src/libs/ddd/domain/value-objects/id.value-object';
 import { ConflictException } from '@src/libs/exceptions';
 import { match, Result } from 'oxide.ts/dist';
 import { CreateUserCommand } from './create-user.command';
-import { CreateUserHttpRequest } from './create-user.request.dto';
 import { UserAlreadyExistsError } from '../../errors/user.errors';
+import { CreateUserRequest } from './create-user.request.dto';
 
 @Controller(routesV1.version)
 export class CreateUserHttpController {
@@ -27,7 +27,7 @@ export class CreateUserHttpController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
   })
-  async create(@Body() body: CreateUserHttpRequest): Promise<IdResponse> {
+  async create(@Body() body: CreateUserRequest): Promise<IdResponse> {
     const command = new CreateUserCommand(body);
 
     const result: Result<

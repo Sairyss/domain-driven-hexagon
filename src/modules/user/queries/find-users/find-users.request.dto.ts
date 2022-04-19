@@ -34,6 +34,3 @@ export class FindUsersRequest implements FindUsers {
   @Field({ nullable: true }) // <- only if you are using GraphQL
   readonly street: string;
 }
-
-export class FindUsersHttpRequest extends FindUsersRequest
-  implements FindUsers {}

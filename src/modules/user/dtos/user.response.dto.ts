@@ -50,5 +50,3 @@ export class UserResponse extends ResponseBase implements User {
   @Field() // <- only if you are using GraphQL
   street: string;
 }
-
-export class UserHttpResponse extends UserResponse implements User {}
