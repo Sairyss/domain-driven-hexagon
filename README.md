@@ -20,9 +20,7 @@ Though patterns and principles presented here are **framework/language agnostic*
 ---
 
 - [Domain-Driven Hexagon](#domain-driven-hexagon)
-- [Architecture](#architecture)
-      - [Pros](#pros)
-      - [Cons](#cons)
+- [Architecture](#architecture) - [Pros](#pros) - [Cons](#cons)
 - [Diagram](#diagram)
 - [Modules](#modules)
 - [Application Core](#application-core)
@@ -283,7 +281,7 @@ Read more about CQS and CQRS:
 
 ## Ports
 
-Ports (for Driven Adapters) are interfaces that define contracts which must be implemented by infrastructure adapters in order to execute some action more related to technology details rather than business logic. Ports act like [abstractions](<https://en.wikipedia.org/wiki/Abstraction_(computer_science)>) for technology details that business logic does not care about.
+Ports are interfaces that define contracts that should be implemented by adapters. For example, a port can abstract technology details (like what type of database is used to retrieve some data), and infrastructure layer can implement an adapter in order to execute some action more related to technology details rather than business logic. Ports act like [abstractions](<https://en.wikipedia.org/wiki/Abstraction_(computer_science)>) for technology details that business logic does not care about. Name "port" most actively is used in [Hexagonal Architecture](<https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)>).
 
 In Application Core **dependencies point inwards**. Outer layers can depend on inner layers, but inner layers never depend on outer layers. Application Core shouldn't depend on frameworks or access external resources directly. Any external calls to out-of-process resources/retrieval of data from remote processes should be done through `ports` (interfaces), with class implementations created somewhere in infrastructure layer and injected into application's core ([Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) and [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle)). This makes business logic independent of technology, facilitates testing, allows to plug/unplug/swap any external resources easily making application modular and [loosely coupled](https://en.wikipedia.org/wiki/Loose_coupling).
 
@@ -298,12 +296,16 @@ In Application Core **dependencies point inwards**. Outer layers can depend on i
 
 **Note**: since most ports implementations are injected and executed in application service, Application Layer can be a good place to keep those ports. But there are times when the Domain Layer's business logic depends on executing some external resource, in such cases those ports can be put in a Domain Layer.
 
-**Note**: abusing ports/interfaces may lead to unnecessary abstractions and overcomplicate your application. In some cases it is totally fine to depend on a concrete implementation instead of abstracting it with an interface. Think carefully if you really need an abstraction before using it.
+**Note**: abusing ports/interfaces may lead to [unnecessary abstractions](https://mortoray.com/2014/08/01/the-false-abstraction-antipattern/) and overcomplicate your application. In some cases it is totally fine to depend on a concrete implementation instead of abstracting it with an interface. Think carefully if you really need an abstraction before using it.
 
 Example files:
 
 - [repository.ports.ts](src/libs/ddd/domain/ports/repository.ports.ts)
 - [logger.port.ts](src/libs/ddd/domain/ports/logger.port.ts)
+
+Read more:
+
+- [A Color Coded Guide to Ports and Adapters](https://8thlight.com/blog/damon-kelley/2021/05/18/a-color-coded-guide-to-ports-and-adapters.html)
 
 ---
 
