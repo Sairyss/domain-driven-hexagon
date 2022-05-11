@@ -128,7 +128,7 @@ More in details on each step below.
 
 # Modules
 
-This project's code examples use separation by modules (also called components). Each module's name should reflect an important concept from the Domain and have its own folder with a dedicated codebase, and each use case inside that module gets its own folder to store most of the things it needs (this is also called _Vertical Slicing_).
+This project's code examples use separation by modules (also called components). Each module's name should reflect an important concept from the Domain and have its own folder with a dedicated codebase, and each business use case inside that module gets its own folder to store most of the things it needs (this is also called _Vertical Slicing_).
 
 It is easier to work on things that change together if those things are gathered relatively close to each other. Think of a module as a "box" that groups together related business logic.
 
@@ -140,14 +140,16 @@ To avoid coupling, modules can communicate with each other by using a message bu
 
 This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupling) and if bounded contexts are defined and designed properly, each module can be easily separated into a microservice if needed without touching any domain logic.
 
-Read more about modular programming benefits:
+Code Examples:
+
+- Check [src/modules](src/modules) directory structure.
+- [src/modules/user/commands](src/modules/user/commands) - "commands" directory in a user module includes business use cases (commands) that a module can execute, each with its own Vertical Slice.
+
+Read more:
 
 - [Modular programming: Beyond the spaghetti mess](https://www.tiny.cloud/blog/modular-programming-principle/).
 - [What are Modules in Domain Driven Design?](https://www.culttt.com/2014/12/10/modules-domain-driven-design/)
-
-Code Examples:
-
-- Check [src/modules](src/modules) directory.
+- [How to Implement Vertical Slice Architecture](https://garywoodfine.com/implementing-vertical-slice-architecture/)
 
 Each module is separated in layers described below.
 
