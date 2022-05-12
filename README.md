@@ -20,7 +20,9 @@ Though patterns and principles presented here are **framework/language agnostic*
 ---
 
 - [Domain-Driven Hexagon](#domain-driven-hexagon)
-- [Architecture](#architecture) - [Pros](#pros) - [Cons](#cons)
+- [Architecture](#architecture)
+      - [Pros](#pros)
+      - [Cons](#cons)
 - [Diagram](#diagram)
 - [Modules](#modules)
 - [Application Core](#application-core)
@@ -134,11 +136,11 @@ It is easier to work on things that change together if those things are gathered
 
 Try not to create dependencies between modules or use cases. Instead, move shared logic into a separate files and make both depend on that instead of depending on each other.
 
-Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Consider module internals private and try to avoid direct imports between modules (like importing a class `import SomeClass from '../SomeOtherModule'`) since this creates [tight coupling](<https://en.wikipedia.org/wiki/Coupling_(computer_programming)>) and can turn your code into a [spaghetti](https://en.wikipedia.org/wiki/Spaghetti_code) and application into a [big ball of mud](https://en.wikipedia.org/wiki/Big_ball_of_mud).
+Try to make every module independent and keep interactions between modules minimal. Think of each module as a mini application bounded by a single context. Consider module internals private and try to avoid direct calls or imports between modules (like importing a class `import SomeClass from '../SomeOtherModule'`) since this creates [tight coupling](<https://en.wikipedia.org/wiki/Coupling_(computer_programming)>) and can turn your code into a [spaghetti](https://en.wikipedia.org/wiki/Spaghetti_code) and application into a [big ball of mud](https://en.wikipedia.org/wiki/Big_ball_of_mud). Using modules is a great way to [encapsulate](<https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)>) parts of highly [cohesive](<https://en.wikipedia.org/wiki/Cohesion_(computer_science)>) business domain rules.
 
-To avoid coupling, modules can communicate with each other by using a message bus. For example, you can send commands using a commands bus or subscribe to events that other modules emit (more info on events and commands bus below). Another option is to make modules cooperate through a [mediator](https://en.wikipedia.org/wiki/Mediator_pattern#:~:text=In%20software%20engineering%2C%20the%20mediator,often%20consist%20of%20many%20classes.).
+To avoid coupling, modules can communicate with each other by using a message bus. For example, you can send commands using a commands bus or subscribe to events that other modules emit (more info on events and commands bus below). Another option is to make modules cooperate through a [mediator](https://en.wikipedia.org/wiki/Mediator_pattern#:~:text=In%20software%20engineering%2C%20the%20mediator,often%20consist%20of%20many%20classes.) or a public [facade](https://en.wikipedia.org/wiki/Facade_pattern), hiding all private internals of the module to avoid its misuse, and giving public access only to certain pieces of functionality that meant to be public.
 
-This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupling) and if bounded contexts are defined and designed properly, each module can be easily separated into a microservice if needed without touching any domain logic.
+This approach ensures [loose coupling](https://en.wikipedia.org/wiki/Loose_coupling), refactoring of a module internals can be done easier because outside world only depends on module's public interface, and if bounded contexts are defined and designed properly each module can be easily separated into a microservice if needed without touching any domain logic or major refactoring.
 
 Code Examples:
 
@@ -150,6 +152,7 @@ Read more:
 - [Modular programming: Beyond the spaghetti mess](https://www.tiny.cloud/blog/modular-programming-principle/).
 - [What are Modules in Domain Driven Design?](https://www.culttt.com/2014/12/10/modules-domain-driven-design/)
 - [How to Implement Vertical Slice Architecture](https://garywoodfine.com/implementing-vertical-slice-architecture/)
+- [Why I don’t like layered architecture for microservices](https://garywoodfine.com/why-i-dont-like-layered-architecture-for-microservices/) - this explains more in details what disadvantages a typical horizontal Layered Architecture have compared to Modular / Vertical Slice architectures.
 
 Each module is separated in layers described below.
 
