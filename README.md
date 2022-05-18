@@ -307,8 +307,10 @@ In Application Core **dependencies point inwards**. Outer layers can depend on i
 
 Example files:
 
-- [repository.ports.ts](src/libs/ddd/domain/ports/repository.ports.ts)
-- [logger.port.ts](src/libs/ddd/domain/ports/logger.port.ts)
+- [repository.ports.ts](src/libs/ddd/domain/ports/repository.ports.ts) - generic port for repositories
+- [user.repository.port.ts](src/modules/user/database/user.repository.port.ts) - a port for user repository
+- [find-users.query-handler.ts](src/modules/user/queries/find-users/find-users.query-handler.ts) - notice how query handler depends on a port instead of concrete repository implementation, and an implementation is injected
+- [logger.port.ts](src/libs/ddd/domain/ports/logger.port.ts) - another example of a port for application logger
 
 Read more:
 
