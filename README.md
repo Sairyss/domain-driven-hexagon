@@ -805,7 +805,7 @@ One controller per trigger type can be used to have a clearer separation. For ex
 
 - [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) for http requests ([NestJS Controllers](https://docs.nestjs.com/controllers)),
 - [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) for command line interface access ([NestJS Console](https://www.npmjs.com/package/nestjs-console))
-- [create-user.message.controller.ts](src/modules/user/commands/create-user/create-user.message.controller.ts) for external messages ([NetJS Microservices](https://docs.nestjs.com/microservices/basics)).
+- [create-user.message.controller.ts](src/modules/user/commands/create-user/create-user.message.controller.ts) for external messages ([NestJS Microservices](https://docs.nestjs.com/microservices/basics)).
 - etc.
 
 ### Resolvers
