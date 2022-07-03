@@ -579,13 +579,17 @@ Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain p
 
 Also, an alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases) just to give this primitive a semantic meaning.
 
-**Note**: Do not include Value Objects in objects that can be sent to other processes, like dtos, events, database models etc. Serialize them to primitive types first.
+**Warning**: Do not include Value Objects in objects that can be sent to other processes, like dtos, events, database models etc. Serialize them to primitive types first.
 
 Example files:
 
 - [email.value-object.ts](src/modules/user/domain/value-objects/email.value-object.ts)
 
+**Note**: In languages like TypeScript, creating value objects for single values/primitives adds some extra complexity and boilerplate code, since you need to access an underlying value by doing something like `email.value`. Also, it can have performance penalties due to creation of so many objects. This technique works best in languages like [Scala](https://www.scala-lang.org/) with its [value classes](https://docs.scala-lang.org/overviews/core/value-classes.html) that represents such classes as primitives at runtime, meaning that object `Email` will be represented as `String` at runtime.
+
 **Note**: if you are using nodejs, [Runtypes](https://www.npmjs.com/package/runtypes) is a nice library that you can use instead of creating your own value objects for primitives.
+
+**Note**: Some people say that _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be overengineering (unless you are using Scala with its value classes). For less complex and smaller projects it is definitely an overkill. For bigger projects, there are people who advocate for and against this approach. If you notice that creating a class for every primitive doesn't give you much benefit, create classes just for those primitives that have specific rules or behavior, or just validate only outside of domain using some validation framework. Here are some thoughts on this topic: [From Primitive Obsession to Domain Modelling - Over-engineering?](https://blog.ploeh.dk/2015/01/19/from-primitive-obsession-to-domain-modelling/#7172fd9ca69c467e8123a20f43ea76c2).
 
 Recommended reading:
 
@@ -596,15 +600,13 @@ Recommended reading:
 
 ### Make illegal states unrepresentable
 
-**Use Value Objects/Domain Primitives and Types system to make illegal states unrepresentable in your program.**
+Use Value Objects/Domain Primitives and Types ([Algebraic Data Types (ADT)](https://en.wikipedia.org/wiki/Algebraic_data_type)) to make illegal states impossible to represent in your program.
 
-Some people recommend using objects for **every** value:
+Some people recommend using objects for every value:
 
 Quote from [John A De Goes](https://twitter.com/jdegoes):
 
 > Making illegal states unrepresentable is all about statically proving that all runtime values (without exception) correspond to valid objects in the business domain. The effect of this technique on eliminating meaningless runtime states is astounding and cannot be overstated.
-
-**Note**: Some people say that _primitive obsession_ is a code smell, some people consider making a class/object for every primitive may be an overengineering. For less complex and smaller projects it definitely may be. For bigger projects, there are people who advocate for and against this approach. If you notice that creating a class for every primitive doesn't give you much benefit, create classes just for those primitives that have specific rules or behavior, or just validate only outside of domain using some validation framework. Here are some thoughts on this topic: [From Primitive Obsession to Domain Modelling - Over-engineering?](https://blog.ploeh.dk/2015/01/19/from-primitive-obsession-to-domain-modelling/#7172fd9ca69c467e8123a20f43ea76c2).
 
 Let's distinguish two types of protection from illegal states: at **compile time** and at **runtime**.
 
@@ -612,7 +614,17 @@ Let's distinguish two types of protection from illegal states: at **compile time
 
 Types give useful semantic information to a developer. Good code should be easy to use correctly, and hard to use incorrectly. Types system can be a good help for that. It can prevent some nasty errors at compile time, so IDE will show type errors right away.
 
-The simplest example may be using enums instead of constants, and use those enums as input type for something. When passing anything that is not intended the IDE will show a type error.
+The simplest example may be using enums instead of constants, and use those enums as input type for something. When passing anything that is not intended the IDE will show a type error:
+
+```typescript
+export enum UserRoles {
+  admin = 'admin',
+  moderator = 'moderator',
+  guest = 'guest',
+}
+
+const userRole: UserRoles = 'some string'; // <-- error
+```
 
 Or, for example, imagine that business logic requires to have contact info of a person by either having `email`, or `phone`, or both. Both `email` and `phone` could be represented as optional, for example:
 
@@ -637,11 +649,12 @@ This is called a _typestate pattern_.
 
 > The typestate pattern is an API design pattern that encodes information about an object’s run-time state in its compile-time type.
 
-Read more about typestates:
+Read more:
 
 - [Making illegal states unrepresentable](https://v5.chriskrycho.com/journal/making-illegal-states-unrepresentable-in-ts/)
 - [Typestates Would Have Saved the Roman Republic](https://blog.yoavlavi.com/state-machines-would-have-saved-the-roman-republic/)
 - [The Typestate Pattern](https://cliffle.com/blog/rust-typestate/)
+- [Make illegal states unrepresentable — but how? The Typestate Pattern in Erlang](https://erszcz.medium.com/make-illegal-states-unrepresentable-but-how-the-typestate-pattern-in-erlang-16b37b090d9d)
 
 #### Validation at runtime
 
