@@ -664,11 +664,11 @@ Things that can't be validated at compile time (like user input) are validated a
 
 First line of defense is validation of user input DTOs.
 
-Second line of defense are Domain Objects. Entities and value objects have to protect their invariants. Having some validation rules here will protect their state from corruption.
+Second line of defense are Domain Objects. Entities and value objects have to protect their invariants. Having some validation rules here will protect their state from corruption. You can use techniques like [Design by contract](https://en.wikipedia.org/wiki/Design_by_contract) by defining preconditions in object constructors and checking postconditions and invariants before saving an object to the database.
 
 Enforcing self-validation of your domain objects will inform immediately when data is corrupted. Not validating domain objects allows them to be in an incorrect state, this leads to problems.
 
-By combining compile and runtime validations, using objects instead of primitives, enforcing self-validation and invariants of your domain objects, you can achieve an architecture where it is hard to end up in illegal states, thus improving security and robustness of your application.
+By combining compile and runtime validations, using objects instead of primitives, enforcing self-validation and invariants of your domain objects, using Design by contract, [Algebraic Data Types (ADT)](https://en.wikipedia.org/wiki/Algebraic_data_type) and typestate pattern, and other similar techniques, you can achieve an architecture where it is hard, or even impossible, to end up in illegal states, thus improving security and robustness of your application dramatically (at a cost of extra boilerplate code).
 
 **Recommended to read**:
 
