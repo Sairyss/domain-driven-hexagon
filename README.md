@@ -782,6 +782,22 @@ function createUser(
 }
 ```
 
+This approach gives us a fixed set of expected error types, so we can decide what to do with each:
+
+```typescript
+/* in HTTP context we want to convert each error to an 
+error with a corresponding HTTP status code: 409, 400 or 500 */
+const result = createUser(command);
+if (result.isOk()) return user.id;
+if (result.isErr()) {
+  if (result.err instanceof UserAlreadyExistsError)
+    throw new ConflictException(error.message);
+  if (result.err instanceof IncorrectUserAddressError)
+    throw new BadRequestException(error.message);
+  else throw new InternalServerError();
+}
+```
+
 - [oxide.ts](https://www.npmjs.com/package/oxide.ts) - this is a nice npm package if you want to use a Result object
 - [@badrap/result](https://www.npmjs.com/package/@badrap/result) - alternative
 
