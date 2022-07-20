@@ -743,10 +743,10 @@ Exceptions are for exceptional situations. Complex domains usually have a lot of
 
 Returning an error instead of throwing explicitly shows a type of each exception that a method can return so you can handle it accordingly. It can make an error handling and tracing easier.
 
-To help with that you can create an [Algebraic Data Types (ADT)](https://en.wikipedia.org/wiki/Algebraic_data_type) for your errors and use some kind of Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell or Scala). Unlike throwing exceptions, this approach allows to define types (ADTs) for every error and will let you see and handle those cases explicitly instead of having invisible exceptions and using `try/catch`. For example:
+To help with that you can create an [Algebraic Data Types (ADT)](https://en.wikipedia.org/wiki/Algebraic_data_type) for your errors and use some kind of Result object type with a Success or a Failure condition (a [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) like [Either](https://typelevel.org/cats/datatypes/either.html) from functional languages similar to Haskell or Scala). Unlike throwing exceptions, this approach allows to define types (ADTs) for every error and will let you see and handle those cases explicitly instead of having invisible exceptions and using `try/catch`. For example:
 
 ```typescript
-// ADTs for user errors:
+// User errors:
 class UserError extends Error {
   /* ... */
 }
@@ -755,16 +755,26 @@ class UserAlreadyExistsError extends UserError {
   /* ... */
 }
 
+class IncorrectUserAddressError extends UserError {
+  /* ... */
+}
+
 // ... other user errors
 ```
 
 ```typescript
+// Sum type for user errors
+type CreateUserError = UserAlreadyExistsError | IncorrectUserAddressError;
+
 function createUser(
   command: CreateUserCommand,
-): Result<UserEntity, UserAlreadyExistsError> {
+): Result<UserEntity, CreateUserError> {
   // ^ explicitly showing what function returns
   if (await userRepo.exists(command.email)) {
     return Err(new UserAlreadyExistsError()); // <- returning an Error
+  }
+  if (!validate(command.address)) {
+    return Err(new IncorrectUserAddressError());
   }
   // else
   const user = await this.userRepo.create(user);
