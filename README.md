@@ -743,15 +743,33 @@ Exceptions are for exceptional situations. Complex domains usually have a lot of
 
 Returning an error instead of throwing explicitly shows a type of each exception that a method can return so you can handle it accordingly. It can make an error handling and tracing easier.
 
-To help with that you can use some kind of Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell). Unlike throwing exceptions, this approach allows to define types for every error and will force you to handle those cases explicitly instead of using `try/catch`. For example:
+To help with that you can create an [Algebraic Data Types (ADT)](https://en.wikipedia.org/wiki/Algebraic_data_type) for your errors and use some kind of Result object type with a Success or a Failure (an `Either` [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) from functional languages like Haskell or Scala). Unlike throwing exceptions, this approach allows to define types (ADTs) for every error and will let you see and handle those cases explicitly instead of having invisible exceptions and using `try/catch`. For example:
 
 ```typescript
-if (await userRepo.exists(command.email)) {
-  return Result.err(new UserAlreadyExistsError()); // <- returning an Error
+// ADTs for user errors:
+class UserError extends Error {
+  /* ... */
 }
-// else
-const user = await this.userRepo.create(user);
-return Result.ok(user);
+
+class UserAlreadyExistsError extends UserError {
+  /* ... */
+}
+
+// ... other user errors
+```
+
+```typescript
+function createUser(
+  command: CreateUserCommand,
+): Result<UserEntity, UserAlreadyExistsError> {
+  // ^ explicitly showing what function returns
+  if (await userRepo.exists(command.email)) {
+    return Err(new UserAlreadyExistsError()); // <- returning an Error
+  }
+  // else
+  const user = await this.userRepo.create(user);
+  return Ok(user);
+}
 ```
 
 - [oxide.ts](https://www.npmjs.com/package/oxide.ts) - this is a nice npm package if you want to use a Result object
@@ -764,8 +782,8 @@ Returning errors instead of throwing them adds some extra boilerplate code, but 
 Example files:
 
 - [user.errors.ts](src/modules/user/errors/user.errors.ts) - user errors
-- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how `Result.err(new UserAlreadyExistsError())` is returned instead of throwing it.
-- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) - in a user http controller we unwrap an error and decide what to do with it. If an error is `UserAlreadyExistsError` we throw a `Conflict Exception` which a user will receive as `409 - Conflict`. If an error is unknown we just throw it and NestJS will return it to the user as `500 - Internal Server Error`.
+- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how `Err(new UserAlreadyExistsError())` is returned instead of throwing it.
+- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) - in a user http controller we match an error and decide what to do with it. If an error is `UserAlreadyExistsError` we throw a `Conflict Exception` which a user will receive as `409 - Conflict`. If an error is unknown we just throw it and NestJS will return it to the user as `500 - Internal Server Error`.
 - [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) - in a CLI controller we do not care about returning a correct status code so we just `.unwrap()` a result, which will just throw in case of an error.
 - [exceptions](src/libs/exceptions) folder contains some generic app exceptions (not domain specific)
 - [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - in this file we convert our app's generic exceptions into a NestJS HTTP exceptions. This way we are not tied to a framework or HTTP protocol.
@@ -775,6 +793,7 @@ Read more:
 - [Flexible Error Handling w/ the Result Class](https://khalilstemmler.com/articles/enterprise-typescript-nodejs/handling-errors-result-class/)
 - [Advanced error handling techniques](https://enterprisecraftsmanship.com/posts/advanced-error-handling-techniques/)
 - ["Secure by Design" Chapter 9.2: Handling failures without exceptions](https://livebook.manning.com/book/secure-by-design/chapter-9/51)
+- ["Functional Programming in Scala" Chapter 4. Handling errors without exceptions](https://livebook.manning.com/book/functional-programming-in-scala/chapter-4/)
 
 ## Using libraries inside Application's core
 
