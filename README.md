@@ -7,15 +7,21 @@
 
 ---
 
-The main emphasis of this project is to provide recommendations on how to design software applications. In this readme are presented some techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
+The main emphasis of this project is to provide recommendations on how to design software applications. 
+#### Contents of README
+- Techniques
+- Tools
+- Best practices architectural patterns 
+- Guidelines gathered from different sources
 
 Code examples are written using [NodeJS](https://nodejs.org/en/), [TypeScript](https://www.typescriptlang.org/), [NestJS](https://docs.nestjs.com/) framework and [Typeorm](https://www.npmjs.com/package/typeorm) for the database access.
 
-Though patterns and principles presented here are **framework/language agnostic**, so above technologies can be easily replaced with any alternative. No matter what language or framework is used, any application can benefit from principles described below.
+Patterns and principles presented here are **framework/language agnostic**. Therefore, the above technologies can be easily replaced with any alternative. No matter what language or framework is used, any application can benefit from principles described below.
 
-**Note**: code examples are adapted to TypeScript and mentioned above frameworks, implementations in other languages will look differently.
+**Note**: code examples are adapted to TypeScript and frameworks mentioned above. <br/>
+(Implementations in other languages will look differently)
 
-**Everything below should be seen as a recommendation, not a rule**. Different projects have different requirements, so any pattern mentioned in this readme should be adjusted to project needs or even skipped entirely if it doesn't fit. In real world production applications you will most likely only need a fraction of those patterns depending on your use cases. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
+**Everything below is provided as a recommendation, not a rule**. Different projects have different requirements, so any pattern mentioned in this readme should be adjusted to project needs or even skipped entirely if it doesn't fit. In real world production applications you will most likely only need a fraction of those patterns depending on your use cases. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
 
 ---
 
@@ -104,7 +110,7 @@ Before we begin, here are the PROS and CONS of using a complete architecture lik
 
 - This is a sophisticated architecture which requires a firm understanding of quality software principles, such as SOLID, Clean/Hexagonal Architecture, Domain-Driven Design, etc. Any team implementing such a solution will almost certainly require an expert to drive the solution and keep it from evolving the wrong way and accumulating technical debt.
 
-- Some practices presented here are not recommended for small-medium sized applications with not a lot of business logic. There is added up-front complexity to support all those building blocks and layers, boilerplate code, abstractions, data mapping etc. thus implementing a complete architecture like this is generally ill-suited to simple [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) applications and could over-complicate such solutions. Some described below principles can be used in smaller sized applications, but must be implemented only after analyzing and understanding all pros and cons.
+- Some practices presented here are not recommended for small-medium sized applications with not a lot of business logic. There is added up-front complexity to support all those building blocks and layers, boilerplate code, abstractions, data mapping etc. Thus, implementing a complete architecture like this is generally ill-suited to simple [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) applications and could over-complicate such solutions. Some principles which are described below can be used in smaller sized applications, but must be implemented only after analyzing and understanding all pros and cons.
 
 # Diagram
 
@@ -130,7 +136,7 @@ More in details on each step below.
 
 # Modules
 
-This project's code examples use separation by modules (also called components). Each module's name should reflect an important concept from the Domain and have its own folder with a dedicated codebase, and each business use case inside that module gets its own folder to store most of the things it needs (this is also called _Vertical Slicing_). It is easier to work on things that change together if those things are gathered relatively close to each other. Think of a module as a "box" that groups together related business logic.
+This project's code examples use separation by modules (also called components). Each module's name should reflect an important concept from the Domain and have its own folder with a dedicated codebase. Each business use case inside that module gets its own folder to store most of the things it needs (this is also called _Vertical Slicing_). It is easier to work on things that change together if those things are gathered relatively close to each other. Think of a module as a "box" that groups together related business logic.
 
 Using modules is a great way to [encapsulate](<https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)>) parts of highly [cohesive](<https://en.wikipedia.org/wiki/Cohesion_(computer_science)>) business domain rules.
 
