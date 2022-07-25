@@ -67,7 +67,6 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
   - [Behavioral Testing](#behavioral-testing)
   - [Folder and File Structure](#folder-and-file-structure)
     - [File names](#file-names)
-  - [Custom utility types](#custom-utility-types)
   - [Prevent massive inheritance chains](#prevent-massive-inheritance-chains)
 - [Additional resources](#additional-resources)
   - [Articles](#articles)
@@ -578,7 +577,7 @@ If every argument and return value of a method is valid by definition, you’ll 
 
 Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain primitives](https://livebook.manning.com/book/secure-by-design/chapter-5/96)
 
-Also, an alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases) just to give this primitive a semantic meaning.
+Also, an alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases) (ideally using [nominal types](https://betterprogramming.pub/nominal-typescript-eee36e9432d2)) just to give this primitive a semantic meaning.
 
 **Warning**: Don't include Value Objects in objects that can be sent to other processes, like dtos, events, database models etc. Serialize them to primitive types first.
 
@@ -1138,15 +1137,9 @@ Read more:
 
 - [Angular Style Guides: Separate file names with dots and dashes](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
 
-## Custom utility types
-
-Consider creating a bunch of shared custom utility types for different situations.
-
-Some examples can be found in [types](src/libs/types) folder.
-
 ## Prevent massive inheritance chains
 
-This can be achieved by making class `final`.
+Classes that can be extended should be designed for extensibility and usually should be `abstract`. If class is not designed to be extended, prevent extending it by making class `final`. Don't create inheritance more than 1-2 levels deep since this makes refactoring harder and leads to a bad design. You can use [composition](https://en.wikipedia.org/wiki/Composition_over_inheritance) instead.
 
 **Note**: in TypeScript, unlike other languages, there is no default way to make class `final`. But there is a way around it using a custom decorator.
 
