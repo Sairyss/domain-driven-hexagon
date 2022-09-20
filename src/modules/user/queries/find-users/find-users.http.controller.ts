@@ -10,7 +10,7 @@ import { FindUsersRequest } from './find-users.request.dto';
 
 @Controller(routesV1.version)
 export class FindUsersHttpController {
-  constructor(private readonly queryBys: QueryBus) {}
+  constructor(private readonly queryBus: QueryBus) {}
 
   @Get(routesV1.user.root)
   @ApiOperation({ summary: 'Find users' })
@@ -20,7 +20,7 @@ export class FindUsersHttpController {
   })
   async findUsers(@Body() request: FindUsersRequest): Promise<UserResponse[]> {
     const query = new FindUsersQuery(request);
-    const result: Result<UserEntity[], Error> = await this.queryBys.execute(
+    const result: Result<UserEntity[], Error> = await this.queryBus.execute(
       query,
     );
 
