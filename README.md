@@ -1109,7 +1109,7 @@ Read more:
 
 Some typical approaches are:
 
-- **Layered architecture**: split an entire application into directories divided by functionality, like `controllers`, `interfaces`, `services`, etc. For example:
+- **Layered architecture**: split an entire application into directories divided by functionality, like `controllers`, `services`, `repositories`, etc. For example:
 
 ```text
 - Controllers
