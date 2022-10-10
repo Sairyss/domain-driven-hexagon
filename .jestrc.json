@@ -3,15 +3,16 @@
   "rootDir": ".",
   "testEnvironment": "node",
   "coverageDirectory": "../tests/coverage",
-  "setupFilesAfterEnv": ["./tests/jestSetupAfterEnv.ts"],
-  "globalSetup": "<rootDir>/tests/jestGlobalSetup.ts",
+  "setupFilesAfterEnv": ["./tests/setup/jestSetupAfterEnv.ts"],
+  "globalSetup": "<rootDir>/tests/setup/jestGlobalSetup.ts",
   "testRegex": ".spec.ts$",
   "moduleNameMapper": {
     "@src/(.*)$": "<rootDir>/src/$1",
     "@modules/(.*)$": "<rootDir>/src/modules/$1",
-    "@config/(.*)$": "<rootDir>/src/infrastructure/configs/$1",
+    "@config/(.*)$": "<rootDir>/src/configs/$1",
+    "@libs/(.*)$": "<rootDir>/src/libs/$1",
     "@exceptions$": "<rootDir>/src/libs/exceptions",
-    "@libs/(.*)$": "<rootDir>/src/libs/$1"
+    "@tests/(.*)$": "<rootDir>/tests/$1"
   },
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"

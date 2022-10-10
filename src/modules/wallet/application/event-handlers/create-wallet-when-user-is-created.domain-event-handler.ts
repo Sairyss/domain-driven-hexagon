@@ -1,23 +1,23 @@
 import { UserCreatedDomainEvent } from '@modules/user/domain/events/user-created.domain-event';
 import { WalletRepositoryPort } from '@modules/wallet/database/wallet.repository.port';
-import { DomainEventHandler } from '@libs/ddd/domain/domain-events';
-import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
-import { UnitOfWork } from '@src/infrastructure/database/unit-of-work/unit-of-work';
-import { WalletEntity } from '../../domain/entities/wallet.entity';
+import { WalletEntity } from '../../domain/wallet.entity';
+import { OnEvent } from '@nestjs/event-emitter';
+import { Inject, Injectable } from '@nestjs/common';
+import { WalletRepository } from '@modules/wallet/database/wallet.repository';
 
-export class CreateWalletWhenUserIsCreatedDomainEventHandler extends DomainEventHandler {
-  constructor(private readonly unitOfWork: UnitOfWork) {
-    super(UserCreatedDomainEvent);
-  }
+@Injectable()
+export class CreateWalletWhenUserIsCreatedDomainEventHandler {
+  constructor(
+    @Inject(WalletRepository)
+    private readonly walletRepo: WalletRepositoryPort,
+  ) {}
 
-  // Handle a Domain Event by perform changes to other aggregates (inside the same Domain).
-  async handle(event: UserCreatedDomainEvent): Promise<void> {
-    const walletRepo: WalletRepositoryPort = this.unitOfWork.getWalletRepository(
-      event.correlationId,
-    );
+  // Handle a Domain Event by performing changes to other aggregates (inside the same Domain).
+  @OnEvent(UserCreatedDomainEvent.name, { async: true, promisify: true })
+  async handle(event: UserCreatedDomainEvent): Promise<any> {
     const wallet = WalletEntity.create({
-      userId: new UUID(event.aggregateId),
+      userId: event.aggregateId,
     });
-    await walletRepo.save(wallet);
+    return this.walletRepo.insert(wallet);
   }
 }

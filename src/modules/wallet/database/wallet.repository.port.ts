@@ -1,4 +1,4 @@
-import { RepositoryPort } from '@libs/ddd/domain/ports/repository.ports';
-import { WalletEntity, WalletProps } from '../domain/entities/wallet.entity';
+import { RepositoryPort } from '@libs/ddd';
+import { WalletEntity } from '../domain/wallet.entity';
 
-export type WalletRepositoryPort = RepositoryPort<WalletEntity, WalletProps>;
+export type WalletRepositoryPort = RepositoryPort<WalletEntity>;

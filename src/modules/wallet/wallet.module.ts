@@ -1,12 +1,16 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { WalletOrmEntity } from './database/wallet.orm-entity';
+import { Logger, Module } from '@nestjs/common';
+import { CreateWalletWhenUserIsCreatedDomainEventHandler } from './application/event-handlers/create-wallet-when-user-is-created.domain-event-handler';
 import { WalletRepository } from './database/wallet.repository';
-import { createWalletWhenUserIsCreatedProvider } from './wallet.providers';
+import { WalletMapper } from './wallet.mapper';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WalletOrmEntity])],
+  imports: [],
   controllers: [],
-  providers: [WalletRepository, createWalletWhenUserIsCreatedProvider],
+  providers: [
+    CreateWalletWhenUserIsCreatedDomainEventHandler,
+    WalletRepository,
+    WalletMapper,
+    Logger,
+  ],
 })
 export class WalletModule {}

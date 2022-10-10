@@ -1,10 +1,14 @@
+import { RequestContextService } from '@libs/application/context/AppRequestContext';
+
 export interface SerializedException {
   message: string;
   code: string;
+  correlationId: string;
   stack?: string;
+  cause?: string;
   metadata?: unknown;
-  /** 
-   * ^ Consider adding optional `metadata` object to 
+  /**
+   * ^ Consider adding optional `metadata` object to
    * exceptions (if language doesn't support anything
    * similar by default) and pass some useful technical
    * information about the exception when throwing.
@@ -20,6 +24,10 @@ export interface SerializedException {
  * @extends {Error}
  */
 export abstract class ExceptionBase extends Error {
+  abstract code: string;
+
+  public readonly correlationId: string;
+
   /**
    * @param {string} message
    * @param {ObjectLiteral} [metadata={}]
@@ -28,12 +36,16 @@ export abstract class ExceptionBase extends Error {
    * in application's log files. Only include non-sensitive
    * info that may help with debugging.
    */
-  constructor(readonly message: string, readonly metadata?: unknown) {
+  constructor(
+    readonly message: string,
+    readonly cause?: Error,
+    readonly metadata?: unknown,
+  ) {
     super(message);
     Error.captureStackTrace(this, this.constructor);
+    const ctx = RequestContextService.getContext();
+    this.correlationId = ctx.requestId;
   }
-
-  abstract code: string;
 
   /**
    * By default in NodeJS Error objects are not
@@ -47,6 +59,8 @@ export abstract class ExceptionBase extends Error {
       message: this.message,
       code: this.code,
       stack: this.stack,
+      correlationId: this.correlationId,
+      cause: JSON.stringify(this.cause),
       metadata: this.metadata,
     };
   }

@@ -9,8 +9,9 @@ services:
     environment:
       POSTGRES_USER: 'user'
       POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'ddh'
     volumes:
-      - ../data/db:/var/lib/postgresql/data
+      - ddh-postgres:/var/lib/postgresql/data
     networks:
       - postgres
 
@@ -28,3 +29,6 @@ services:
 networks:
   postgres:
     driver: bridge
+
+volumes:
+  ddh-postgres:

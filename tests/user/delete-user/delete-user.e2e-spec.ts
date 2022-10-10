@@ -1,62 +1,49 @@
+import { UserResponseDto } from '@modules/user/dtos/user.response.dto';
+import { IdResponse } from '@src/libs/api/id.response.dto';
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import * as request from 'supertest';
-import { CreateUser } from '@src/interface-adapters/interfaces/user/create.user.interface';
-import { Id } from '@src/libs/ddd/interface-adapters/interfaces/id.interface';
-import { UserResponse } from '@src/modules/user/dtos/user.response.dto';
-import { getTestServer, TestServer } from '../../jestSetupAfterEnv';
+import { DatabasePool, sql } from 'slonik';
+import { TestContext } from '@tests/test-utils/TestContext';
+import { getConnectionPool } from '../../setup/jestSetupAfterEnv';
+import {
+  CreateUserTestContext,
+  givenUserProfileData,
+  iSendARequestToCreateAUser,
+} from '../user-shared-steps';
+import { ApiClient } from '@tests/test-utils/ApiClient';
 
 const feature = loadFeature('tests/user/delete-user/delete-user.feature');
 
-defineFeature(feature, test => {
-  let testServer: TestServer;
-  let httpServer: request.SuperTest<request.Test>;
+defineFeature(feature, (test) => {
+  let pool: DatabasePool;
+  const apiClient = new ApiClient();
 
   beforeAll(() => {
-    testServer = getTestServer();
-    httpServer = request(testServer.serverApplication.getHttpServer());
+    pool = getConnectionPool();
   });
 
-  afterAll(() => {
-    // TODO: clean db after tests are finished
+  afterEach(async () => {
+    await pool.query(sql`TRUNCATE "users"`);
+    await pool.query(sql`TRUNCATE "wallets"`);
   });
 
-  test('Deleting a user happy path', ({ given, when, then, and }) => {
-    let userDto: CreateUser;
-    let userId: Id;
+  test('I can delete a user', ({ given, when, then, and }) => {
+    const ctx = new TestContext<CreateUserTestContext>();
 
-    given(
-      /^that my email is "(.*), my country is "(.*)", my postal code is "(.*)" and my street is "(.*)"$/,
-      (email: string, country: string, postalCode: string, street: string) => {
-        userDto = {
-          email,
-          country,
-          postalCode,
-          street,
-        };
-      },
-    );
+    givenUserProfileData(given, ctx);
 
-    and('my user is created', async () => {
-      const res = await httpServer
-        .post('/v1/users')
-        .send(userDto)
-        .expect(201);
-      userId = res.body;
+    iSendARequestToCreateAUser(when, ctx);
+
+    then('I send a request to delete my user', async () => {
+      const response = ctx.latestResponse as IdResponse;
+      await apiClient.deleteUser(response.id);
     });
 
-    when('I send a request to delete my user', async () => {
-      await httpServer
-        .delete(`/v1/users/${userId.id}`)
-        .send(userDto)
-        .expect(200);
-    });
-
-    then('I cannot see my user in a list of all users', async () => {
-      const res = await httpServer.get('/v1/users').expect(200);
-
-      expect(res.body.some((item: UserResponse) => item.id === userId.id)).toBe(
-        false,
-      );
+    and('I cannot see my user in a list of all users', async () => {
+      const res = await apiClient.findAllUsers();
+      const response = ctx.latestResponse as IdResponse;
+      expect(
+        res.data.some((item: UserResponseDto) => item.id === response.id),
+      ).toBe(false);
     });
   });
 });

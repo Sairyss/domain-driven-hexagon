@@ -1,11 +1,10 @@
-import { ValueObject } from '@libs/ddd/domain/base-classes/value-object.base';
-import { Guard } from '@libs/ddd/domain/guard';
+import { ValueObject } from '@libs/ddd';
+import { Guard } from '@libs/guard';
 import { ArgumentOutOfRangeException } from '@libs/exceptions';
 
-/** Note: Every property in address Value Object can be
- * it's own Value Object if needed.
+/** Note:
  * Value Objects with multiple properties can contain
- * other Value Objects inside.
+ * other Value Objects inside if needed.
  * */
 
 export interface AddressProps {
@@ -29,7 +28,10 @@ export class Address extends ValueObject<AddressProps> {
 
   /**
    * Note: This is a very simplified example of validation,
-   * real world projects will have stricter rules
+   * real world projects will have stricter rules.
+   * You can avoid this type of validation here and validate
+   * only on the edge of the application (in controllers when receiving
+   * a request) sacrificing some security for performance and convenience.
    */
   protected validate(props: AddressProps): void {
     if (!Guard.lengthIsBetween(props.country, 2, 50)) {

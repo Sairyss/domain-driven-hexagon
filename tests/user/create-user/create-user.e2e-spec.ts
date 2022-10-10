@@ -1,10 +1,16 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import * as request from 'supertest';
-import { CreateUser } from '@src/interface-adapters/interfaces/user/create.user.interface';
-import { Id } from '@src/libs/ddd/interface-adapters/interfaces/id.interface';
-import { UserResponse } from '@src/modules/user/dtos/user.response.dto';
-import { snapshotBaseProps } from '@src/libs/test-utils/snapshot-base-props';
-import { getTestServer, TestServer } from '../../jestSetupAfterEnv';
+import { getConnectionPool } from '../../setup/jestSetupAfterEnv';
+import { UserResponseDto } from '@modules/user/dtos/user.response.dto';
+import { DatabasePool, sql } from 'slonik';
+import { TestContext } from '@tests/test-utils/TestContext';
+import { IdResponse } from '@src/libs/api/id.response.dto';
+import {
+  CreateUserTestContext,
+  givenUserProfileData,
+  iSendARequestToCreateAUser,
+} from '../user-shared-steps';
+import { ApiClient } from '@tests/test-utils/ApiClient';
+import { iReceiveAnErrorWithStatusCode } from '@tests/shared/shared-steps';
 
 const feature = loadFeature('tests/user/create-user/create-user.feature');
 
@@ -13,55 +19,48 @@ const feature = loadFeature('tests/user/create-user/create-user.feature');
  * https://github.com/Sairyss/backend-best-practices#testing
  */
 
-defineFeature(feature, test => {
-  let testServer: TestServer;
-  let httpServer: request.SuperTest<request.Test>;
+defineFeature(feature, (test) => {
+  let pool: DatabasePool;
+  const apiClient = new ApiClient();
 
   beforeAll(() => {
-    testServer = getTestServer();
-    httpServer = request(testServer.serverApplication.getHttpServer());
+    pool = getConnectionPool();
   });
 
-  afterAll(() => {
-    // TODO: clean db after tests are finished
+  afterEach(async () => {
+    await pool.query(sql`TRUNCATE "users"`);
+    await pool.query(sql`TRUNCATE "wallets"`);
   });
 
-  test('Creating a user happy path', ({ given, when, then, and }) => {
-    const userDto: Partial<CreateUser> = {};
-    let userId: Id;
+  test('I can create a user', ({ given, when, then, and }) => {
+    const ctx = new TestContext<CreateUserTestContext>();
 
-    given(/^that my email is "(.*)"$/, (email: string) => {
-      userDto.email = email;
-    });
+    givenUserProfileData(given, ctx);
 
-    and(
-      /^my country is "(.*)", my postal code is "(.*)" and my street is "(.*)"$/,
-      (country: string, postalCode: string, street: string) => {
-        userDto.country = country;
-        userDto.postalCode = postalCode;
-        userDto.street = street;
-      },
-    );
-
-    when('I send a request to create a user', async () => {
-      const res = await httpServer
-        .post('/v1/users')
-        .send(userDto)
-        .expect(201);
-      userId = res.body;
-    });
+    iSendARequestToCreateAUser(when, ctx);
 
     then('I receive my user ID', () => {
-      expect(userId).toMatchSnapshot({ id: expect.any(String) });
+      const response = ctx.latestResponse as IdResponse;
+      expect(typeof response.id).toBe('string');
     });
 
     and('I can see my user in a list of all users', async () => {
-      const res = await httpServer.get('/v1/users').expect(200);
+      const res = await apiClient.findAllUsers();
+      const response = ctx.latestResponse as IdResponse;
 
-      expect(res.body).toMatchSnapshot([snapshotBaseProps]);
-      expect(res.body.some((item: UserResponse) => item.id === userId.id)).toBe(
-        true,
-      );
+      expect(
+        res.data.some((item: UserResponseDto) => item.id === response.id),
+      ).toBe(true);
     });
+  });
+
+  test('I try to create a user with invalid data', ({ given, when, then }) => {
+    const ctx = new TestContext<CreateUserTestContext>();
+
+    givenUserProfileData(given, ctx);
+
+    iSendARequestToCreateAUser(when, ctx);
+
+    iReceiveAnErrorWithStatusCode(then, ctx);
   });
 });

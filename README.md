@@ -7,9 +7,25 @@
 
 ---
 
+# Big update 10.10.2022
+
+Codebase updated. Main changes:
+
+- Simplified architecture, some boilerplate code removed.
+- Replaced [TypeOrm](https://typeorm.io/) for [Slonik](https://github.com/gajus/slonik). While ORMs are great for smaller projects, for projects with greater complexities raw queries are more flexible and performant.
+- Removed Unit of Work. Using global request transactions instead with the help of [nestjs-request-context](https://github.com/abonifacio/nestjs-request-context).
+- Updated all packages
+- Improved integration tests
+- General code improvements and refactoring
+- Bug fixes
+
+You can find old version [here](https://github.com/Sairyss/domain-driven-hexagon/tree/7feca5cf992b47f3f28ccb1e9da5df0130f6d7ec) (or just browse code for old commits).
+
+---
+
 The main emphasis of this project is to provide recommendations on how to design software applications. This readme includes techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
-Code examples are written using [NodeJS](https://nodejs.org/en/), [TypeScript](https://www.typescriptlang.org/), [NestJS](https://docs.nestjs.com/) framework and [Typeorm](https://www.npmjs.com/package/typeorm) for the database access.
+Code examples are written using [NodeJS](https://nodejs.org/en/), [TypeScript](https://www.typescriptlang.org/), [NestJS](https://docs.nestjs.com/) framework and [Slonik](https://github.com/gajus/slonik) for the database access.
 
 Patterns and principles presented here are **framework/language agnostic**. Therefore, the above technologies can be easily replaced with any alternative. No matter what language or framework is used, any application can benefit from principles described below.
 
@@ -21,6 +37,7 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
 ---
 
 - [Domain-Driven Hexagon](#domain-driven-hexagon)
+- [Big update 10.10.2022](#big-update-10102022)
 - [Architecture](#architecture)
       - [Pros](#pros)
       - [Cons](#cons)
@@ -247,9 +264,8 @@ Avoid command handlers executing other commands in this fashion: Command → Com
 Example files:
 
 - [create-user.command.ts](src/modules/user/commands/create-user/create-user.command.ts) - a command Object
-- [create-user.message.controller.ts](src/modules/user/commands/create-user/create-user.message.controller.ts) - controller executes a command using a bus. This decouples it from a command handler.
-- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - a command handler
-- [command-handler.base.ts](src/libs/ddd/domain/base-classes/command-handler.base.ts) - command handler base class that wraps execution in a transaction.
+- [create-user.message.controller.ts](src/modules/user/commands/create-user/create-user.message.controller.ts) - controller executes a command using a command bus. This decouples it from a command handler.
+- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - a command handler.
 
 Read more:
 
@@ -260,16 +276,13 @@ Read more:
 
 `Query` is similar to a `Command`. It signals user intent to find something and describes how to do it.
 
-`Query` is used for retrieving data and should not make any state changes (like writes to the database, files etc.).
-
-Queries are usually just a data retrieval operation and have no business logic involved; so, if needed, application and domain layers can be bypassed completely. Though, if some additional non-state changing logic has to be applied before returning a query response (like calculating something), it can be done in an application/domain layer.
+`Query` is just a data retrieval operation and should not make any state changes (like writes to the database, files, third party APIs, etc.).
 
 Similarly to Commands, Queries can use a `Query Bus` if needed. This way you can query anything from anywhere without importing repositories directly and avoid coupling.
 
 Example files:
 
-- [find-users.query.ts](src/modules/user/queries/find-users/find-users.query.ts) - query object
-- [find-users.query-handler.ts](src/modules/user/queries/find-users/find-users.query-handler.ts) - example of a query bypassing application/domain layers completely
+- [find-users.query-handler.ts](src/modules/user/queries/find-users/find-users.query-handler.ts) - a query handler
 
 ---
 
@@ -309,10 +322,10 @@ In Application Core **dependencies point inwards**. Outer layers can depend on i
 
 Example files:
 
-- [repository.ports.ts](src/libs/ddd/domain/ports/repository.ports.ts) - generic port for repositories
+- [repository.port.ts](src/libs/ddd/repository.port.ts) - generic port for repositories
 - [user.repository.port.ts](src/modules/user/database/user.repository.port.ts) - a port for user repository
 - [find-users.query-handler.ts](src/modules/user/queries/find-users/find-users.query-handler.ts) - notice how query handler depends on a port instead of concrete repository implementation, and an implementation is injected
-- [logger.port.ts](src/libs/ddd/domain/ports/logger.port.ts) - another example of a port for application logger
+- [logger.port.ts](src/libs/ports/logger.port.ts) - another example of a port for application logger
 
 Read more:
 
@@ -358,8 +371,8 @@ Entities:
 
 Example files:
 
-- [user.entity.ts](src/modules/user/domain/entities/user.entity.ts)
-- [wallet.entity.ts](src/modules/wallet/domain/entities/wallet.entity.ts)
+- [user.entity.ts](src/modules/user/domain/user.entity.ts)
+- [wallet.entity.ts](src/modules/wallet/domain/wallet.entity.ts)
 
 Read more:
 
@@ -390,8 +403,8 @@ In summary, if you combine multiple related entities and value objects inside on
 
 Example files:
 
-- [aggregate-root.base.ts](src/libs/ddd/domain/base-classes/aggregate-root.base.ts) - abstract base class.
-- [user.entity.ts](src/modules/user/domain/entities/user.entity.ts) - aggregates are just entities that have to follow a set of specific rules described above.
+- [aggregate-root.base.ts](src/libs/ddd/aggregate-root.base.ts) - abstract base class.
+- [user.entity.ts](src/modules/user/domain/user.entity.ts) - aggregates are just entities that have to follow a set of specific rules described above.
 
 Read more:
 
@@ -426,13 +439,10 @@ There are multiple ways on implementing an event bus for Domain Events, for exam
 
 Examples:
 
-- [domain-events.ts](src/libs/ddd/domain/domain-events/domain-events.ts) - this class is responsible for providing publish/subscribe functionality for anyone who needs to emit or listen to events. Keep in mind that this is just a proof of concept example and may not be a best solution for a production application.
 - [user-created.domain-event.ts](src/modules/user/domain/events/user-created.domain-event.ts) - simple object that holds data related to published event.
 - [create-wallet-when-user-is-created.domain-event-handler.ts](src/modules/wallet/application/event-handlers/create-wallet-when-user-is-created.domain-event-handler.ts) - this is an example of Domain Event Handler that executes some actions when a domain event is raised (in this case, when user is created it also creates a wallet for that user).
-- [typeorm.repository.base.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm.repository.base.ts) - repository publishes all domain events for execution when it persists changes to an aggregate.
-- [typeorm-unit-of-work.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm-unit-of-work.ts) - this ensures that all changes are saved in a single database transaction.
-- [unit-of-work.ts](src/infrastructure/database/unit-of-work/unit-of-work.ts) - here you create factories for specific Domain Repositories that are used in a transaction.
-- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - here we get a user repository from a `UnitOfWork` and execute a transaction.
+- [sql-repository.base.ts](src/libs/db/sql-repository.base.ts) - repository publishes all domain events for execution when it persists changes to an aggregate.
+- [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - in a service we execute a global transaction to make sure all the changes done by Domain Events across the application are stored atomically (all or nothing).
 
 To have a better understanding on domain events and implementation read this:
 
@@ -441,17 +451,13 @@ To have a better understanding on domain events and implementation read this:
 
 **Additional notes**:
 
-- This project uses custom implementation for publishing Domain Events. The reason for not using [Node Event Emitter](https://nodejs.org/api/events.html) or packages that offer an event bus (like [NestJS CQRS](https://docs.nestjs.com/recipes/cqrs)) is that they don't offer an option to `await` for all events to finish, which is useful when making all events a part of a transaction. Inside a single process either all changes done by events should be saved, or none of them in case if one of the events fails.
-
-- Transactions are not required for some operations (for example queries or operations that don't cause any side effects in other aggregates) so you may skip using a unit of work in those cases.
-
 - When using only events for complex workflows with a lot of steps, it will be hard to track everything that is happening across the application. One event may trigger another one, then another one, and so on. To track the entire workflow you'll have to go multiple places and search for an event handler for each step, which is hard to maintain. In this case, using a service/orchestrator/mediator might be a preferred approach compared to only using events since you will have an entire workflow in one place. This might create some coupling, but is easier to maintain. Don't rely on events only, pick the right tool for the job.
 
 - In some cases you will not be able to save all changes done by your events to multiple aggregates in a single transaction. For example, if you are using microservices that span transaction between multiple services, or [Event Sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) that has a single stream per aggregate. In this case saving events across multiple aggregates can be eventually consistent (for example by using [Sagas](https://microservices.io/patterns/data/saga.html) with compensating events or a [Process Manager](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html) or something similar).
 
 ## Integration Events
 
-Out-of-process communications (calling microservices, external apis) are called `Integration Events`. If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
+Out-of-process communications (calling microservices, external APIs) are called `Integration Events`. If sending a Domain Event to external process is needed then domain event handler should send an `Integration Event`.
 
 Integration Events usually should be published only after all Domain Events finished executing and saving all changes to the database.
 
@@ -529,7 +535,7 @@ Below we will discuss some validation techniques for your domain objects.
 
 Example files:
 
-- [wallet.entity.ts](src/modules/wallet/domain/entities/wallet.entity.ts) - notice `validate` method. This is a simplified example of enforcing a domain invariant.
+- [wallet.entity.ts](src/modules/wallet/domain/wallet.entity.ts) - notice `validate` method. This is a simplified example of enforcing a domain invariant.
 
 Read more:
 
@@ -544,13 +550,25 @@ Significant business concepts can be expressed using specific types and classes.
 So, for example, `email` of type `string`:
 
 ```typescript
-email: string;
+const email: string = 'john@gmail.com';
 ```
 
 could be represented as a `Value Object` instead:
 
 ```typescript
-email: Email;
+export class Email extends ValueObject<string> {
+  constructor(value: string) {
+    super({ value });
+  }
+
+  get value(): string {
+    return this.props.value;
+  }
+}
+```
+
+```typescript
+const email: Email = new Email('john@gmail.com');
 ```
 
 Now the only way to make an `email` is to create a new instance of `Email` class first, this ensures it will be validated on creation and a wrong value won't get into `Entities`.
@@ -580,10 +598,6 @@ Quote from: [Secure by design: Chapter 5.3 Standing on the shoulders of domain p
 Also, an alternative for creating an object may be a [type alias](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-aliases) (ideally using [nominal types](https://betterprogramming.pub/nominal-typescript-eee36e9432d2)) just to give this primitive a semantic meaning.
 
 **Warning**: Don't include Value Objects in objects that can be sent to other processes, like dtos, events, database models etc. Serialize them to primitive types first.
-
-Example files:
-
-- [email.value-object.ts](src/modules/user/domain/value-objects/email.value-object.ts)
 
 **Note**: In languages like TypeScript, creating value objects for single values/primitives adds some extra complexity and boilerplate code, since you need to access an underlying value by doing something like `email.value`. Also, it can have performance penalties due to creation of so many objects. This technique works best in languages like [Scala](https://www.scala-lang.org/) with its [value classes](https://docs.scala-lang.org/overviews/core/value-classes.html) that represents such classes as primitives at runtime, meaning that object `Email` will be represented as `String` at runtime.
 
@@ -676,10 +690,10 @@ By combining compile and runtime validations, using objects instead of primitive
 
 ### Guarding vs validating
 
-You may have noticed that we do validation in two places:
+You may have noticed that we do validation in multiple places:
 
 1. First when user input is sent to our application. In our example we use DTO decorators: [create-user.request-dto.ts](src/modules/user/commands/create-user/create-user.request.dto.ts).
-2. Second time in domain objects, for example: [email.value-object.ts](src/modules/user/domain/value-objects/email.value-object.ts).
+2. Second time in domain objects, for example: [address.value-object.ts](src/modules/user/domain/value-objects/address.value-object.ts).
 
 So, why are we validating things twice? Let's call a second validation "_guarding_", and distinguish between guarding and validating:
 
@@ -690,13 +704,13 @@ So, why are we validating things twice? Let's call a second validation "_guardin
 
 The input coming from the outside world should be filtered out before passing it further to the domain model. It’s the first line of defense against data inconsistency. At this stage, any incorrect data is denied with corresponding error messages.
 Once the filtration has confirmed that the incoming data is valid it's passed to a domain. When the data enters the always-valid domain boundary, it's assumed to be valid and any violation of this assumption means that you’ve introduced a bug.
-Guards help to reveal those bugs. They are the failsafe mechanism, the last line of defense that ensures data in the always-valid boundary is indeed valid. Unlike validations, guards throw exceptions; they comply with the [Fail Fast principle](https://enterprisecraftsmanship.com/posts/fail-fast-principle).
+Guards help to reveal those bugs. They are the failsafe mechanism, the last line of defense that ensures data in the always-valid boundary is indeed valid. Guards comply with the [Fail Fast principle](https://enterprisecraftsmanship.com/posts/fail-fast-principle) by throwing runtime exceptions.
 
 Domain classes should always guard themselves against becoming invalid.
 
 For preventing null/undefined values, empty objects and arrays, incorrect input length etc. a library of [guards](<https://en.wikipedia.org/wiki/Guard_(computer_science)>) can be created.
 
-Example file: [guard.ts](src/libs/ddd/domain/guard.ts)
+Example file: [guard.ts](src/libs/guard.ts)
 
 **Keep in mind** that not all validations/guarding can be done in a single domain object, it should validate only rules shared by all contexts. There are cases when validation may be different depending on a context, or one field may involve another field, or even a different entity. Handle those cases accordingly.
 
@@ -777,7 +791,8 @@ function createUser(
     return Err(new IncorrectUserAddressError());
   }
   // else
-  const user = await this.userRepo.create(user);
+  const user = UserEntity.create(command);
+  await this.userRepo.save(user);
   return Ok(user);
 }
 ```
@@ -787,15 +802,15 @@ This approach gives us a fixed set of expected error types, so we can decide wha
 ```typescript
 /* in HTTP context we want to convert each error to an 
 error with a corresponding HTTP status code: 409, 400 or 500 */
-const result = createUser(command);
-if (result.isOk()) return user.id;
-if (result.isErr()) {
-  if (result.err instanceof UserAlreadyExistsError)
-    throw new ConflictException(error.message);
-  if (result.err instanceof IncorrectUserAddressError)
-    throw new BadRequestException(error.message);
-  else throw new InternalServerError();
-}
+const result = await this.commandBus.execute(command);
+return match(result, {
+  Ok: (id: string) => new IdResponse(id),
+  Err: (error: Error) => {
+    if (error instanceof UserAlreadyExistsError)
+      throw new ConflictHttpException(error.message);
+    throw error;
+  },
+});
 ```
 
 Throwing makes errors invisible for the consumer of your functions/methods (until those errors happen at runtime, or until you dig deeply into the source code and find them). This means those errors are less likely to be handled properly.
@@ -811,12 +826,11 @@ Libraries you can use:
 
 Example files:
 
-- [user.errors.ts](src/modules/user/errors/user.errors.ts) - user errors
+- [user.errors.ts](src/modules/user/domain/user.errors.ts) - user errors
 - [create-user.service.ts](src/modules/user/commands/create-user/create-user.service.ts) - notice how `Err(new UserAlreadyExistsError())` is returned instead of throwing it.
-- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) - in a user http controller we match an error and decide what to do with it. If an error is `UserAlreadyExistsError` we throw a `Conflict Exception` which a user will receive as `409 - Conflict`. If an error is unknown we just throw it and NestJS will return it to the user as `500 - Internal Server Error`.
+- [create-user.http.controller.ts](src/modules/user/commands/create-user/create-user.http.controller.ts) - in a user http controller we match an error and decide what to do with it. If an error is `UserAlreadyExistsError` we throw a `Conflict Exception` which a user will receive as `409 - Conflict`. If an error is unknown we just throw it and our framework will return it to the user as `500 - Internal Server Error`.
 - [create-user.cli.controller.ts](src/modules/user/commands/create-user/create-user.cli.controller.ts) - in a CLI controller we don't care about returning a correct status code so we just `.unwrap()` a result, which will just throw in case of an error.
 - [exceptions](src/libs/exceptions) folder contains some generic app exceptions (not domain specific)
-- [exception.interceptor.ts](src/infrastructure/interceptors/exception.interceptor.ts) - in this file we convert our app's generic exceptions into a NestJS HTTP exceptions. This way we are not tied to a framework or HTTP protocol.
 
 Read more:
 
@@ -827,7 +841,7 @@ Read more:
 
 ## Using libraries inside Application's core
 
-Whether or not to use libraries in application core and especially domain layer is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like working with numbers).
+Whether to use libraries in application core and especially domain layer is a subject of a lot of debates. In real world, injecting every library instead of importing it directly is not always practical, so exceptions can be made for some single responsibility libraries that help to implement domain logic (like working with numbers).
 
 Main recommendations to keep in mind is that libraries imported in application's core **shouldn't** expose:
 
@@ -880,7 +894,7 @@ One of the main benefits of a layered architecture is separation of concerns. As
 
 Example files:
 
-- [create-user.graphql-resolver.ts](src/modules/user/commands/create-user/create-user.graphql-resolver.ts)
+- [create-user.graphql-resolver.ts](src/modules/user/commands/create-user/graphql-example/create-user.graphql-resolver.ts)
 
 ---
 
@@ -898,7 +912,6 @@ Input data sent by a user.
 Examples:
 
 - [create-user.request.dto.ts](src/modules/user/commands/create-user/create-user.request.dto.ts)
-- [create.user.interface.ts](src/interface-adapters/interfaces/user/create.user.interface.ts)
 
 ### Response DTOs
 
@@ -909,11 +922,10 @@ Output data returned to a user.
 Examples:
 
 - [user.response.dto.ts](src/modules/user/dtos/user.response.dto.ts)
-- [user.interface.ts](src/interface-adapters/interfaces/user/user.interface.ts)
 
 ---
 
-Using DTOs protects your clients from internal data structure changes that may happen in your API. When internal data models change (like renaming variables or splitting tables), they can still be mapped to match a corresponding DTO to maintain compatibility for anyone using your API.
+DTO contracts protect your clients from internal data structure changes that may happen in your API. When internal data models change (like renaming variables or splitting tables), they can still be mapped to match a corresponding DTO to maintain compatibility for anyone using your API.
 
 When updating DTO interfaces, a new version of API can be created by prefixing an endpoint with a version number, for example: `v2/users`. This will make transition painless by preventing breaking compatibility for users that are slow to update their apps that uses your API.
 
@@ -928,21 +940,21 @@ More info on this subject here: [Are CQRS commands part of the domain model?](ht
 
 - DTOs should be data-oriented, not object-oriented. Its properties should be mostly primitives. We are not modeling anything here, just sending flat data around.
 - When returning a `Response` prefer _whitelisting_ properties over _blacklisting_. This ensures that no sensitive data will leak in case if programmer forgets to blacklist newly added properties that shouldn't be returned to the user.
-- Interfaces for `Request`/`Response` objects should be kept somewhere in shared directory instead of module directory since they may be used by a different application (like front-end page, mobile app or microservice). Consider creating a git submodule or a separate package for sharing interfaces.
+- If you use the same DTOs in multiple apps (frontend and backend, or between microservices), you can keep them somewhere in a shared directory instead of module directory and create a git submodule or a separate package for sharing them.
 - `Request`/`Response` DTO classes may be a good place to use validation and sanitization decorators like [class-validator](https://www.npmjs.com/package/class-validator) and [class-sanitizer](https://www.npmjs.com/package/class-sanitizer) (make sure that all validation errors are gathered first and only then return them to the user, this is called [Notification pattern](https://martinfowler.com/eaaDev/Notification.html). Class-validator does this by default).
 - `Request`/`Response` DTO classes may also be a good place to use Swagger/OpenAPI library decorators that [NestJS provides](https://docs.nestjs.com/openapi/types-and-parameters).
-- If DTO decorators for validation/documentation are not used, DTO can be just an interface instead of class + interface.
-- Data can be transformed to DTO format using a separate mapper or right in the constructor if DTO classes are used.
+- If DTO decorators for validation/documentation are not used, DTO can be just an interface instead of a class.
+- Data can be transformed to DTO format using a separate mapper or right in the constructor of a DTO class.
 
 ### Local DTOs
 
-Another thing that can be seen in some projects is local DTOs. Some people prefer to never use domain objects (like entities) outside of its domain (in `controllers`, for example) and return a plain DTO object instead. This project doesn't use this technique, to avoid extra complexity and boilerplate code like interfaces and data mapping.
+Another thing that can be seen in some projects is local DTOs. Some people prefer to never use domain objects (like entities) outside its domain (in `controllers`, for example) and return a plain DTO object instead. This project doesn't use this technique, to avoid extra complexity and boilerplate code like interfaces and data mapping.
 
 [Here](https://martinfowler.com/bliki/LocalDTO.html) are Martin Fowler's thoughts on local DTOs, in short (quote):
 
 > Some people argue for them (DTOs) as part of a Service Layer API because they ensure that service layer clients aren't dependent upon an underlying Domain Model. While that may be handy, I don't think it's worth the cost of all of that data mapping.
 
-Though you may want to introduce Local DTOs when you need to decouple modules properly. For example, when querying from one module to another you don't want to leak your entities between modules. In that case using a Local DTO may be a better idea.
+Though you may want to introduce Local DTOs when you need to decouple modules properly. For example, when querying from one module to another you don't want to leak your entities between modules. In that case using a Local DTO may be justified.
 
 ---
 
@@ -985,11 +997,11 @@ The data flow here looks something like this: repository receives a domain `Enti
 
 Application's core usually is not allowed to depend on repositories directly, instead it depends on abstractions (ports/interfaces). This makes data retrieval technology-agnostic.
 
-**Note**: in theory, most publications out there recommend abstracting a database with interfaces. In practice, it's not always useful. Most of the projects out there never change database technology (or rewrite most of the code anyway if they do). Another downside is that if you abstract a database you are more likely not using its full potential. This project abstracts repositories with a generic port to make a practical example [repository.ports.ts](src/libs/ddd/domain/ports/repository.ports.ts), but this doesn't mean you should do that too. Think carefully before using abstractions. More info on this topic: [Should you Abstract the Database?](https://enterprisecraftsmanship.com/posts/should-you-abstract-database/)
+**Note**: in theory, most publications out there recommend abstracting a database with interfaces. In practice, it's not always useful. Most of the projects out there never change database technology (or rewrite most of the code anyway if they do). Another downside is that if you abstract a database you are more likely not using its full potential. This project abstracts repositories with a generic port to make a practical example [repository.port.ts](src/libs/ddd/repository.port.ts), but this doesn't mean you should do that too. Think carefully before using abstractions. More info on this topic: [Should you Abstract the Database?](https://enterprisecraftsmanship.com/posts/should-you-abstract-database/)
 
 Example files:
 
-This project contains abstract repository class that allows to make basic CRUD operations: [typeorm.repository.base.ts](src/libs/ddd/infrastructure/database/base-classes/typeorm.repository.base.ts). This base class is then extended by a specific repository, and all specific operations that an entity may need is implemented in that specific repo: [user.repository.ts](src/modules/user/database/user.repository.ts).
+This project contains abstract repository class that allows to make basic CRUD operations: [sql-repository.base.ts](src/libs/db/sql-repository.base.ts). This base class is then extended by a specific repository, and all specific operations that an entity may need are implemented in that specific repo: [user.repository.ts](src/modules/user/database/user.repository.ts).
 
 Read more:
 
@@ -997,25 +1009,25 @@ Read more:
 
 ## Persistence models
 
-Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world domain model and persistance model should be separated.
+Using a single entity for domain logic and database concerns leads to a database-centric architecture. In DDD world domain model and persistence model should be separated.
 
-Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in a database. For that purpose `Persistence models` can be created that have a shape that is better represented in a particular database that is used. Domain layer should not know anything about persistance models, and it should not care.
+Since domain `Entities` have their data modeled so that it best accommodates domain logic, it may be not in the best shape to save in a database. For that purpose `Persistence models` can be created that have a shape that is better represented in a particular database that is used. Domain layer should not know anything about persistence models, and it should not care.
 
 There can be multiple models optimized for different purposes, for example:
 
 - Domain with its own models - `Entities`, `Aggregates` and `Value Objects`.
 - Persistence layer with its own models - ORM ([Object–relational mapping](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping)), schemas, read/write models if databases are separated into a read and write db ([CQRS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)) etc.
 
-Over time, when the amount of data grows, there may be a need to make some changes in the database like improving performance or data integrity by re-designing some tables or even changing the database entirely. Without an explicit separation between `Domain` and `Persistance` models any change to the database will lead to change in your domain `Entities` or `Aggregates`. For example, when performing a database [normalization](https://en.wikipedia.org/wiki/Database_normalization) data can spread across multiple tables rather than being in one table, or vice-versa for [denormalization](https://en.wikipedia.org/wiki/Denormalization). This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges. Separating Domain and Persistance models prevents that.
+Over time, when the amount of data grows, there may be a need to make some changes in the database like improving performance or data integrity by re-designing some tables or even changing the database entirely. Without an explicit separation between `Domain` and `Persistance` models any change to the database will lead to change in your domain `Entities` or `Aggregates`. For example, when performing a database [normalization](https://en.wikipedia.org/wiki/Database_normalization) data can spread across multiple tables rather than being in one table, or vice-versa for [denormalization](https://en.wikipedia.org/wiki/Denormalization). This may force a team to do a complete refactoring of a domain layer which may cause unexpected bugs and challenges. Separating Domain and Persistence models prevents that.
 
-**Note**: separating domain and persistance models may be overkill for smaller applications. It requires a lot of effort creating and maintaining boilerplate code like mappers and abstractions. Consider all pros and cons before making this decision.
+**Note**: separating domain and persistence models may be overkill for smaller applications. It requires a lot of effort creating and maintaining boilerplate code like mappers and abstractions. Consider all pros and cons before making this decision.
 
 Example files:
 
-- [user.orm-entity.ts](src/modules/user/database/user.orm-entity.ts) <- Persistence model using ORM.
-- [user.orm-mapper.ts](src/modules/user/database/user.orm-mapper.ts) <- Persistence models should also have a corresponding mapper to map from domain to persistence and back.
+- [user.repository.ts](src/modules/user/database/user.repository.ts) <- notice `userSchema` and `UserModel` type that describe how user looks in a database
+- [user.mapper.ts](src/modules/user/user.mapper.ts) <- Persistence models should also have a corresponding mapper to map from domain to persistence and back.
 
-Alternative approach to ORM are raw queries or some sort of query builder (like [knex](https://www.npmjs.com/package/knex)). This may be a better approach for bigger projects than Object-Relational Mapping since it offers more flexibility and better performance.
+For smaller projects you could use [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) libraries like [Typeorm](https://typeorm.io/) for simplicity. But for projects with more complexity ORMs are not flexible and performant enough. For this reason, this project uses raw queries with a [Slonik](https://github.com/gajus/slonik) client library.
 
 Read more:
 
@@ -1086,8 +1098,8 @@ For BDD tests [Cucumber](https://cucumber.io/) with [Gherkin](https://cucumber.i
 
 Example files:
 
-- [create-user.feature](https://github.com/Sairyss/domain-driven-hexagon/blob/master/tests/user/create-user/create-user.feature) - feature file that contains human-readable Gherkin steps
-- [create-user.e2e-spec.ts](https://github.com/Sairyss/domain-driven-hexagon/blob/master/tests/user/create-user/create-user.e2e-spec.ts) - e2e / behavioral test
+- [create-user.feature](tests/user/create-user/create-user.feature) - feature file that contains human-readable Gherkin steps
+- [create-user.e2e-spec.ts](tests/user/create-user/create-user.e2e-spec.ts) - e2e / behavioral test
 
 Read more:
 
@@ -1103,7 +1115,7 @@ It would be more logical to separate every module by components and have all rel
 
 And shared files, like domain objects (entities/aggregates), repositories, shared dtos and interfaces etc are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier. Check [user](src/modules/user) module for more examples.
 
-This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside of that component) are stored close together, in a single use-case folder.
+This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside that component) are stored close together, in a single use-case folder.
 
 > The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
 
@@ -1131,7 +1143,9 @@ Read more:
 
 ### File names
 
-Consider giving a descriptive type names to files after a dot "`.`", like `*.service.ts` or `*.entity.ts`. This makes it easier to differentiate what files does what and makes it easier to find those files using [fuzzy search](https://en.wikipedia.org/wiki/Approximate_string_matching) (`CTRL+P` for Windows/Linux and `⌘+P` for MacOS in VSCode to try it out).
+Consider giving a descriptive type names to files after a dot "`.`", like `*.service.ts` or `*.entity.ts`. This makes it easier to differentiate what files do what and makes it easier to find those files using [fuzzy search](https://en.wikipedia.org/wiki/Approximate_string_matching) (`CTRL+P` for Windows/Linux and `⌘+P` for MacOS in VSCode to try it out).
+
+Alternatively you could use class names as file names, but consider adding descriptive suffixes like `Service` or `Controller`, etc.
 
 Read more:
 

@@ -13,12 +13,18 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
     "paths": {
       "@src/*": ["src/*"],
       "@modules/*": ["src/modules/*"],
-      "@config/*": ["src/infrastructure/configs/*"],
-      "@exceptions": ["src/libs/exceptions"],
-      "@libs/*": ["src/libs/*"]
+      "@config/*": ["src/configs/*"],
+      "@libs/*": ["src/libs/*"],
+      "@tests/*": ["tests/*"]
     }
   }
 }

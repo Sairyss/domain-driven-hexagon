@@ -1,44 +1,38 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Injectable, Logger } from '@nestjs/common';
-import {
-  TypeormRepositoryBase,
-  WhereCondition,
-} from '@libs/ddd/infrastructure/database/base-classes/typeorm.repository.base';
-import { QueryParams } from '@libs/ddd/domain/ports/repository.ports';
-import { WalletOrmEntity } from './wallet.orm-entity';
-import { WalletEntity, WalletProps } from '../domain/entities/wallet.entity';
+import { InjectPool } from 'nestjs-slonik';
+import { DatabasePool } from 'slonik';
+import { z } from 'zod';
+import { SqlRepositoryBase } from '@src/libs/db/sql-repository.base';
 import { WalletRepositoryPort } from './wallet.repository.port';
-import { WalletOrmMapper } from './wallet.orm-mapper';
+import { WalletEntity } from '../domain/wallet.entity';
+import { WalletMapper } from '../wallet.mapper';
+import { Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
+export const walletSchema = z.object({
+  id: z.string().min(1).max(255),
+  createdAt: z.preprocess((val: any) => new Date(val), z.date()),
+  updatedAt: z.preprocess((val: any) => new Date(val), z.date()),
+  balance: z.number().min(0).max(9999999),
+  userId: z.string().min(1).max(255),
+});
+
+export type WalletModel = z.TypeOf<typeof walletSchema>;
 
 @Injectable()
 export class WalletRepository
-  extends TypeormRepositoryBase<WalletEntity, WalletProps, WalletOrmEntity>
-  implements WalletRepositoryPort {
-  protected relations: string[] = [];
+  extends SqlRepositoryBase<WalletEntity, WalletModel>
+  implements WalletRepositoryPort
+{
+  protected tableName = 'wallets';
+
+  protected schema = walletSchema;
 
   constructor(
-    @InjectRepository(WalletOrmEntity)
-    private readonly walletRepository: Repository<WalletOrmEntity>,
+    @InjectPool()
+    pool: DatabasePool,
+    mapper: WalletMapper,
+    eventEmitter: EventEmitter2,
   ) {
-    super(
-      walletRepository,
-      new WalletOrmMapper(WalletEntity, WalletOrmEntity),
-      new Logger('WalletRepository'),
-    );
-  }
-
-  // Used to construct a query
-  protected prepareQuery(
-    params: QueryParams<WalletProps>,
-  ): WhereCondition<WalletOrmEntity> {
-    const where: QueryParams<WalletOrmEntity> = {};
-    if (params.id) {
-      where.id = params.id.value;
-    }
-    if (params.createdAt) {
-      where.createdAt = params.createdAt.value;
-    }
-    return where;
+    super(pool, mapper, eventEmitter, new Logger(WalletRepository.name));
   }
 }

@@ -1,17 +1,6 @@
-import {
-  Command,
-  CommandProps,
-} from '@src/libs/ddd/domain/base-classes/command.base';
+import { Command, CommandProps } from '@libs/ddd';
 
 export class CreateUserCommand extends Command {
-  constructor(props: CommandProps<CreateUserCommand>) {
-    super(props);
-    this.email = props.email;
-    this.country = props.country;
-    this.postalCode = props.postalCode;
-    this.street = props.street;
-  }
-
   readonly email: string;
 
   readonly country: string;
@@ -19,4 +8,12 @@ export class CreateUserCommand extends Command {
   readonly postalCode: string;
 
   readonly street: string;
+
+  constructor(props: CommandProps<CreateUserCommand>) {
+    super(props);
+    this.email = props.email;
+    this.country = props.country;
+    this.postalCode = props.postalCode;
+    this.street = props.street;
+  }
 }
