@@ -1107,15 +1107,68 @@ Read more:
 
 ## Folder and File Structure
 
-So instead of using typical layered style when an entire application is divided into services, controllers etc, we divide everything by modules. Now, how to structure files inside those modules?
+Some typical approaches are:
 
-A lot of people tend to do the same thing as before: create one big service/controller for a module and keep all logic for the module's use cases there, making those controllers and services hundreds of lines long, which is hard to navigate and makes merge conflicts a nightmare to manage. Or they create a folder for each file type, like `interfaces` or `services` folder and store all unrelated to each other interfaces/services in there. This is the same approach that makes navigation harder. Every time you need to change something, instead of having all related files in the same place, you have to jump folders to find where the related files are.
+- **Layered architecture**: split an entire application into directories divided by functionality, like `controllers`, `interfaces`, `services`, etc. For example:
 
-It would be more logical to separate every module by components and have all related files close together. For example, check out [create-user](src/modules/user/commands/create-user) folder. It has most of the files that it needs inside the same folder: a controller, service, command etc. Now if a use-case changes, most of the changes are usually made in a single component (folder), not everywhere across the module.
+```text
+- Controllers
+  - UserController
+  - WalletController
+  - OtherControllers...
+- Services
+  - UserService
+  - WalletService
+  - OtherServices...
+- Repositories
+  - ...
+```
 
-And shared files, like domain objects (entities/aggregates), repositories, shared dtos and interfaces etc are stored apart since those are reused by multiple use-cases. Domain layer is isolated, and use-cases which are essentially wrappers around business logic are treated as components. This approach makes navigation and maintaining easier. Check [user](src/modules/user) module for more examples.
+This approach makes navigation harder. Every time you need to change some feature, instead of having all related files in the same place (in a module), you have to jump multiple directories to find all related files. This approach usually leads to tight coupling and spaghetti code.
 
-This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside that component) are stored close together, in a single use-case folder.
+- **Divide application by modules** and split each module by some business domain:
+
+```text
+- User
+  - UserController
+  - UserService
+  - UserRepository
+- Wallet
+  - WalletController
+  - WalletService
+  - WalletRepository
+  ...
+```
+
+This looks better. With this approach each module is encapsulated and only contains its own business logic. The only downside is: over time those controllers and services can end up hundreds of lines long, making it difficult to navigate and merge conflicts harder to manage.
+
+- **Divide a module by subcomponents:** use modular approach discussed above and divide each module by slices and use cases. We divide a module further into smaller components:
+
+```text
+- User
+  - CreateUser
+    - CreateUserController
+    - CreateUserService
+    - CreateUserDTO
+  - UpdateUser
+    - UpdateUserController
+    - UpdateUserService
+    - UpdateUserDTO
+  - UserRepository
+  - UserEntity
+- Wallet
+  - CreateWallet
+    - CreateWalletController
+    - CreateWalletService
+    - CreateWalletDto
+  ...
+```
+
+This way each module is further split into highly cohesive subcomponents (usually by feature).
+
+Shared files like domain objects (entities/aggregates), repositories, shared DTOs, interfaces, etc. are stored outside of feature subcomponents since they are usually reused in multiple places. This approach makes navigation and maintaining easier since all related files are close to each other. It also makes every feature properly encapsulated.
+
+This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside that component) are stored close together.
 
 > The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
 
@@ -1129,12 +1182,15 @@ Keep in mind that this project's folder/file structure is an example and might n
 - Try to avoid a lot of nested folders;
 - [Move files around until it feels right](https://dev.to/dance2die/move-files-around-until-it-feels-right-2lek).
 
-There are different approaches to file/folder structuring, like explicitly separating each layer into a corresponding folder. This defines boundaries more clearly but is harder to navigate. Choose what suits better for the project/personal preference.
+There are different approaches to file/folder structuring, choose what suits better for the project/personal preference.
 
 Examples:
 
-- [Commands](src/modules/user/commands) folder contains all state changing use cases and each use case inside it contains most of the things that it needs: controller, service, dto, command etc.
-- [Queries](src/modules/user/queries) folder is structured in the same way as commands but contains data retrieval use cases.
+- [user](src/modules/user) module
+- [create-user](src/modules/user/commands/create-user) subcomponent.
+
+- [Commands](src/modules/user/commands) directory contains all state changing use cases and each use case inside it contains most of the things that it needs: controller, service, DTOs, command, etc.
+- [Queries](src/modules/user/queries) directory is structured in the same way as commands but contains data retrieval use cases.
 
 Read more:
 
