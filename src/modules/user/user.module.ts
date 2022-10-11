@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Logger, Module, Provider } from '@nestjs/common';
 import { UserRepository } from './database/user.repository';
 import { CreateUserHttpController } from './commands/create-user/create-user.http.controller';
 import { DeleteUserHttpController } from './commands/delete-user/delete-user.http-controller';
@@ -11,6 +11,7 @@ import { DeleteUserService } from './commands/delete-user/delete-user.service';
 import { FindUsersQueryHandler } from './queries/find-users/find-users.query-handler';
 import { UserMapper } from './user.mapper';
 import { CqrsModule } from '@nestjs/cqrs';
+import { USER_REPOSITORY } from './user.di-tokens';
 
 const httpControllers = [
   CreateUserHttpController,
@@ -20,17 +21,19 @@ const httpControllers = [
 
 const messageControllers = [CreateUserMessageController];
 
-const cliControllers = [CreateUserCliController];
+const cliControllers: Provider[] = [CreateUserCliController];
 
-const graphqlResolvers = [CreateUserGraphqlResolver];
+const graphqlResolvers: Provider[] = [CreateUserGraphqlResolver];
 
-const repositories = [UserRepository];
+const commandHandlers: Provider[] = [CreateUserService, DeleteUserService];
 
-const commandHandlers = [CreateUserService, DeleteUserService];
+const queryHandlers: Provider[] = [FindUsersQueryHandler];
 
-const queryHandlers = [FindUsersQueryHandler];
+const mappers: Provider[] = [UserMapper];
 
-const mappers = [UserMapper];
+const repositories: Provider[] = [
+  { provide: USER_REPOSITORY, useClass: UserRepository },
+];
 
 @Module({
   imports: [CqrsModule],

@@ -3,7 +3,7 @@ import { UserRepositoryPort } from '@modules/user/database/user.repository.port'
 import { Inject } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { Err, Ok, Result } from 'oxide.ts';
-import { UserRepository } from '../../database/user.repository';
+import { USER_REPOSITORY } from '../../user.di-tokens';
 
 export class DeleteUserCommand {
   readonly userId: string;
@@ -16,7 +16,7 @@ export class DeleteUserCommand {
 @CommandHandler(DeleteUserCommand)
 export class DeleteUserService {
   constructor(
-    @Inject(UserRepository)
+    @Inject(USER_REPOSITORY)
     private readonly userRepo: UserRepositoryPort,
   ) {}
 

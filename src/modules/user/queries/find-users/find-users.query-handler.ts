@@ -2,7 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Ok, Result } from 'oxide.ts';
 import { Inject } from '@nestjs/common';
 import { UserRepositoryPort } from '../../database/user.repository.port';
-import { UserRepository } from '../../database/user.repository';
+import { USER_REPOSITORY } from '../../user.di-tokens';
 import { UserEntity } from '@modules/user/domain/user.entity';
 import { PaginatedParams, PaginatedQueryBase } from '@libs/ddd/query.base';
 import { Paginated } from '@src/libs/ddd';
@@ -25,7 +25,7 @@ export class FindUsersQuery extends PaginatedQueryBase {
 @QueryHandler(FindUsersQuery)
 export class FindUsersQueryHandler implements IQueryHandler {
   constructor(
-    @Inject(UserRepository)
+    @Inject(USER_REPOSITORY)
     private readonly userRepo: UserRepositoryPort,
   ) {}
 

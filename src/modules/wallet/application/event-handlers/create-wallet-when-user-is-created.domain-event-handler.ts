@@ -3,12 +3,12 @@ import { WalletRepositoryPort } from '@modules/wallet/database/wallet.repository
 import { WalletEntity } from '../../domain/wallet.entity';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Inject, Injectable } from '@nestjs/common';
-import { WalletRepository } from '@modules/wallet/database/wallet.repository';
+import { WALLET_REPOSITORY } from '../../wallet.di-tokens';
 
 @Injectable()
 export class CreateWalletWhenUserIsCreatedDomainEventHandler {
   constructor(
-    @Inject(WalletRepository)
+    @Inject(WALLET_REPOSITORY)
     private readonly walletRepo: WalletRepositoryPort,
   ) {}
 

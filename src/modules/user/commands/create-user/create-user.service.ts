@@ -11,12 +11,12 @@ import {
   InternalServerErrorException,
 } from '@libs/exceptions';
 import { Inject } from '@nestjs/common';
-import { UserRepository } from '@modules/user/database/user.repository';
+import { USER_REPOSITORY } from '../../user.di-tokens';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserService implements ICommandHandler {
   constructor(
-    @Inject(UserRepository)
+    @Inject(USER_REPOSITORY)
     protected readonly userRepo: UserRepositoryPort,
   ) {}
 
