@@ -1,11 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Ok, Result } from 'oxide.ts';
-import { Inject } from '@nestjs/common';
-import { UserRepositoryPort } from '../../database/user.repository.port';
-import { USER_REPOSITORY } from '../../user.di-tokens';
-import { UserEntity } from '@modules/user/domain/user.entity';
 import { PaginatedParams, PaginatedQueryBase } from '@libs/ddd/query.base';
 import { Paginated } from '@src/libs/ddd';
+import { InjectPool } from 'nestjs-slonik';
+import { DatabasePool, sql } from 'slonik';
+import { UserModel, userSchema } from '../../database/user.repository';
 
 export class FindUsersQuery extends PaginatedQueryBase {
   readonly country?: string;
@@ -25,14 +24,42 @@ export class FindUsersQuery extends PaginatedQueryBase {
 @QueryHandler(FindUsersQuery)
 export class FindUsersQueryHandler implements IQueryHandler {
   constructor(
-    @Inject(USER_REPOSITORY)
-    private readonly userRepo: UserRepositoryPort,
+    @InjectPool()
+    private readonly pool: DatabasePool,
   ) {}
 
+  /**
+   * In read model we don't need to execute
+   * any business logic, so we can bypass
+   * domain and repository layers completely
+   * and execute query directly
+   */
   async execute(
     query: FindUsersQuery,
-  ): Promise<Result<Paginated<UserEntity>, Error>> {
-    const users = await this.userRepo.findUsers(query);
-    return Ok(users);
+  ): Promise<Result<Paginated<UserModel>, Error>> {
+    /**
+     * Constructing a query with Slonik.
+     * More info: https://contra.com/p/AqZWWoUB-writing-composable-sql-using-java-script
+     */
+    const statement = sql.type(userSchema)`
+         SELECT *
+         FROM users
+         WHERE
+           ${query.country ? sql`country = ${query.country}` : true} AND
+           ${query.street ? sql`street = ${query.street}` : true} AND
+           ${query.postalCode ? sql`"postalCode" = ${query.postalCode}` : true}
+         LIMIT ${query.limit}
+         OFFSET ${query.offset}`;
+
+    const records = await this.pool.query(statement);
+
+    return Ok(
+      new Paginated({
+        data: records.rows,
+        count: records.rowCount,
+        limit: query.limit,
+        page: query.page,
+      }),
+    );
   }
 }

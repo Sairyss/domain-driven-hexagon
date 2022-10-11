@@ -1,6 +1,6 @@
 import { InjectPool } from 'nestjs-slonik';
 import { DatabasePool, sql } from 'slonik';
-import { FindUsersParams, UserRepositoryPort } from './user.repository.port';
+import { UserRepositoryPort } from './user.repository.port';
 import { z } from 'zod';
 import { UserMapper } from '../user.mapper';
 import { UserRoles } from '../domain/user.types';
@@ -8,7 +8,6 @@ import { UserEntity } from '../domain/user.entity';
 import { SqlRepositoryBase } from '@src/libs/db/sql-repository.base';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Paginated } from '@src/libs/ddd';
 
 /**
  * Runtime validation of user object for extra safety (in case database schema changes).
@@ -28,6 +27,9 @@ export const userSchema = z.object({
 
 export type UserModel = z.TypeOf<typeof userSchema>;
 
+/**
+ *  Repository is used for retrieving/saving domain entities
+ * */
 @Injectable()
 export class UserRepository
   extends SqlRepositoryBase<UserEntity, UserModel>
@@ -44,31 +46,6 @@ export class UserRepository
     eventEmitter: EventEmitter2,
   ) {
     super(pool, mapper, eventEmitter, new Logger(UserRepository.name));
-  }
-
-  async findUsers(query: FindUsersParams): Promise<Paginated<UserEntity>> {
-    /**
-     * Constructing a query with Slonik.
-     * More info: https://contra.com/p/AqZWWoUB-writing-composable-sql-using-java-script
-     */
-    const statement = sql.type(userSchema)`
-    SELECT *
-    FROM users
-    WHERE
-      ${query.country ? sql`country = ${query.country}` : true} AND
-      ${query.street ? sql`street = ${query.street}` : true} AND
-      ${query.postalCode ? sql`"postalCode" = ${query.postalCode}` : true}
-    LIMIT ${query.limit}
-    OFFSET ${query.offset}`;
-
-    const records = await this.pool.query(statement);
-
-    return new Paginated({
-      data: records.rows.map(this.mapper.toDomain),
-      count: records.rowCount,
-      limit: query.limit,
-      page: query.page,
-    });
   }
 
   async updateAddress(user: UserEntity): Promise<void> {

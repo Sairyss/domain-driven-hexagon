@@ -274,15 +274,15 @@ Read more:
 
 ### Queries
 
-`Query` is similar to a `Command`. It signals user intent to find something and describes how to do it.
+`Query` is similar to a `Command`. It belongs to a read model and signals user intent to find something and describes how to do it.
 
-`Query` is just a data retrieval operation and should not make any state changes (like writes to the database, files, third party APIs, etc.).
+`Query` is just a data retrieval operation and should not make any state changes (like writes to the database, files, third party APIs, etc.). For this reason, in read model we can bypass a domain and repository layers completely and query database directly from a query handler.
 
-Similarly to Commands, Queries can use a `Query Bus` if needed. This way you can query anything from anywhere without importing repositories directly and avoid coupling.
+Similarly to Commands, Queries can use a `Query Bus` if needed. This way you can query anything from anywhere without importing classes directly and avoid coupling.
 
 Example files:
 
-- [find-users.query-handler.ts](src/modules/user/queries/find-users/find-users.query-handler.ts) - a query handler
+- [find-users.query-handler.ts](src/modules/user/queries/find-users/find-users.query-handler.ts) - a query handler. Notice how we query the database directly, without using domain objects or repositories (more info [here](https://codeopinion.com/should-you-use-the-repository-pattern-with-cqrs-yes-and-no/)).
 
 ---
 
@@ -1006,6 +1006,7 @@ This project contains abstract repository class that allows to make basic CRUD o
 Read more:
 
 - [Design the infrastructure persistence layer](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-design)
+- [Should you use the Repository Pattern? With CQRS, Yes and No!](https://codeopinion.com/should-you-use-the-repository-pattern-with-cqrs-yes-and-no/) - in a read model / query handlers it is not required to use a repository pattern.
 
 ## Persistence models
 

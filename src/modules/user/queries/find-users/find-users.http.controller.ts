@@ -4,12 +4,13 @@ import { QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Result } from 'oxide.ts';
 import { FindUsersRequestDto } from './find-users.request.dto';
-import { UserEntity } from '@modules/user/domain/user.entity';
 import { FindUsersQuery } from './find-users.query-handler';
 import { UserMapper } from '@modules/user/user.mapper';
 import { Paginated } from '@src/libs/ddd';
 import { UserPaginatedResponseDto } from '../../dtos/user.paginated.response.dto';
 import { PaginatedQueryRequestDto } from '@src/libs/api/paginated-query.request.dto';
+import { UserModel } from '../../database/user.repository';
+import { ResponseBase } from '@src/libs/api/response.base';
 
 @Controller(routesV1.version)
 export class FindUsersHttpController {
@@ -34,15 +35,22 @@ export class FindUsersHttpController {
       page: queryParams?.page,
     });
     const result: Result<
-      Paginated<UserEntity>,
+      Paginated<UserModel>,
       Error
     > = await this.queryBus.execute(query);
 
-    const users = result.unwrap();
+    const paginated = result.unwrap();
 
+    // Whitelisting returned properties
     return new UserPaginatedResponseDto({
-      ...users,
-      data: users.data.map(this.userMapper.toResponse),
+      ...paginated,
+      data: paginated.data.map((user) => ({
+        ...new ResponseBase(user),
+        email: user.email,
+        country: user.country,
+        street: user.street,
+        postalCode: user.postalCode,
+      })),
     });
   }
 }
