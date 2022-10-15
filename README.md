@@ -1171,11 +1171,11 @@ Shared files like domain objects (entities/aggregates), repositories, shared DTO
 
 This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside that component) are stored close together.
 
-> The aim here should to be strategic and place classes that we, from experience, know often changes together into the same component.
+> The aim here should be to be strategic and place classes that we, from experience, know often changes together into the same component.
 
 Keep in mind that this project's folder/file structure is an example and might not work for everyone. The main recommendations here are:
 
-- Separate you application into modules;
+- Separate your application into modules;
 - Keep files that change together close to each other (_Common Closure Principle_);
 - Group files by their behavior that changes together, not by a type of functionality that file provides;
 - Keep files that are reused by multiple components apart;
@@ -1187,7 +1187,7 @@ There are different approaches to file/folder structuring, choose what suits bet
 
 Examples:
 
-- [user](src/modules/user) module
+- [user](src/modules/user) module.
 - [create-user](src/modules/user/commands/create-user) subcomponent.
 
 - [Commands](src/modules/user/commands) directory contains all state changing use cases and each use case inside it contains most of the things that it needs: controller, service, DTOs, command, etc.
