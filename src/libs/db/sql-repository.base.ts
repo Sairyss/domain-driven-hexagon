@@ -84,8 +84,8 @@ export abstract class SqlRepositoryBase<
 
     this.logger.debug(
       `[${RequestContextService.getRequestId()}] deleting entities ${
-        (entity.id, this.tableName)
-      }`,
+        entity.id
+      } from ${this.tableName}`,
     );
 
     const result = await this.pool.query(query);
@@ -102,7 +102,7 @@ export abstract class SqlRepositoryBase<
   async insert(entity: Aggregate | Aggregate[]): Promise<void> {
     const entities = Array.isArray(entity) ? entity : [entity];
 
-    const records = entities.map(this.mapper.toPersistance);
+    const records = entities.map(this.mapper.toPersistence);
 
     const query = this.generateInsertQuery(records);
 
