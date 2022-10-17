@@ -4,7 +4,7 @@ import { CreateUserTestContext } from '@tests/user/user-shared-steps';
 import { DefineStepFunction } from 'jest-cucumber';
 
 /**
- * Test steps that an be shared between all tests
+ * Test steps that can be shared between all tests
  */
 
 export const iReceiveAnErrorWithStatusCode = (
