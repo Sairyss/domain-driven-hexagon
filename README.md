@@ -132,8 +132,8 @@ In short, data flow looks like this (from left to right):
 
 - Request/CLI command/event is sent to the controller using plain DTO;
 - Controller parses this DTO, maps it to a Command/Query object format and passes it to an Application service;
-- Application service handles this Command/Query; it executes business logic using domain services and/or entities and uses the infrastructure layer through ports;
-- Infrastructure layer uses a mapper to convert data to format that it needs, uses repositories to fetch/persist data and adapters to send events or do other I/O communications, maps data back to domain format and returns it back to Application service;
+- Application service handles this Command/Query; it executes business logic using domain services and entities/aggregates and uses the infrastructure layer through ports(interfaces);
+- Infrastructure layer maps data to a format that it needs, retrieves/persists data from/to a database, uses adapters for other I/O communications (like sending an event to an external broker or calling external APIs), maps data back to domain format and returns it back to Application service;
 - After the Application service finishes doing its job, it returns data/confirmation back to Controllers;
 - Controllers return data back to the user (if application has presenters/views, those are returned instead).
 
