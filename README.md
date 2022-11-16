@@ -7,22 +7,6 @@
 
 ---
 
-# Big update 10.10.2022
-
-Codebase updated. Main changes:
-
-- Simplified architecture, some boilerplate code removed.
-- Replaced [TypeOrm](https://typeorm.io/) for [Slonik](https://github.com/gajus/slonik). While ORMs are great for smaller projects, for projects with greater complexities raw queries are more flexible and performant.
-- Removed Unit of Work. Using global request transactions instead with the help of [nestjs-request-context](https://github.com/abonifacio/nestjs-request-context).
-- Updated all packages
-- Improved integration tests
-- General code improvements and refactoring
-- Bug fixes
-
-You can find old version [here](https://github.com/Sairyss/domain-driven-hexagon/tree/7feca5cf992b47f3f28ccb1e9da5df0130f6d7ec) (or just browse code for old commits).
-
----
-
 The main emphasis of this project is to provide recommendations on how to design software applications. This readme includes techniques, tools, best practices, architectural patterns and guidelines gathered from different sources.
 
 Code examples are written using [NodeJS](https://nodejs.org/en/), [TypeScript](https://www.typescriptlang.org/), [NestJS](https://docs.nestjs.com/) framework and [Slonik](https://github.com/gajus/slonik) for the database access.
@@ -37,7 +21,6 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
 ---
 
 - [Domain-Driven Hexagon](#domain-driven-hexagon)
-- [Big update 10.10.2022](#big-update-10102022)
 - [Architecture](#architecture)
       - [Pros](#pros)
       - [Cons](#cons)
