@@ -1072,13 +1072,17 @@ For applications with not a lot of business logic, where code mostly exists as a
 
 [Full-stack application example](https://github.com/Sairyss/full-stack-application-example) - here is an example of a simple CRUD full-stack application.
 
+Additional resources:
+
+- [Do you have enough Complexity for a Domain Model (Domain Driven Design)?](https://youtu.be/L1foFiqopIc)
+
 ## Behavioral Testing
 
 Behavioral Testing (and also [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)) is a testing of the external behavior of the program, also known as black box testing.
 
 Domain-Driven Design with its ubiquitous language plays nicely with Behavioral tests.
 
-For BDD tests [Cucumber](https://cucumber.io/) with [Gherkin](https://cucumber.io/docs/gherkin/reference/) syntax can give a structure and meaning to your tests. This way even people not involved in a development can define steps needed for testing. In node.js world [jest-cucumber](https://www.npmjs.com/package/jest-cucumber) is a nice package to achieve that.
+For BDD tests [Cucumber](https://cucumber.io/) with [Gherkin](https://cucumber.io/docs/gherkin/reference/) syntax can give a structure and meaning to your tests. This way even people not involved in a development can define steps needed for testing. In node.js world [cucumber](https://www.npmjs.com/package/@cucumber/cucumber) or [jest-cucumber](https://www.npmjs.com/package/jest-cucumber) are nice packages to achieve that.
 
 Example files:
 
@@ -1228,9 +1232,10 @@ Read more:
 ## Blogs
 
 - [Vladimir Khorikov](https://enterprisecraftsmanship.com/)
-- [Khalil Stemmler](https://khalilstemmler.com)
+- [Derek Comartin](https://codeopinion.com/)
 - [Kamil Grzybek](https://www.kamilgrzybek.com/)
 - [Martin Fowler](https://martinfowler.com/)
+- [Khalil Stemmler](https://khalilstemmler.com)
 - [Herberto Graca](https://herbertograca.com/)
 
 ## Videos
