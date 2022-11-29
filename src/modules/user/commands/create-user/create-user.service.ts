@@ -6,10 +6,7 @@ import { CreateUserCommand } from './create-user.command';
 import { UserAlreadyExistsError } from '@modules/user/domain/user.errors';
 import { AggregateID } from '@libs/ddd';
 import { UserEntity } from '@modules/user/domain/user.entity';
-import {
-  ConflictException,
-  InternalServerErrorException,
-} from '@libs/exceptions';
+import { ConflictException } from '@libs/exceptions';
 import { Inject } from '@nestjs/common';
 import { USER_REPOSITORY } from '../../user.di-tokens';
 
@@ -22,9 +19,7 @@ export class CreateUserService implements ICommandHandler {
 
   async execute(
     command: CreateUserCommand,
-  ): Promise<
-    Result<AggregateID, UserAlreadyExistsError | InternalServerErrorException>
-  > {
+  ): Promise<Result<AggregateID, UserAlreadyExistsError>> {
     const user = UserEntity.create({
       email: command.email,
       address: new Address({

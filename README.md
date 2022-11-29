@@ -186,18 +186,19 @@ This is the core of the system which is built using [DDD building blocks](https:
 
 ## Application Services
 
-Are also called "Workflow Services", "Use Cases", "Interactors" etc.
-These services orchestrate the steps required to fulfill the commands imposed by the client.
+Application Services (also called "Workflow Services", "Use Cases", "Interactors", etc.) are used to orchestrate the steps required to fulfill the commands imposed by the client.
 
-- Typically used to orchestrate how the outside world interacts with your application and performs tasks required by the end users.
+Application services:
+
+- Typically used to orchestrate how the outside world interacts with your application and performs tasks required by the end users;
 - Contain no domain-specific business logic;
-- Operate on scalar types, transforming them into Domain types. A scalar type can be considered any type that's unknown to the Domain Model. This includes primitive types and types that don't belong to the Domain.
-- Declare dependencies on infrastructural services required to execute domain logic (by using Ports).
-- Are used in order to fetch domain `Entities` (or anything else) from database/outside world through Ports;
-- Execute other out-of-process communications through Ports (like event emits, sending emails etc.);
-- In case of interacting with one Entity/Aggregate, execute its methods directly;
-- In case of working with multiple Entities/Aggregates, use a `Domain Service` to orchestrate them;
-- Are basically `Command`/`Query` handlers;
+- Operate on scalar types, transforming them into Domain types. A scalar type can be considered any type that's unknown to the Domain Model. This includes primitive types and types that don't belong to the Domain;
+- Uses ports to declare dependencies on infrastructural services/adapters required to execute domain logic (ports are just interfaces, we will discuss this topic in details below);
+- Fetch domain `Entities`/`Aggregates` (or anything else) from database/external APIs (through ports/interfaces, with concrete implementations injected by the [DI](https://en.wikipedia.org/wiki/Dependency_injection) library);
+- Execute domain logic on those `Entities`/`Aggregates` (by invoking their methods);
+- In case of working with multiple `Entities`/`Aggregates`, use a `Domain Service` to orchestrate them;
+- Execute other out-of-process communications through Ports (like event emits, sending emails, etc.);
+- Services can be used as a `Command`/`Query` handlers;
 - Should not depend on other application services since it may cause problems (like cyclic dependencies);
 
 One service per use case is considered a good practice.
