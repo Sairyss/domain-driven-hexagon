@@ -77,7 +77,7 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
 
 # Architecture
 
-Mainly based on:
+This is an attempt to combine multiple architectural patterns and styles together, such as:
 
 - [Domain-Driven Design (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design)
 - [Hexagonal (Ports and Adapters) Architecture](https://blog.octo.com/en/hexagonal-architecture-three-principles-and-an-implementation-example/)
@@ -87,7 +87,7 @@ Mainly based on:
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
 - [Software Design Patterns](https://refactoring.guru/design-patterns/what-is-pattern)
 
-And many other sources (more links below in every chapter).
+And many others (more links below in every chapter).
 
 Before we begin, here are the PROS and CONS of using a complete architecture like this:
 
@@ -1045,7 +1045,7 @@ Sometimes complex architecture and principles like [SOLID](https://en.wikipedia.
 
 > Effective design argues that we need to know the price of a pattern is worth paying - that's its own skill.
 
-Don't blindly follow practices, patterns and architectures just because books and articles say so. Sometimes rewriting a software from scratch is the best solution, and all your efforts to fit in all the patterns and architectural styles you know into the project will be a waste of time. Try to evaluate the cost and benefit of every pattern you implement and avoid over-engineering. Remember that architectures, patterns and principles are your tools that may be useful in certain situations, not dogmas that you have to follow blindly.
+Don't blindly follow practices, patterns and architectures just because books and articles say so. Sometimes rewriting a software from scratch is the best solution, and all your efforts to fit in all the patterns and architectural styles you know into the project will be a waste of time. Try to evaluate the cost and benefit of every pattern you implement and avoid overengineering. Remember that architectures, patterns and principles are your tools that may be useful in certain situations, not dogmas that you have to follow blindly.
 
 However, remember:
 
@@ -1053,9 +1053,10 @@ However, remember:
 
 Read more:
 
+- [Which Software Architecture should you pick?](https://youtu.be/8B445kqSKwg)
+- [SOLID Principles and the Arts of Finding the Beach](https://sebastiankuebeck.wordpress.com/2017/09/17/solid-principles-and-the-arts-of-finding-the-beach/)
 - [Martin Fowler blog: Yagni](https://martinfowler.com/bliki/Yagni.html)
 - [7 Software Development Principles That Should Be Embraced Daily](https://betterprogramming.pub/7-software-development-principles-that-should-be-embraced-daily-c26a94ec4ecc?gi=3b5b298ddc23)
-- [SOLID Principles and the Arts of Finding the Beach](https://sebastiankuebeck.wordpress.com/2017/09/17/solid-principles-and-the-arts-of-finding-the-beach/)
 
 ## Recommendations for smaller APIs
 
@@ -1154,7 +1155,7 @@ This looks better. With this approach each module is encapsulated and only conta
 
 This way each module is further split into highly cohesive subcomponents (by feature). Now when you open the project, instead of just seeing directories like `controllers`, `services`, `repositories`, etc. you can see right away what features application has from just reading directory names.
 
-This approach makes navigation and maintaining easier since all related files are close to each other. It also makes every feature properly encapsulated and gives you an ability to make decisions based on each particular feature's needs.
+This approach makes navigation and maintaining easier since all related files are close to each other. It also makes every feature properly encapsulated and gives you an ability to make localized decisions per component, based on each particular feature's needs.
 
 Shared files like domain objects (entities/aggregates), repositories, shared DTOs, interfaces, etc. can be stored outside of feature directory since they are usually reused by multiple subcomponents.
 
