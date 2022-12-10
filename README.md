@@ -156,7 +156,6 @@ Read more:
 - [Modular programming: Beyond the spaghetti mess](https://www.tiny.cloud/blog/modular-programming-principle/).
 - [What are Modules in Domain Driven Design?](https://www.culttt.com/2014/12/10/modules-domain-driven-design/)
 - [How to Implement Vertical Slice Architecture](https://garywoodfine.com/implementing-vertical-slice-architecture/)
-- [Why I don’t like layered architecture for microservices](https://garywoodfine.com/why-i-dont-like-layered-architecture-for-microservices/) - this explains more in details what disadvantages a typical horizontal Layered Architecture have compared to Modular / Vertical Slice architectures.
 
 Each module consists of layers described below.
 
@@ -1153,9 +1152,11 @@ This looks better. With this approach each module is encapsulated and only conta
   ...
 ```
 
-This way each module is further split into highly cohesive subcomponents (usually by feature).
+This way each module is further split into highly cohesive subcomponents (by feature). Now when you open the project, instead of just seeing directories like `controllers`, `services`, `repositories`, etc. you can see right away what features application has from just reading directory names.
 
-Shared files like domain objects (entities/aggregates), repositories, shared DTOs, interfaces, etc. are stored outside of feature subcomponents since they are usually reused in multiple places. This approach makes navigation and maintaining easier since all related files are close to each other. It also makes every feature properly encapsulated.
+This approach makes navigation and maintaining easier since all related files are close to each other. It also makes every feature properly encapsulated and gives you an ability to make decisions based on each particular feature's needs.
+
+Shared files like domain objects (entities/aggregates), repositories, shared DTOs, interfaces, etc. can be stored outside of feature directory since they are usually reused by multiple subcomponents.
 
 This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/clean-code/the-common-closure-principle/). Folder/file structure in this project uses this principle. Related files that usually change together (and are not used by anything else outside that component) are stored close together.
 
@@ -1164,7 +1165,7 @@ This is called [The Common Closure Principle (CCP)](https://ericbackhage.net/cle
 Keep in mind that this project's folder/file structure is an example and might not work for everyone. The main recommendations here are:
 
 - Separate your application into modules;
-- Keep files that change together close to each other (_Common Closure Principle_);
+- Keep files that change together close to each other (_Common Closure Principle_ and _Vertical Slicing_);
 - Group files by their behavior that changes together, not by a type of functionality that file provides;
 - Keep files that are reused by multiple components apart;
 - Respect boundaries in your code, keeping files together doesn't mean inner layers can import outer layers;
@@ -1184,7 +1185,9 @@ Examples:
 Read more:
 
 - [Out with the Onion, in with Vertical Slices](https://medium.com/@jacobcunningham/out-with-the-onion-in-with-vertical-slices-c3edfdafe118)
+- [[YouTube] Tired of Layers? Vertical Slice Architecture to the rescue!](https://youtu.be/lsddiYwWaOQ)
 - [Vertical Slice Architecture](https://jimmybogard.com/vertical-slice-architecture/)
+- [Why I don’t like layered architecture for microservices](https://garywoodfine.com/why-i-dont-like-layered-architecture-for-microservices/) - this explains more in details what disadvantages a typical horizontal Layered Architecture have compared to Modular / Vertical Slice architectures.
 
 ### File names
 
