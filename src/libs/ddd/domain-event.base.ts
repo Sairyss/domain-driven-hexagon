@@ -3,14 +3,28 @@ import { Guard } from '../guard';
 import { v4 } from 'uuid';
 import { RequestContextService } from '@libs/application/context/AppRequestContext';
 
-export type DomainEventProps<T> = Omit<
-  T,
-  'id' | 'timestamp' | 'correlationId' | 'eventName'
-> & {
+type DomainEventMetadata = {
+  /** Timestamp when this domain event occurred */
+  readonly timestamp: number;
+
+  /** ID for correlation purposes (for Integration Events,logs correlation, etc).
+   */
+  readonly correlationId: string;
+
+  /**
+   * Causation id used to reconstruct execution order if needed
+   */
+  readonly causationId?: string;
+
+  /**
+   * User ID for debugging and logging purposes
+   */
+  readonly userId?: string;
+};
+
+export type DomainEventProps<T> = Omit<T, 'id' | 'metadata'> & {
   aggregateId: string;
-  correlationId?: string;
-  causationId?: string;
-  timestamp?: number;
+  metadata?: DomainEventMetadata;
 };
 
 export abstract class DomainEvent {
@@ -19,17 +33,7 @@ export abstract class DomainEvent {
   /** Aggregate ID where domain event occurred */
   public readonly aggregateId: string;
 
-  /** Timestamp when this domain event occurred */
-  public readonly timestamp: number;
-
-  /** ID for correlation purposes (for Integration Events,logs correlation, etc).
-   */
-  public correlationId: string;
-
-  /**
-   * Causation id used to reconstruct execution order if needed
-   */
-  public causationId?: string;
+  public readonly metadata: DomainEventMetadata;
 
   constructor(props: DomainEventProps<unknown>) {
     if (Guard.isEmpty(props)) {
@@ -39,8 +43,12 @@ export abstract class DomainEvent {
     }
     this.id = v4();
     this.aggregateId = props.aggregateId;
-    this.timestamp = props.timestamp || Date.now();
-    this.correlationId =
-      props.correlationId || RequestContextService.getRequestId();
+    this.metadata = {
+      correlationId:
+        props?.metadata?.correlationId || RequestContextService.getRequestId(),
+      causationId: props?.metadata?.causationId,
+      timestamp: props?.metadata?.timestamp || Date.now(),
+      userId: props?.metadata?.userId,
+    };
   }
 }
