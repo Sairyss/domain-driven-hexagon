@@ -48,6 +48,7 @@
     "class-validator": "^0.13.2",
     "dotenv": "^16.0.2",
     "env-var": "^7.3.0",
+    "graphql": "^16.6.0",
     "jest-cucumber": "^3.0.1",
     "nanoid": "^3.3.4",
     "nestjs-console": "^8.0.0",
