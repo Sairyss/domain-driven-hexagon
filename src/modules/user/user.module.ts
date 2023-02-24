@@ -12,6 +12,7 @@ import { FindUsersQueryHandler } from './queries/find-users/find-users.query-han
 import { UserMapper } from './user.mapper';
 import { CqrsModule } from '@nestjs/cqrs';
 import { USER_REPOSITORY } from './user.di-tokens';
+import { FindUsersGraphqlResolver } from './queries/find-users/find-users.graphql-resolver';
 
 const httpControllers = [
   CreateUserHttpController,
@@ -23,7 +24,10 @@ const messageControllers = [CreateUserMessageController];
 
 const cliControllers: Provider[] = [CreateUserCliController];
 
-const graphqlResolvers: Provider[] = [CreateUserGraphqlResolver];
+const graphqlResolvers: Provider[] = [
+  CreateUserGraphqlResolver,
+  FindUsersGraphqlResolver,
+];
 
 const commandHandlers: Provider[] = [CreateUserService, DeleteUserService];
 
