@@ -1,6 +1,5 @@
 import { Field, ObjectType, Int } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
-// count limit page
 
 export interface IPaginatedType<T> {
   data: T[];
