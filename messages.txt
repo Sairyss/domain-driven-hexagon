@@ -1,0 +1,3 @@
+This is my file for messages
+==========
+b1: Hello from branch 1!
