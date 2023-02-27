@@ -68,6 +68,7 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
   - [Behavioral Testing](#behavioral-testing)
   - [Folder and File Structure](#folder-and-file-structure)
     - [File names](#file-names)
+  - [Enforcing architecture](#enforcing-architecture)
   - [Prevent massive inheritance chains](#prevent-massive-inheritance-chains)
 - [Additional resources](#additional-resources)
   - [Articles](#articles)
@@ -1202,6 +1203,20 @@ Alternatively you could use class names as file names, but consider adding descr
 Read more:
 
 - [Angular Style Guides: Separate file names with dots and dashes](https://angular.io/guide/styleguide#separate-file-names-with-dots-and-dashes).
+
+## Enforcing architecture
+
+To make sure everyone in the team adheres to defined architectural practices, use tools and libraries that can analyze and validate dependencies between files and layers.
+
+For example:
+
+- [Dependency cruiser](https://github.com/sverweij/dependency-cruiser) - Validate and visualize dependencies for JavaScript / TypeScript.
+- [ArchUnit](https://www.archunit.org/) - library for checking the architecture of Java applications
+
+Read more:
+
+- [Validate Dependencies According to Clean Architecture](https://betterprogramming.pub/validate-dependencies-according-to-clean-architecture-743077ea084c)
+- [Clean Architecture Boundaries with Spring Boot and ArchUnit](https://reflectoring.io/java-components-clean-boundaries/)
 
 ## Prevent massive inheritance chains
 
