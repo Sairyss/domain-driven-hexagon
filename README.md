@@ -1210,6 +1210,21 @@ To make sure everyone in the team adheres to defined architectural practices, us
 
 For example:
 
+```typescript
+  // Dependency cruiser example
+  {
+    name: 'no-domain-to-app-deps',
+    comment: 'Domain layer cannot depend on application layer',
+    severity: 'error',
+    from: { path: 'domain' },
+    to: { path: ['application'] },
+  },
+```
+
+Snippet of code above will prevent your domain layer to depend on the application layer.
+
+Example tools:
+
 - [Dependency cruiser](https://github.com/sverweij/dependency-cruiser) - Validate and visualize dependencies for JavaScript / TypeScript.
 - [ArchUnit](https://www.archunit.org/) - library for checking the architecture of Java applications
 
