@@ -1217,11 +1217,11 @@ For example:
     comment: 'Domain layer cannot depend on application layer',
     severity: 'error',
     from: { path: 'domain' },
-    to: { path: ['application'] },
+    to: { path: ['application', 'controller', 'dtos'] },
   },
 ```
 
-Snippet of code above will prevent your domain layer to depend on the application layer.
+Snippet of code above will prevent your domain layer to depend on the application layer, controllers, etc. Simplified example config: [.dependency-cruiser.js](.dependency-cruiser.js)
 
 Example tools:
 

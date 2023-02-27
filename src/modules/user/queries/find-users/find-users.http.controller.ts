@@ -5,7 +5,6 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Result } from 'oxide.ts';
 import { FindUsersRequestDto } from './find-users.request.dto';
 import { FindUsersQuery } from './find-users.query-handler';
-import { UserMapper } from '@modules/user/user.mapper';
 import { Paginated } from '@src/libs/ddd';
 import { UserPaginatedResponseDto } from '../../dtos/user.paginated.response.dto';
 import { PaginatedQueryRequestDto } from '@src/libs/api/paginated-query.request.dto';
@@ -14,10 +13,7 @@ import { ResponseBase } from '@src/libs/api/response.base';
 
 @Controller(routesV1.version)
 export class FindUsersHttpController {
-  constructor(
-    private readonly queryBus: QueryBus,
-    private readonly userMapper: UserMapper,
-  ) {}
+  constructor(private readonly queryBus: QueryBus) {}
 
   @Get(routesV1.user.root)
   @ApiOperation({ summary: 'Find users' })

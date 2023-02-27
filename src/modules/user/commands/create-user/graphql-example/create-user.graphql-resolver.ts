@@ -5,7 +5,7 @@ import { CreateUserGqlRequestDto } from './dtos/create-user.gql-request.dto';
 import { IdGqlResponse } from './dtos/id.gql-response.dto';
 import { AggregateID } from '@src/libs/ddd';
 import { UserAlreadyExistsError } from '@src/modules/user/domain/user.errors';
-import { Result } from 'oxide.ts/dist';
+import { Result } from 'oxide.ts';
 
 // If you are Using GraphQL you'll need a Resolver instead of a Controller
 @Resolver()

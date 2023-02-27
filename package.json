@@ -29,7 +29,10 @@
     "migration:executed:tests": "NODE_ENV=test ts-node database/migrate executed",
     "migration:pending": "ts-node database/migrate pending",
     "migration:pending:tests": "NODE_ENV=test ts-node database/migrate pending",
-    "seed:up": "ts-node database/seed"
+    "seed:up": "ts-node database/seed",
+    "depcruise": "depcruise",
+    "deps:validate": "depcruise src --config .dependency-cruiser.js --output-type err-long",
+    "deps:graph": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.1.3",
@@ -59,7 +62,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "slonik": "^31.2.4",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "zod": "^3.20.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -72,6 +76,7 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "dependency-cruiser": "^12.10.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
