@@ -1213,15 +1213,15 @@ For example:
 ```typescript
   // Dependency cruiser example
   {
-    name: 'no-domain-to-app-deps',
-    comment: 'Domain layer cannot depend on application layer',
+    name: 'no-domain-deps',
+    comment: 'Domain layer cannot depend on api or database layers',
     severity: 'error',
-    from: { path: 'domain' },
-    to: { path: ['application', 'controller', 'dtos'] },
+    from: { path: ['domain', 'entity', 'aggregate', 'value-object'] },
+    to: { path: ['api', 'controller', 'dtos', 'database', 'repository'] },
   },
 ```
 
-Snippet of code above will prevent your domain layer to depend on the application layer, controllers, etc. Simplified example config: [.dependency-cruiser.js](.dependency-cruiser.js)
+Snippet of code above will prevent your domain layer to depend on the API layer or database layer. Example config: [.dependency-cruiser.js](.dependency-cruiser.js)
 
 You can also generate graphs like this:
 
