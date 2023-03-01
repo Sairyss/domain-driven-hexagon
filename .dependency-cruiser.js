@@ -19,6 +19,14 @@ const infrastructureLayerPaths = [
   'repository',
 ];
 
+const domainLayerPaths = [
+  'domain',
+  'entity\\.ts$',
+  'aggregate\\.ts$',
+  'domain-event\\.ts$',
+  'value-object\\.ts$',
+];
+
 module.exports = {
   forbidden: [
     /* user defined rules */
@@ -26,9 +34,9 @@ module.exports = {
       name: 'no-domain-to-app-deps',
       comment: 'Domain layer cannot depend on application layer',
       severity: 'error',
-      from: { path: 'domain' },
+      from: { path: domainLayerPaths },
       to: {
-        path: [...applicationLayerPaths],
+        path: applicationLayerPaths,
         pathNot: ['AppRequestContext\\.ts$'],
       },
     },
@@ -36,9 +44,9 @@ module.exports = {
       name: 'no-domain-to-infra-deps',
       comment: 'Domain layer cannot depend on infrastructure layer',
       severity: 'error',
-      from: { path: 'domain' },
+      from: { path: domainLayerPaths },
       to: {
-        path: [...infrastructureLayerPaths],
+        path: infrastructureLayerPaths,
         pathNot: ['port\\.ts$'],
       },
     },
@@ -46,9 +54,9 @@ module.exports = {
       name: 'no-infra-to-app-deps',
       comment: 'Infrastructure layer cannot depend on application layer',
       severity: 'error',
-      from: { path: [...infrastructureLayerPaths] },
+      from: { path: infrastructureLayerPaths },
       to: {
-        path: [...applicationLayerPaths],
+        path: applicationLayerPaths,
         pathNot: ['AppRequestContext\\.ts$'],
       },
     },
@@ -65,7 +73,7 @@ module.exports = {
         ],
       },
       to: {
-        path: [...applicationLayerPaths],
+        path: applicationLayerPaths,
         pathNot: ['AppRequestContext\\.ts$'],
       },
     },
