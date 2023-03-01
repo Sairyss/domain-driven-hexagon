@@ -1223,6 +1223,14 @@ For example:
 
 Snippet of code above will prevent your domain layer to depend on the application layer, controllers, etc. Simplified example config: [.dependency-cruiser.js](.dependency-cruiser.js)
 
+You can also generate graphs like this:
+
+<details>
+<summary>Click to see dependency graph</summary>
+ <img src="dependency-graph.svg" alt="Dependency graph"> 
+</details>
+<br>
+
 Example tools:
 
 - [Dependency cruiser](https://github.com/sverweij/dependency-cruiser) - Validate and visualize dependencies for JavaScript / TypeScript.
