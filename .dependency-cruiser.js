@@ -1,5 +1,7 @@
 /** @type {import('dependency-cruiser').IConfiguration} */
 
+// https://github.com/Sairyss/domain-driven-hexagon#enforcing-architecture
+
 const apiLayerPaths = [
   'controller',
   'dtos',
