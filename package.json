@@ -32,7 +32,7 @@
     "seed:up": "ts-node database/seed",
     "depcruise": "depcruise",
     "deps:validate": "depcruise src --config .dependency-cruiser.js --output-type err-long",
-    "deps:graph": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
+    "deps:graph": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > assets/dependency-graph.svg"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.1.3",

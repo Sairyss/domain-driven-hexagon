@@ -1227,7 +1227,7 @@ You can also generate graphs like this:
 
 <details>
 <summary>Click to see dependency graph</summary>
- <img src="dependency-graph.svg" alt="Dependency graph"> 
+ <img src="assets/dependency-graph.svg" alt="Dependency graph"> 
 </details>
 <br>
 
