@@ -18,7 +18,9 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
 (Implementations in other languages will look differently)
 
 **Everything below is provided as a recommendation, not a rule**. Different projects have different requirements, so any pattern mentioned in this readme should be adjusted to project needs or even skipped entirely if it doesn't fit. In real world production applications, you will most likely only need a fraction of those patterns depending on your use cases. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
-
+**A list of best movies humanity has ever seen**
+- Dune 2021
+- ...the rest of the list is in the works
 ---
 
 - [Domain-Driven Hexagon](#domain-driven-hexagon)
