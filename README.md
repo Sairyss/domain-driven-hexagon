@@ -21,6 +21,14 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
 **A list of best movies humanity has ever seen**
 - Dune 2021
 - ...the rest of the list is in the works
+
+**Stress relief**
+Ok now when a list of movies is in work lets talk about stress
+there are a lot of ways to cope with stress:
+- meditation
+- phisical activity
+- and so on...
+We recommend you not ignore stress!
 ---
 
 - [Domain-Driven Hexagon](#domain-driven-hexagon)
