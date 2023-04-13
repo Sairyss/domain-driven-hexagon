@@ -101,12 +101,12 @@ export abstract class Entity<EntityProps> {
    * @memberof Entity
    */
   public getPropsCopy(): EntityProps & BaseEntityProps {
-    const propsCopy = {
+    const propsCopy = structuredClone({
       id: this._id,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
       ...this.props,
-    };
+    });
     return Object.freeze(propsCopy);
   }
 

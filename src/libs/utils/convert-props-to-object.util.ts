@@ -31,7 +31,7 @@ function convertToPlainObject(item: any): any {
  * @param props
  */
 export function convertPropsToObject(props: any): any {
-  const propsCopy = { ...props };
+  const propsCopy = structuredClone(props);
 
   // eslint-disable-next-line guard-for-in
   for (const prop in propsCopy) {
