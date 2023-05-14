@@ -36,7 +36,7 @@ export class UserEntity extends AggregateRoot<UserProps> {
   /* You can create getters only for the properties that you need to
   access and leave the rest of the properties private to keep entity
   encapsulated. To get all entity properties (for saving it to a
-  database or mapping a response) use .getPropsCopy() method
+  database or mapping a response) use .getProps() method
   defined in a EntityBase parent class */
   get role(): UserRoles {
     return this.props.role;

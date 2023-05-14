@@ -63,7 +63,7 @@
     "rxjs": "^7.2.0",
     "slonik": "^31.2.4",
     "uuid": "^9.0.0",
-    "zod": "^3.20.6"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -108,6 +108,6 @@
     "testEnvironment": "node"
   },
   "volta": {
-    "node": "16.16.0"
+    "node": "20.1.0"
   }
 }

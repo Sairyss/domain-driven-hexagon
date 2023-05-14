@@ -6,7 +6,7 @@ import { WalletModel, walletSchema } from './database/wallet.repository';
 @Injectable()
 export class WalletMapper implements Mapper<WalletEntity, WalletModel> {
   toPersistence(entity: WalletEntity): WalletModel {
-    const copy = entity.getPropsCopy();
+    const copy = entity.getProps();
     const record: WalletModel = {
       id: copy.id,
       createdAt: copy.createdAt,

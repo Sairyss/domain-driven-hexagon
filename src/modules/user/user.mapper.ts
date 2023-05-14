@@ -17,7 +17,7 @@ export class UserMapper
   implements Mapper<UserEntity, UserModel, UserResponseDto>
 {
   toPersistence(entity: UserEntity): UserModel {
-    const copy = entity.getPropsCopy();
+    const copy = entity.getProps();
     const record: UserModel = {
       id: copy.id,
       createdAt: copy.createdAt,
@@ -50,7 +50,7 @@ export class UserMapper
   }
 
   toResponse(entity: UserEntity): UserResponseDto {
-    const props = entity.getPropsCopy();
+    const props = entity.getProps();
     const response = new UserResponseDto(entity);
     response.email = props.email;
     response.country = props.address.country;

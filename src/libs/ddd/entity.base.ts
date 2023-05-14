@@ -92,21 +92,17 @@ export abstract class Entity<EntityProps> {
   }
 
   /**
-   * Returns current **copy** of entity's props.
-   * Modifying entity's state won't change previously created
-   * copy returned by this method since it doesn't return a reference.
-   * If a reference to a specific property is needed create a getter in parent class.
-   *
+   * Returns entity properties.
    * @return {*}  {Props & EntityProps}
    * @memberof Entity
    */
-  public getPropsCopy(): EntityProps & BaseEntityProps {
-    const propsCopy = structuredClone({
+  public getProps(): EntityProps & BaseEntityProps {
+    const propsCopy = {
       id: this._id,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
       ...this.props,
-    });
+    };
     return Object.freeze(propsCopy);
   }
 

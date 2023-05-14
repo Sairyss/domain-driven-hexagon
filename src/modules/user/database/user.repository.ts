@@ -49,7 +49,7 @@ export class UserRepository
   }
 
   async updateAddress(user: UserEntity): Promise<void> {
-    const address = user.getPropsCopy().address;
+    const address = user.getProps().address;
     const statement = sql.type(userSchema)`
     UPDATE "users" SET
     street = ${address.street}, country = ${address.country}, "postalCode" = ${address.postalCode}
