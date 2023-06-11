@@ -66,9 +66,9 @@ export class NotFoundException extends ExceptionBase {
 }
 
 /**
- * Used to indicate that entity is not found
+ * Used to indicate an internal server error that does not fall under all other errors
  *
- * @class NotFoundException
+ * @class InternalServerErrorException
  * @extends {ExceptionBase}
  */
 export class InternalServerErrorException extends ExceptionBase {
