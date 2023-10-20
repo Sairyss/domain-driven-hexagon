@@ -1,6 +1,5 @@
 import { ArgumentNotProvidedException } from '../exceptions';
 import { Guard } from '../guard';
-import { v4 } from 'uuid';
 import { RequestContextService } from '@libs/application/context/AppRequestContext';
 
 type DomainEventMetadata = {
@@ -41,7 +40,7 @@ export abstract class DomainEvent {
         'DomainEvent props should not be empty',
       );
     }
-    this.id = v4();
+    this.id = crypto.randomUUID();
     this.aggregateId = props.aggregateId;
     this.metadata = {
       correlationId:
