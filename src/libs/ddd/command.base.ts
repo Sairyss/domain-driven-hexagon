@@ -1,5 +1,4 @@
 import { RequestContextService } from '@libs/application/context/AppRequestContext';
-import { v4 } from 'uuid';
 import { ArgumentNotProvidedException } from '../exceptions';
 import { Guard } from '../guard';
 
@@ -43,7 +42,7 @@ export class Command {
       );
     }
     const ctx = RequestContextService.getContext();
-    this.id = props.id || v4();
+    this.id = props.id || crypto.randomUUID();
     this.metadata = {
       correlationId: props?.metadata?.correlationId || ctx.requestId,
       causationId: props?.metadata?.causationId,
