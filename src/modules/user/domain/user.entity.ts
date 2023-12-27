@@ -10,12 +10,13 @@ import {
 import { UserDeletedDomainEvent } from './events/user-deleted.domain-event';
 import { UserRoleChangedDomainEvent } from './events/user-role-changed.domain-event';
 import { UserAddressUpdatedDomainEvent } from './events/user-address-updated.domain-event';
+import { randomUUID } from 'crypto';
 
 export class UserEntity extends AggregateRoot<UserProps> {
   protected readonly _id: AggregateID;
 
   static create(create: CreateUserProps): UserEntity {
-    const id = crypto.randomUUID();
+    const id = randomUUID();
     /* Setting a default role since we are not accepting it during creation. */
     const props: UserProps = { ...create, role: UserRoles.guest };
     const user = new UserEntity({ id, props });

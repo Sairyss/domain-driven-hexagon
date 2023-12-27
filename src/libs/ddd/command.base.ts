@@ -1,6 +1,7 @@
 import { RequestContextService } from '@libs/application/context/AppRequestContext';
 import { ArgumentNotProvidedException } from '../exceptions';
 import { Guard } from '../guard';
+import { randomUUID } from 'crypto';
 
 export type CommandProps<T> = Omit<T, 'id' | 'metadata'> & Partial<Command>;
 
@@ -42,7 +43,7 @@ export class Command {
       );
     }
     const ctx = RequestContextService.getContext();
-    this.id = props.id || crypto.randomUUID();
+    this.id = props.id || randomUUID();
     this.metadata = {
       correlationId: props?.metadata?.correlationId || ctx.requestId,
       causationId: props?.metadata?.causationId,
