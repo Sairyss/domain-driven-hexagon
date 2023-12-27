@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { ArgumentNotProvidedException } from '../exceptions';
 import { Guard } from '../guard';
 import { RequestContextService } from '@libs/application/context/AppRequestContext';
@@ -40,7 +41,7 @@ export abstract class DomainEvent {
         'DomainEvent props should not be empty',
       );
     }
-    this.id = crypto.randomUUID();
+    this.id = randomUUID();
     this.aggregateId = props.aggregateId;
     this.metadata = {
       correlationId:
