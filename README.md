@@ -82,8 +82,7 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
 This is an attempt to combine multiple architectural patterns and styles together, such as:
 
 - [Domain-Driven Design (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design)
-- [Hexagonal (Ports and Adapters) Architecture Article 1(Medium Blog)](https://medium.com/idealo-tech-blog/hexagonal-ports-adapters-architecture-e3617bcf00a0)
-- [Hexagonal (Ports and Adapters) Architecture Article (Wikipedia)2](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software))
+- [Hexagonal (Ports and Adapters) Architecture](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software))
 - [Secure by Design](https://www.manning.com/books/secure-by-design)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Onion Architecture](https://herbertograca.com/2017/09/21/onion-architecture/)
@@ -1267,6 +1266,7 @@ Read more:
 
 - [DDD, Hexagonal, Onion, Clean, CQRS, … How I put it all together](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together)
 - [Hexagonal Architecture](https://www.qwan.eu/2020/08/20/hexagonal-architecture.html)
+- [Hexagonal (Ports and Adapters) Architecture](https://medium.com/idealo-tech-blog/hexagonal-ports-adapters-architecture-e3617bcf00a0)
 - [Clean architecture series](https://medium.com/@pereiren/clean-architecture-series-part-1-f34ef6b04b62)
 - [Clean architecture for the rest of us](https://pusher.com/tutorials/clean-architecture-introduction)
 - [An illustrated guide to 12 Factor Apps](https://www.redhat.com/architect/12-factor-app)
