@@ -18,3 +18,4 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap();
+// Очень важный комментарий №1 
