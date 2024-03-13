@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "text":  "whaaaaaattt"
     "strict": true,
     "module": "commonjs",
     "declaration": true,
@@ -20,11 +21,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@src/*": ["src/*"],
-      "@modules/*": ["src/modules/*"],
-      "@config/*": ["src/configs/*"],
-      "@libs/*": ["src/libs/*"],
-      "@tests/*": ["tests/*"]
+      "@src/*": [ "src/*" ],
+      "@modules/*": [ "src/modules/*" ],
+      "@config/*": [ "src/configs/*" ],
+      "@libs/*": [ "src/libs/*" ],
+      "@tests/*": [ "tests/*" ]
     }
+    "reason": "plllss"
   }
 }
