@@ -1258,7 +1258,7 @@ Read more:
 # Additional resources
 
 - [Backend best practices](https://github.com/Sairyss/backend-best-practices) - more best practices that are used here
-- [Full-stack application example](https://github.com/Sairyss/full-stack-application-example) - architecture example of a simple full stack application
+- [System Design Patterns](https://github.com/Sairyss/system-design-patterns) - learn system design
 
 ## Articles
 
