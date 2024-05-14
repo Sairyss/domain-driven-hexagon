@@ -16,7 +16,7 @@ type CommandMetadata = {
   readonly causationId?: string;
 
   /**
-   * ID of a user who invoker the command. Can be useful for
+   * ID of a user who invoked the command. Can be useful for
    * logging and tracking execution of commands and events
    */
   readonly userId?: string;
