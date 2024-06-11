@@ -17,7 +17,7 @@ Patterns and principles presented here are **framework/language agnostic**. Ther
 **Note**: code examples are adapted to TypeScript and frameworks mentioned above. <br/>
 (Implementations in other languages will look differently)
 
-**Everything below is provided as a recommendation, not a rule**. Different projects have different requirements, so any pattern mentioned in this readme should be adjusted to project needs or even skipped entirely if it doesn't fit. In real world production applications, you will most likely only need a fraction of those patterns depending on your use cases. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
+**Everything below is provided as a recommendation, not a rule**. Different projects have different requirements, so any pattern mentioned in this readme should be adjusted to project needs or even skipped entirely if it doesn't fit. In real world production applications, you will most likely only need a fraction of those patterns depending on your use cases. Remember that each pattern has its own trade-offs. And you need to pay attention more to why you're choosing a certain pattern than to how to implement it. More info in [this](#general-recommendations-on-architectures-best-practices-design-patterns-and-principles) section.
 
 ---
 
